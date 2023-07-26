@@ -1,0 +1,96 @@
+buildscript {
+    ext {
+        // plugins
+        projectName = 'Hiit'
+        projectVersion = '1.0.1'
+        springBootVersion = '2.7.5'
+        dependencyManagementVersion = '1.0.15.RELEASE'
+        spotlessVersion = '6.8.0'
+        asciidoctorVersion = '3.3.2'
+        epagesRestDocsApiSpecVersion = '0.16.0'
+        sonarqubeVersion = '4.0.0.2929'
+
+        // dependencies
+        jsonwebtokenVersion = '0.11.5'
+        flywayVersion = '9.16.0'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+
+    id "com.diffplug.spotless" version "${spotlessVersion}"
+
+    // code-quality plugins
+    id 'org.asciidoctor.jvm.convert' version "${asciidoctorVersion}"
+    id 'com.epages.restdocs-api-spec' version "${epagesRestDocsApiSpecVersion}"
+    id "org.sonarqube" version "${sonarqubeVersion}"
+    id 'jacoco'
+}
+
+
+group = 'com.hiit'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '1.8'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+/** apply tasks */
+apply from: './tasks/build-task.gradle'
+apply from: './tasks/formatting-task.gradle'
+apply from: './tasks/code-quality-task.gradle'
+apply from: './tasks/docs-task.gradle'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // database
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'mysql:mysql-connector-java'
+
+    //jwt
+    implementation "io.jsonwebtoken:jjwt-api:${jsonwebtokenVersion}"
+    implementation "io.jsonwebtoken:jjwt-impl:${jsonwebtokenVersion}"
+    implementation "io.jsonwebtoken:jjwt-jackson:${jsonwebtokenVersion}"
+
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // infra
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // flyway
+    implementation "org.flywaydb:flyway-core:${flywayVersion}"
+    implementation 'org.flywaydb:flyway-mysql'
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+    }
+
+    finalizedBy jacocoTestReport
+}
