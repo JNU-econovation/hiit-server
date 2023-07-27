@@ -47,6 +47,8 @@ configurations {
 repositories {
     mavenCentral()
 }
+/** apply dependencies */
+apply from: './integration-test.gradle'
 
 /** apply tasks */
 apply from: './tasks/build-task.gradle'
