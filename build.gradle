@@ -55,6 +55,7 @@ apply from: './tasks/build-task.gradle'
 apply from: './tasks/formatting-task.gradle'
 apply from: './tasks/code-quality-task.gradle'
 apply from: './tasks/docs-task.gradle'
+apply from: './tasks/install-git-hooks.gradle'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
