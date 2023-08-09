@@ -21,11 +21,14 @@ plugins {
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
 
+    // formatting-task plugins
     id "com.diffplug.spotless" version "${spotlessVersion}"
 
-    // code-quality plugins
+    // docs-task plugins
     id 'org.asciidoctor.jvm.convert' version "${asciidoctorVersion}"
     id 'com.epages.restdocs-api-spec' version "${epagesRestDocsApiSpecVersion}"
+
+    // code-quality plugins
     id "org.sonarqube" version "${sonarqubeVersion}"
     id 'jacoco'
 }
