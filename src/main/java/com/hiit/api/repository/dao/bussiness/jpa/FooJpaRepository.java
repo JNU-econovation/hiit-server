@@ -14,4 +14,6 @@ public interface FooJpaRepository extends JpaRepository<FooEntity, Long> {
 
 	/** 여러 개의 결과를 조회하는 경우는 정렬 후 반환한다. */
 	List<FooEntity> findAllByNameAndDeletedFalseOrderByIdDesc(String name);
+
+	Optional<FooEntity> findTopByName(String name);
 }
