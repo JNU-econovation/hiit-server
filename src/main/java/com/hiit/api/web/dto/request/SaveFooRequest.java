@@ -15,4 +15,5 @@ import lombok.ToString;
 public class SaveFooRequest implements AbstractRequestDto {
 
 	private String name;
+	private Long count;
 }

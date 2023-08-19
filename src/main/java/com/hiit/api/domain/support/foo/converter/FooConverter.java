@@ -3,6 +3,7 @@ package com.hiit.api.domain.support.foo.converter;
 import com.hiit.api.common.support.converter.AbstractDtoConverter;
 import com.hiit.api.domain.dto.response.FooUseCaseResponse;
 import com.hiit.api.domain.model.Foo;
+import com.hiit.api.repository.entity.business.FooEntity;
 import com.hiit.api.web.dto.request.SaveFooRequest;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ public class FooConverter implements AbstractDtoConverter<SaveFooRequest, Foo> {
 
 	@Override
 	public Foo from(SaveFooRequest source) {
-		return Foo.builder().name(source.getName()).build();
+		return Foo.builder().name(source.getName()).count(source.getCount()).build();
 	}
 
 	/**
@@ -23,5 +24,9 @@ public class FooConverter implements AbstractDtoConverter<SaveFooRequest, Foo> {
 	 */
 	public FooUseCaseResponse toDomainResponse(Foo source) {
 		return FooUseCaseResponse.builder().name(source.getName()).build();
+	}
+
+	public FooEntity toEntity(Foo source) {
+		return FooEntity.builder().name(source.getName()).count(source.getCount()).build();
 	}
 }

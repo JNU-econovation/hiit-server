@@ -40,6 +40,8 @@ public class FooEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "name", nullable = false, length = 100)
 	private String name;
 
+	private Long count;
+
 	@Exclude
 	@Default
 	@OneToMany(
@@ -51,4 +53,8 @@ public class FooEntity extends BaseEntity {
 	@BatchSize(size = 3)
 	@Fetch(value = FetchMode.SUBSELECT)
 	private List<BarEntity> bars = new ArrayList<>();
+
+	public void touch() {
+		this.count--;
+	}
 }

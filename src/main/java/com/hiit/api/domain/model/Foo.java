@@ -14,4 +14,5 @@ import lombok.ToString;
 public class Foo {
 
 	private String name;
+	private Long count;
 }
