@@ -2,13 +2,14 @@ package com.hiit.api.domain.usecase.foo;
 
 import com.hiit.api.domain.dto.response.FooUseCaseResponse;
 import com.hiit.api.domain.model.Foo;
-import com.hiit.api.domain.service.foo.FooService;
 import com.hiit.api.domain.support.foo.converter.FooConverter;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.repository.dao.bussiness.FooRepository;
 import com.hiit.api.web.dto.request.SaveFooRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 컨트롤러의 요청을 처리하는 유즈케이스 클래스<br>
@@ -20,18 +21,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SaveFooUseCase implements AbstractUseCase<SaveFooRequest, FooUseCaseResponse> {
 
-	/** 다른 계층 혹은 다른 도메인과 연동이 필요한 경우 사용한다. */
-	private final FooService fooService;
+	private final FooRepository fooRepository;
 
 	private final FooConverter fooConverter;
 
 	@Override
+	@Transactional
 	public FooUseCaseResponse execute(SaveFooRequest request) {
 		Foo foo = fooConverter.from(request);
 
-		fooService.doA(foo);
-		fooService.doB(foo);
-		fooService.doC(foo);
+		fooRepository.save(fooConverter.toEntity(foo));
 
 		return fooConverter.toDomainResponse(foo);
 	}
