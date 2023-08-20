@@ -21,18 +21,17 @@ public class CountFooFacadeUseCase {
 	public Long execute(Long id) {
 		// id가 이미 완료된 상태인지 확인
 		if (queue.isDone(id)) {
-			log.info("[{}] before {} is added to queue", Thread.currentThread().getName(), id);
+			log.info(
+					"[{}] already done before {} is added to queue", Thread.currentThread().getName(), id);
+			queue.fail(id);
 			throw new RuntimeException("Foo is already done");
 		}
 
 		// 큐에 id를 추가하고, 큐에서 해당 id의 인덱스를 가져온다.
 		QueueParam queueParam = queue.add(id);
 
-		// 큐에서 해당 id의 인덱스가 ready 상태인지 확인한다.
-		boolean ready = queue.isReady(queueParam);
-
 		// ready 상태가 될 때까지 대기한다.
-		while (!ready) {
+		while (!queue.isReady(queueParam)) {
 			// 대기한다.
 			Thread.sleep(MAX_WAIT_TIME);
 
@@ -44,12 +43,9 @@ public class CountFooFacadeUseCase {
 						queueParam.getId(),
 						queueParam.getParam());
 				// 큐에서 id를 제거한다.
-				queue.poll(queueParam);
+				queue.fail(queueParam);
 				throw new RuntimeException("Foo is already done");
 			}
-
-			// id와 idx를 이용하여 ready 상태를 갱신한다.
-			ready = queue.isReady(queueParam);
 		}
 
 		try {
@@ -71,6 +67,7 @@ public class CountFooFacadeUseCase {
 			// countFooService가 실행된 결과를 반환한다.
 			return executed;
 		} catch (RuntimeException e) {
+			queue.fail(queueParam);
 			throw e;
 		} finally {
 			log.info(
