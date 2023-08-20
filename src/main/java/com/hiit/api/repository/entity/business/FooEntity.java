@@ -53,8 +53,4 @@ public class FooEntity extends BaseEntity {
 	@BatchSize(size = 3)
 	@Fetch(value = FetchMode.SUBSELECT)
 	private List<BarEntity> bars = new ArrayList<>();
-
-	public void touch() {
-		this.count--;
-	}
 }
