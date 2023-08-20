@@ -92,6 +92,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305Version}"
 
+    // apache commons
+    implementation 'org.apache.commons:commons-lang3:3.0'
+
     //jwt
     implementation "io.jsonwebtoken:jjwt-api:${jsonwebtokenVersion}"
     implementation "io.jsonwebtoken:jjwt-impl:${jsonwebtokenVersion}"
