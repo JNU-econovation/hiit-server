@@ -95,6 +95,9 @@ dependencies {
     // apache commons
     implementation 'org.apache.commons:commons-lang3:3.0'
 
+    // guava
+    implementation 'com.google.guava:guava:32.1.2-jre'
+
     //jwt
     implementation "io.jsonwebtoken:jjwt-api:${jsonwebtokenVersion}"
     implementation "io.jsonwebtoken:jjwt-impl:${jsonwebtokenVersion}"
