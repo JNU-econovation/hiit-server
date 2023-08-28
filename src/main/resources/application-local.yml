@@ -5,3 +5,4 @@ spring:
     include:
       - flyway
       - mysql-local
+      - batch-local
