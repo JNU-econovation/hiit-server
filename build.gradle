@@ -126,6 +126,9 @@ dependencies {
     // flyway
     implementation "org.flywaydb:flyway-core:${flywayVersion}"
     implementation 'org.flywaydb:flyway-mysql'
+
+    // open-feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 }
 
 test {
