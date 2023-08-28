@@ -76,7 +76,7 @@ public class EntityFlywayConfig {
 	 * @return Flyway 설정 요소를 읽어오는 FlywayProperties 객체
 	 */
 	@Bean(name = FLYWAY_PROPERTIES)
-	@ConfigurationProperties(prefix = BASE_PROPERTY_PREFIX)
+	@ConfigurationProperties(prefix = BASE_PROPERTY_PREFIX + ".entity")
 	public FlywayProperties flywayProperties() {
 		return new FlywayProperties();
 	}
