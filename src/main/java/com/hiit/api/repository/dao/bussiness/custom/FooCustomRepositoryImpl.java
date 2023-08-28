@@ -1,11 +1,15 @@
 package com.hiit.api.repository.dao.bussiness.custom;
 
+import com.hiit.api.repository.config.EntityJpaDataSourceConfig;
 import com.hiit.api.repository.entity.business.FooEntity;
 import com.hiit.api.repository.entity.business.QFooEntity;
 import com.hiit.api.repository.entity.business.param.FooEntitySearchParam;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +20,14 @@ public class FooCustomRepositoryImpl extends QuerydslRepositorySupport
 
 	public FooCustomRepositoryImpl() {
 		super(FooEntity.class);
+	}
+
+	@Override
+	@PersistenceContext(unitName = EntityJpaDataSourceConfig.ENTITY_MANAGER_FACTORY_NAME)
+	public void setEntityManager(
+			@Qualifier(EntityJpaDataSourceConfig.ENTITY_MANAGER_FACTORY_NAME)
+					EntityManager entityManager) {
+		super.setEntityManager(entityManager);
 	}
 
 	@Override
