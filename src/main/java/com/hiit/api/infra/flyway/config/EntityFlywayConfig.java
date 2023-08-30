@@ -50,7 +50,7 @@ public class EntityFlywayConfig {
 	 * @param flyway Flyway 객체
 	 * @return Flyway Validate을 수행하는 FlywayMigrationInitializer 객체
 	 */
-	@Profile({"!local && !test"})
+	@Profile({"!local && !test && !new"})
 	@Bean(name = FLYWAY_VALIDATE_INITIALIZER)
 	public FlywayMigrationInitializer flywayValidateInitializer(
 			@Qualifier(value = FLYWAY) Flyway flyway) {
