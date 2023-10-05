@@ -1,16 +1,16 @@
 package com.hiit.api.domain.usecase;
 
 import com.hiit.api.common.marker.dto.request.AbstractRequestDto;
-import com.hiit.api.common.marker.dto.response.AbstractResponseDto;
+import com.hiit.api.common.marker.dto.response.ServiceResponse;
 
 /**
  * UseCase 추상화<br>
- * 계층 사이의 이동에 Dto를 사용을 강제하기 위해 사용한다.
+ * 유즈케이스 계층에 요청은 구체적인 RequestDto 객체를 통해 진행한다. <br>
+ * 유즈케이스 계층의 응답은 ServiceResponse 객체를 반환한다.
  *
  * @param <T> Request Dto
- * @param <R> Response Dto
  */
-public interface AbstractUseCase<T extends AbstractRequestDto, R extends AbstractResponseDto> {
+public interface AbstractUseCase<T extends AbstractRequestDto> {
 
-	R execute(T request);
+	ServiceResponse execute(T request);
 }
