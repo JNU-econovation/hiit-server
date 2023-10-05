@@ -1,6 +1,6 @@
 package com.hiit.api.web.controller.v1;
 
-import com.hiit.api.domain.dto.response.FooUseCaseResponse;
+import com.hiit.api.common.marker.dto.response.ServiceResponse;
 import com.hiit.api.domain.usecase.foo.SaveFooUseCase;
 import com.hiit.api.web.dto.request.SaveFooRequest;
 import com.hiit.api.web.support.ApiResponse;
@@ -8,6 +8,7 @@ import com.hiit.api.web.support.ApiResponseGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,8 +35,9 @@ public class FooController {
 	 * @return 저장 응답
 	 */
 	@PostMapping()
-	public ApiResponse<ApiResponse.SuccessBody<FooUseCaseResponse>> save(SaveFooRequest request) {
-		FooUseCaseResponse response = saveFooUseCase.execute(request);
+	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> save(
+			@RequestBody SaveFooRequest request) {
+		ServiceResponse response = saveFooUseCase.execute(request);
 		return ApiResponseGenerator.success(response, HttpStatus.OK);
 	}
 }
