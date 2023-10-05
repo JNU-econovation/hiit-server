@@ -1,5 +1,7 @@
 buildscript {
     ext {
+        generatedSourcesDir = "src/main/generated"
+
         // plugins
         projectName = 'Hiit'
         projectVersion = '1.0.1'
@@ -13,6 +15,7 @@ buildscript {
         // dependencies
         jsonwebtokenVersion = '0.11.5'
         flywayVersion = '9.16.0'
+        jsr305Version = '3.0.1'
     }
 }
 
@@ -21,14 +24,13 @@ plugins {
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
 
-    // formatting-task plugins
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+
     id "com.diffplug.spotless" version "${spotlessVersion}"
 
-    // docs-task plugins
+    // code-quality plugins
     id 'org.asciidoctor.jvm.convert' version "${asciidoctorVersion}"
     id 'com.epages.restdocs-api-spec' version "${epagesRestDocsApiSpecVersion}"
-
-    // code-quality plugins
     id "org.sonarqube" version "${sonarqubeVersion}"
     id 'jacoco'
 }
@@ -38,7 +40,7 @@ group = 'com.hiit'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '1.8'
+    sourceCompatibility = '11'
 }
 
 configurations {
@@ -72,10 +74,31 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'mysql:mysql-connector-java'
 
+    implementation 'org.hibernate:hibernate-envers'
+
+    implementation 'org.hibernate.validator:hibernate-validator'
+    implementation 'javax.annotation:javax.annotation-api'
+
+    annotationProcessor("javax.persistence:javax.persistence-api")
+
+    // querydsl
+    implementation 'com.querydsl:querydsl-jpa'
+    implementation 'com.querydsl:querydsl-core'
+    implementation 'com.querydsl:querydsl-apt'
+
+    // jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305Version}"
+
     //jwt
     implementation "io.jsonwebtoken:jjwt-api:${jsonwebtokenVersion}"
     implementation "io.jsonwebtoken:jjwt-impl:${jsonwebtokenVersion}"
     implementation "io.jsonwebtoken:jjwt-jackson:${jsonwebtokenVersion}"
+
+    // apache commons
+    implementation 'org.apache.commons:commons-lang3:3.0'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -99,4 +122,25 @@ test {
     }
 
     finalizedBy jacocoTestReport
+}
+
+// querydsl config
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    library = "com.querydsl:querydsl-apt"
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+    main.java.srcDir querydslDir
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
 }
