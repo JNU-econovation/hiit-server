@@ -30,7 +30,10 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "" // TODO: Add exclusions
+                    // TODO: Add exclusions
+                    "**/config/*",
+                    "**/dto/*",
+                    "**/entity/*",
             ])
         }))
     }
