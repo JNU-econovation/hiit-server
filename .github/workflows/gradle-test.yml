@@ -2,7 +2,7 @@ name: Gradle-Test
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [ 'main', 'develop' ]
 
 permissions:
   contents: read
@@ -14,24 +14,26 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3.6.0
+      - name: Use repository source
+        uses: actions/checkout@v3
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3.12.0
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: run docker-compose
-        run: |
-          docker-compose -f resources/hiit-develop-environment/docker-compose.yml up -d
-          sleep 20
+      - name: Build with Gradle
+        run: ./gradlew build -x test
 
       - name: Test with Gradle
-        run: ./gradlew test --warning-mode=all --stacktrace
+        run: |
+          docker-compose -f resources/hiit-local-develop-environment/docker-compose.yml up -d
+          sleep 20
+          
+          cd ${{ github.workspace }}/
+          
+          ./gradlew test --warning-mode=all --stacktrace
 
       - name: Add Unit Test Results to PR
         uses: mikepenz/action-junit-report@v3.8.0
