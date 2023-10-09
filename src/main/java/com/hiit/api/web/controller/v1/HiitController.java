@@ -1,4 +1,4 @@
-package com.hiit.api.web.controller.v1.support;
+package com.hiit.api.web.controller.v1;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
 import com.hiit.api.domain.dto.response.noti.NotiResponse;
@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/** 별도의 계층으로 나눌 필요가 없는 API 컨트롤러 */
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class SupportController {
+public class HiitController {
 
 	@GetMapping("/banners")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> banners() {

@@ -1,4 +1,4 @@
-package com.hiit.api.web.controller.v1.support;
+package com.hiit.api.web.controller.v1;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(classes = AppMain.class)
-class SupportControllerTest {
+class HiitControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
