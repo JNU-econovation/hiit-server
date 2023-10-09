@@ -1,18 +1,19 @@
-package com.hiit.api.web.dto.response;
+package com.hiit.api.common.support.token;
 
-import com.hiit.api.common.marker.dto.response.AbstractResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/** 인증 토큰 */
 @Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class SaveFooResponse implements AbstractResponseDto {
+public class AuthToken {
 
-	private String name;
+	private String accessToken;
+	private String refreshToken;
 }
