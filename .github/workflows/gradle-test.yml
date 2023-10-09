@@ -25,13 +25,12 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: run docker-compose
+      - name: Test with Gradle
         run: |
           docker-compose -f resources/hiit-local-develop-environment/docker-compose.yml up -d
-          sleep 20
-
-      - name: Test with Gradle
-        run: ./gradlew test --warning-mode=all --stacktrace
+          sleep 20 
+          
+          ./gradlew test --warning-mode=all --stacktrace
 
       - name: Add Unit Test Results to PR
         uses: mikepenz/action-junit-report@v3.8.0
