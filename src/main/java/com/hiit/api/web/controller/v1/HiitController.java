@@ -22,7 +22,7 @@ public class HiitController {
 
 	@GetMapping("/banners")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> banners() {
-		Banners res = Banners.builder().size(3L).urls(List.of("url1")).build();
+		Banners res = Banners.builder().size(1L).urls(List.of("url1")).build();
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 
