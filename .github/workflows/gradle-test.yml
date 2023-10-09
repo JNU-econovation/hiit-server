@@ -2,7 +2,7 @@ name: Gradle-Test
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, review ]
 
 permissions:
   contents: read
@@ -22,9 +22,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Gradle
-        run: |
-          ./gradlew build
+      - name: Gradle Caching
+        uses: actions/cache@v3.3.1
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
 
       - name: Test with Gradle
         run: |
