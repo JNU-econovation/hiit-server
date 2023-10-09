@@ -27,7 +27,7 @@ jobs:
 
       - name: run docker-compose
         run: |
-          docker-compose -f resources/hiit-develop-environment/docker-compose.yml up -d
+          docker-compose -f resources/hiit-local-develop-environment/docker-compose.yml up -d
           sleep 20
 
       - name: Test with Gradle
