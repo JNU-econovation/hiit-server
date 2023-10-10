@@ -45,8 +45,12 @@ public class SecurityConfig {
 						"/openapi3.yaml",
 						"/actuator/health",
 						"/reports/**",
-						"/error")
+						"/error",
+						// todo for mock server
+						// todo delete
+						"/api/v1/token")
 				.permitAll()
+				// todo delete
 				.antMatchers(HttpMethod.POST, "/api/v1/foo")
 				.permitAll()
 				.antMatchers("/api/v1/**")
