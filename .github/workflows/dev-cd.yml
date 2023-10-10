@@ -1,10 +1,11 @@
 name: DEV - Deploy to Amazon ECS
 
 on:
-  pull_request:
+  push:
     branches:
       - develop
   workflow_dispatch:
+
 env:
   AWS_REGION: ap-northeast-2
   ECR_REPOSITORY: hiit/be-api-develop
