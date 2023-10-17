@@ -45,7 +45,12 @@ public class EntityFlywayConfig {
 	}
 
 	/**
-	 * Flyway Validate Bean을 생성한다.
+	 * Flyway Validate Bean을 생성한다.<br>
+	 * <br>
+	 * <b>Flyway Validate 제외 경우</b><br>
+	 * <br>
+	 * - local, test : Flyway를 사용하지 않기에 검증을 수행하지 않아도 된다. <br>
+	 * - new : 처음 생성하는 경우이기에 검증을 수행하지 않아도 된다. <br>
 	 *
 	 * @param flyway Flyway 객체
 	 * @return Flyway Validate을 수행하는 FlywayMigrationInitializer 객체
@@ -58,7 +63,11 @@ public class EntityFlywayConfig {
 	}
 
 	/**
-	 * Flyway Migration Bean을 생성한다.
+	 * Flyway Migration Bean을 생성한다.<br>
+	 * <br>
+	 * <b>Flyway Migration 제외 경우</b><br>
+	 * <br>
+	 * - local, test : Flyway를 사용하지 않기에 Migration을 수행하지 않아도 된다. <br>
 	 *
 	 * @param flyway Flyway 객체
 	 * @return Flyway Migration을 수행하는 FlywayMigrationInitializer 객체
