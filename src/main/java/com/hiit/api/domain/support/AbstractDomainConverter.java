@@ -20,6 +20,7 @@ public interface AbstractDomainConverter<T extends EntityMarker, R, K extends Ab
 	 * @param t DTO 타입의 객체
 	 * @return 도메인
 	 */
+	@Override
 	R from(T t);
 
 	/**
