@@ -85,7 +85,7 @@ public class TokenGenerator {
 				.compact();
 	}
 
-	private static List<String> convertToStringList(List<Roles> memberRoles) {
+	private List<String> convertToStringList(List<Roles> memberRoles) {
 		List<String> stringRoles = new ArrayList<>();
 		for (Roles role : memberRoles) {
 			stringRoles.add(role.getRole());
