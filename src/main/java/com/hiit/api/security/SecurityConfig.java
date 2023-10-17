@@ -46,8 +46,7 @@ public class SecurityConfig {
 						"/actuator/health",
 						"/reports/**",
 						"/error",
-						// todo for mock server
-						// todo delete
+						// todo delete add for mock server
 						"/api/v1/token")
 				.permitAll()
 				// todo delete
