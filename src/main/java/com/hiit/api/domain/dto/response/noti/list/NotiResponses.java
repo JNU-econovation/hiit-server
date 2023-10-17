@@ -14,5 +14,5 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class NotiResponses implements ServiceResponse {
 
-	private final List<NotiResponse> noti;
+	private final List<NotiResponse> notices;
 }
