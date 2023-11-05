@@ -1,5 +1,6 @@
 package com.hiit.api.repository.entity;
 
+import com.hiit.api.common.marker.entity.EntityMarker;
 import com.hiit.api.repository.support.listener.SoftDeleteListener;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -26,7 +27,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @EntityListeners({AuditingEntityListener.class, SoftDeleteListener.class})
 @SuperBuilder(toBuilder = true)
-public class BaseEntity {
+public class BaseEntity implements EntityMarker {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
