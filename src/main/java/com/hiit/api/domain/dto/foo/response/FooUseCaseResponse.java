@@ -1,5 +1,6 @@
-package com.hiit.api.domain.model;
+package com.hiit.api.domain.dto.foo.response;
 
+import com.hiit.api.common.marker.dto.response.ServiceResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class Foo {
+public class FooUseCaseResponse implements ServiceResponse {
 
 	private String name;
 }

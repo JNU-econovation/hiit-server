@@ -1,6 +1,6 @@
 package com.hiit.api.domain.service.foo;
 
-import com.hiit.api.domain.model.Foo;
+import com.hiit.api.domain.model.foo.Foo;
 import org.springframework.stereotype.Component;
 
 /**
