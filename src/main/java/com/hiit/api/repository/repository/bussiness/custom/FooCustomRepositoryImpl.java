@@ -1,4 +1,4 @@
-package com.hiit.api.repository.dao.bussiness.custom;
+package com.hiit.api.repository.repository.bussiness.custom;
 
 import com.hiit.api.repository.entity.business.FooEntity;
 import com.hiit.api.repository.entity.business.QFooEntity;
@@ -10,7 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class FooCustomRepositoryImpl extends QuerydslRepositorySupport
 		implements FooCustomRepository {
 

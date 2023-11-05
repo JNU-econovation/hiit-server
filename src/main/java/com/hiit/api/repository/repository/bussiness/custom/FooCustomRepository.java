@@ -1,4 +1,4 @@
-package com.hiit.api.repository.dao.bussiness.custom;
+package com.hiit.api.repository.repository.bussiness.custom;
 
 import com.hiit.api.repository.entity.business.FooEntity;
 import com.hiit.api.repository.entity.business.param.FooEntitySearchParam;
