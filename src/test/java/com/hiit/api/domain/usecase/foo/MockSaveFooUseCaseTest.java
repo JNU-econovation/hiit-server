@@ -6,7 +6,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.hiit.api.domain.model.Foo;
+import com.hiit.api.domain.model.foo.Foo;
 import com.hiit.api.domain.service.foo.FooService;
 import com.hiit.api.domain.support.foo.converter.FooConverter;
 import com.hiit.api.web.dto.request.SaveFooRequest;

@@ -13,7 +13,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
-import com.hiit.api.domain.dto.response.FooUseCaseResponse;
+import com.hiit.api.domain.dto.foo.response.FooUseCaseResponse;
 import com.hiit.api.domain.usecase.foo.SaveFooUseCase;
 import com.hiit.api.web.dto.request.SaveFooRequest;
 import org.junit.jupiter.api.Test;
