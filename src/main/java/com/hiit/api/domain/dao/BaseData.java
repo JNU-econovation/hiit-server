@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class BaseData implements AbstractData {
+public abstract class BaseData implements AbstractData {
 
 	private final Long id;
 	private final LocalDateTime createAt;

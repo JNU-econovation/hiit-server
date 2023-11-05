@@ -19,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @MappedSuperclass
 @SuperBuilder(toBuilder = true)
 @EntityListeners({VersionUpdateListener.class})
-public class VersionBaseEntity extends BaseEntity {
+public abstract class VersionBaseEntity extends BaseEntity {
 
 	@Version
 	@Column(name = "version")
