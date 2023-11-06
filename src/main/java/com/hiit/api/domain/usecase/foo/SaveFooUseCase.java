@@ -6,6 +6,8 @@ import com.hiit.api.domain.model.Foo;
 import com.hiit.api.domain.service.foo.FooService;
 import com.hiit.api.domain.support.foo.converter.FooConverter;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.repository.dao.bussiness.FooRepository;
+import com.hiit.api.repository.entity.business.FooEntity;
 import com.hiit.api.web.dto.request.SaveFooRequest;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SaveFooUseCase implements AbstractUseCase<SaveFooRequest> {
 
+	private final FooRepository fooRepository;
+
 	/** 다른 계층 혹은 다른 도메인과 연동이 필요한 경우 사용한다. */
 	private final FooService fooService;
 
@@ -31,23 +35,14 @@ public class SaveFooUseCase implements AbstractUseCase<SaveFooRequest> {
 	@Override
 	public ServiceResponse execute(SaveFooRequest request) {
 
-		Foo foo = fooConverter.from(SampleEntity.of(request));
+		FooEntity saved = fooRepository.save(FooEntity.builder().name("name").build());
+
+		Foo foo = fooConverter.from(saved);
 
 		fooService.doA(foo);
 		fooService.doB(foo);
 		fooService.doC(foo);
 
 		return fooConverter.to(foo);
-	}
-
-	// 임시 엔티티 객체입니다.
-	@Builder
-	@Getter
-	public static class SampleEntity implements EntityMarker {
-		private String name;
-
-		public static SampleEntity of(SaveFooRequest source) {
-			return SampleEntity.builder().name(source.getName()).build();
-		}
 	}
 }
