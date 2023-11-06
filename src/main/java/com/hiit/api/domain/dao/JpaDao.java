@@ -9,40 +9,40 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 
-public interface JpaDao<E, ID> {
+public interface JpaDao<D, ID> {
 
 	// Jpa
-	List<E> findAll();
+	List<D> findAll();
 
-	List<E> findAll(Sort sort);
+	List<D> findAll(Sort sort);
 
-	List<E> findAllById(Iterable<ID> longs);
+	List<D> findAllById(Iterable<ID> longs);
 
-	<S extends E> List<S> saveAll(Iterable<S> entities);
+	<S extends D> List<S> saveAll(Iterable<S> entities);
 
 	void flush();
 
-	<S extends E> S saveAndFlush(S entity);
+	<S extends D> S saveAndFlush(S entity);
 
-	<S extends E> List<S> saveAllAndFlush(Iterable<S> entities);
+	<S extends D> List<S> saveAllAndFlush(Iterable<S> entities);
 
-	void deleteAllInBatch(Iterable<E> entities);
+	void deleteAllInBatch(Iterable<D> entities);
 
 	void deleteAllByIdInBatch(Iterable<ID> longs);
 
 	void deleteAllInBatch();
 
-	E getReferenceById(ID aLong);
+	D getReferenceById(ID aLong);
 
-	<S extends E> List<S> findAll(Example<S> example);
+	<S extends D> List<S> findAll(Example<S> example);
 
-	<S extends E> List<S> findAll(Example<S> example, Sort sort);
+	<S extends D> List<S> findAll(Example<S> example, Sort sort);
 
-	Page<E> findAll(Pageable pageable);
+	Page<D> findAll(Pageable pageable);
 
-	<S extends E> S save(S entity);
+	<S extends D> S save(S entity);
 
-	Optional<E> findById(ID aLong);
+	Optional<D> findById(ID aLong);
 
 	boolean existsById(ID aLong);
 
@@ -50,21 +50,21 @@ public interface JpaDao<E, ID> {
 
 	void deleteById(ID aLong);
 
-	void delete(E entity);
+	void delete(D entity);
 
 	void deleteAllById(Iterable<? extends ID> longs);
 
-	void deleteAll(Iterable<? extends E> entities);
+	void deleteAll(Iterable<? extends D> entities);
 
 	void deleteAll();
 
-	<S extends E> Optional<S> findOne(Example<S> example);
+	<S extends D> Optional<S> findOne(Example<S> example);
 
-	<S extends E> Page<S> findAll(Example<S> example, Pageable pageable);
+	<S extends D> Page<S> findAll(Example<S> example, Pageable pageable);
 
-	<S extends E> long count(Example<S> example);
+	<S extends D> long count(Example<S> example);
 
-	<S extends E> boolean exists(Example<S> example);
+	<S extends D> boolean exists(Example<S> example);
 
-	<S extends E, R> R findBy(Example<S> example, Function<FetchableFluentQuery<S>, R> queryFunction);
+	<S extends D, R> R findBy(Example<S> example, Function<FetchableFluentQuery<S>, R> queryFunction);
 }
