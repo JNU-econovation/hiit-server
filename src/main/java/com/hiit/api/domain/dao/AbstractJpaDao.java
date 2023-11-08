@@ -16,6 +16,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 
+/**
+ * JpaRepository가 기본적으로 제공하는 메서드를 구현한 추상 클래스
+ *
+ * @param <E> JPA 엔티티 타입
+ * @param <ID> ID 타입
+ * @param <D> 반환할 데이터 타입
+ */
 @RequiredArgsConstructor
 public abstract class AbstractJpaDao<E extends EntityMarker, ID, D extends AbstractData>
 		implements JpaDao<D, ID> {

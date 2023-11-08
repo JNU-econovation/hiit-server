@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+/** 도메인 계층에서 사용하는 데이터임의 공통 속성을 정의한 추상클래스 */
 @Getter
 @ToString
 @AllArgsConstructor

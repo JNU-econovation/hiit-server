@@ -9,6 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 
+/**
+ * JpaRepository가 기본적으로 제공하는 메서드를 선언한 인터페이스
+ *
+ * @param <D> 반환할 데이터 타입
+ * @param <ID> 데이터의 ID 타입
+ */
 public interface JpaDao<D, ID> {
 
 	// Jpa
