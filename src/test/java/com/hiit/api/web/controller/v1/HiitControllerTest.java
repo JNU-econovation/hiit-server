@@ -29,7 +29,7 @@ class HiitControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
-	private static final String TAG = "Support";
+	private static final String TAG = "Hiit-Controller";
 	private static final String BASE_URL = "/api/v1";
 
 	@Test
@@ -58,27 +58,27 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/noti")
-	void noti() throws Exception {
+	@DisplayName(BASE_URL + "/notice")
+	void notice() throws Exception {
 		// set service mock
 
 		mockMvc
 				.perform(
-						get(BASE_URL + "/noti", 0)
+						get(BASE_URL + "/notice", 0)
 								.header("Authorization", "{{accessToken}}")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"Noti",
+								"Notice",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("알림 내역")
 												.tag(TAG)
-												.requestSchema(Schema.schema("NotiRequest"))
+												.requestSchema(Schema.schema("NoticeRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("NotiResponse"))
-												.responseFields(Description.success(SupportDescription.noti()))
+												.responseSchema(Schema.schema("NoticeResponse"))
+												.responseFields(Description.success(SupportDescription.notice()))
 												.build())));
 	}
 }
