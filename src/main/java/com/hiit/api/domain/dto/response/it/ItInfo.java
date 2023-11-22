@@ -14,11 +14,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class ItResponse implements ServiceResponse {
+public class ItInfo implements ServiceResponse {
 
 	private Long id;
 	private String topic;
 	private Long startTime;
 	private Long endTime;
-	private Long participatePerson;
+	private Long inMemberCount;
+	private Boolean memberIn;
 }

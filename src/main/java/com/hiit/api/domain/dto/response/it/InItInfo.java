@@ -1,4 +1,4 @@
-package com.hiit.api.domain.dto.response.member;
+package com.hiit.api.domain.dto.response.it;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
 import lombok.AllArgsConstructor;
@@ -14,10 +14,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class MemberResponse implements ServiceResponse {
+public class InItInfo implements ServiceResponse {
 
 	private Long id;
-	private String name;
-	private String comment;
-	private String picture;
+	private String title;
+	private String topic;
+	private Long startTime;
+	private Long endTime;
+	private String days; // todo fix to dayCode
+	private Long inMemberCount;
 }

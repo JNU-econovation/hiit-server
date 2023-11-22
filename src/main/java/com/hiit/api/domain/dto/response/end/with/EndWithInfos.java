@@ -1,10 +1,10 @@
-package com.hiit.api.domain.dto.response.together;
+package com.hiit.api.domain.dto.response.end.with;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -12,12 +12,8 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-@NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class MemberItCommonTogetherResponse implements ServiceResponse {
+public class EndWithInfos implements ServiceResponse {
 
-	private Long participateCount;
-	private Long memberId;
-	private String memberName;
-	private String memberPicture;
+	private final List<EndWithInfo> endWithInfos;
 }

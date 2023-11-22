@@ -1,6 +1,7 @@
-package com.hiit.api.domain.dto.response.together;
+package com.hiit.api.domain.dto.response;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,10 +15,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class MyTogetherResponse implements ServiceResponse {
+public class Banners implements ServiceResponse {
 
-	private Long id;
-	private String content;
-	private Long date;
-	private Long hits;
+	private Long size;
+	private List<String> urls;
 }

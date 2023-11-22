@@ -1,6 +1,5 @@
-package com.hiit.api.domain.dto.response.together;
+package com.hiit.api.domain.dto.response.end.with;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,12 +13,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class TogetherResponse implements ServiceResponse {
+public class EndWithMemberInfo {
 
 	private Long id;
-	private String content;
-	private String memberName;
-	private String memberPicture;
-	private String memberComment;
-	private Long hits;
+	private String profile;
+	private String name;
+	private String resolution;
 }

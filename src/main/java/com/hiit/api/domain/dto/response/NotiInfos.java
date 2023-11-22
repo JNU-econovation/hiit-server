@@ -1,7 +1,6 @@
-package com.hiit.api.domain.dto.response.it.list;
+package com.hiit.api.domain.dto.response;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
-import com.hiit.api.domain.dto.response.it.DayItResponse;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class DayItResponses implements ServiceResponse {
+public class NotiInfos implements ServiceResponse {
 
-	private final List<DayItResponse> its;
+	private final List<NoticeInfo> notices;
 }

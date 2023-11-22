@@ -1,6 +1,7 @@
-package com.hiit.api.domain.dto.response.together;
+package com.hiit.api.domain.dto.response;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,12 +15,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class RankTogetherResponse implements ServiceResponse {
+public class NoticeInfo implements ServiceResponse {
 
 	private Long id;
-	private Long rank;
-	private String memberName;
-	private String memberPicture;
-	private String memberComment;
-	private Long hits;
+	private Date date;
+	private String type;
+	private String title;
+	private String content;
 }

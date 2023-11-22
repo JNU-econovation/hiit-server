@@ -1,7 +1,6 @@
-package com.hiit.api.domain.dto.response.it.list;
+package com.hiit.api.domain.dto.response.it;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
-import com.hiit.api.domain.dto.response.it.EndItResponse;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class EndItResponses implements ServiceResponse {
+public class ItInfos implements ServiceResponse {
 
-	private final List<EndItResponse> its;
+	private final List<ItInfo> its;
 }

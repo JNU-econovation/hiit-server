@@ -1,4 +1,4 @@
-package com.hiit.api.domain.dto.response.it;
+package com.hiit.api.domain.dto.response.hit;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
 import lombok.AllArgsConstructor;
@@ -14,12 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class CommonItResponse implements ServiceResponse {
+public class HitInfo implements ServiceResponse {
 
-	private Long id;
-	private String topic;
-	private Long startTime;
-	private Long endTime;
-	private Long commonDays;
-	private Boolean notiStatus;
+	private Long count;
 }

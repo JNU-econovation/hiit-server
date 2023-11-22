@@ -1,7 +1,5 @@
-package com.hiit.api.domain.dto.response.support;
+package com.hiit.api.domain.dto.response.with;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,8 +13,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class Banners implements ServiceResponse {
+public class WithMemberInfo {
 
-	private Long size;
-	private List<String> urls;
+	private String profile;
+	private String name;
+	private String resolution;
 }
