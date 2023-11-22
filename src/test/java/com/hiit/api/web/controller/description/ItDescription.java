@@ -7,130 +7,68 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 public class ItDescription {
 
-	public static FieldDescriptor[] withOutData() {
-		return new FieldDescriptor[] {
-			fieldWithPath("data").type(JsonFieldType.NULL).description("null"),
-		};
-	}
-
 	public static FieldDescriptor[] browseIt() {
 		return new FieldDescriptor[] {
-			fieldWithPath("data").type(JsonFieldType.OBJECT).description("it 리스트"),
-			fieldWithPath("data.its").type(JsonFieldType.ARRAY).description("it 리스트"),
-			fieldWithPath("data.its[].id").type(JsonFieldType.NUMBER).description("it id"),
-			fieldWithPath("data.its[].topic").type(JsonFieldType.STRING).description("it 주제"),
-			fieldWithPath("data.its[].startTime").type(JsonFieldType.NUMBER).description("it 시작 시간"),
-			fieldWithPath("data.its[].endTime").type(JsonFieldType.NUMBER).description("it 종료 시간"),
-			fieldWithPath("data.its[].participatePerson")
-					.type(JsonFieldType.NUMBER)
-					.description("it 참여 인원"),
-			fieldWithPath("data.its[].memberIn").type(JsonFieldType.BOOLEAN).description("it 참여 여부"),
+			fieldWithPath("data").type(JsonFieldType.OBJECT).description("잇 정보"),
+			fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("잇 id"),
+			fieldWithPath("data.topic").type(JsonFieldType.STRING).description("잇 주제"),
+			fieldWithPath("data.startTime").type(JsonFieldType.NUMBER).description("잇 시작 시간"),
+			fieldWithPath("data.endTime").type(JsonFieldType.NUMBER).description("잇 종료 시간"),
+			fieldWithPath("data.inMemberCount").type(JsonFieldType.NUMBER).description("잇 참여 인원 수"),
+			fieldWithPath("data.memberIn").type(JsonFieldType.BOOLEAN).description("잇 참여 여부"),
 		};
 	}
 
-	public static FieldDescriptor[] browseEndIt() {
+	public static FieldDescriptor[] readIts() {
 		return new FieldDescriptor[] {
-			fieldWithPath("data").type(JsonFieldType.OBJECT).description("it 리스트"),
-			fieldWithPath("data.its").type(JsonFieldType.ARRAY).description("it 리스트"),
-			fieldWithPath("data.its[].id").type(JsonFieldType.NUMBER).description("it id"),
-			fieldWithPath("data.its[].topic").type(JsonFieldType.STRING).description("it 주제"),
-			fieldWithPath("data.its[].day").type(JsonFieldType.NUMBER).description("it 요일 코드"),
-			fieldWithPath("data.its[].period").type(JsonFieldType.STRING).description("it 기간"),
-			fieldWithPath("data.its[].startTime").type(JsonFieldType.NUMBER).description("it 시작 시간"),
-			fieldWithPath("data.its[].endTime").type(JsonFieldType.NUMBER).description("it 종료 시간"),
-			fieldWithPath("data.its[].participateCount")
+			fieldWithPath("data").type(JsonFieldType.OBJECT).description("잇 리스트"),
+			fieldWithPath("data.its").type(JsonFieldType.ARRAY).description("잇 리스트"),
+			fieldWithPath("data.its[].id").type(JsonFieldType.NUMBER).description("잇 id"),
+			fieldWithPath("data.its[].topic").type(JsonFieldType.STRING).description("잇 주제"),
+			fieldWithPath("data.its[].startTime").type(JsonFieldType.NUMBER).description("잇 시작 시간"),
+			fieldWithPath("data.its[].endTime").type(JsonFieldType.NUMBER).description("잇 종료 시간"),
+			fieldWithPath("data.its[].inMemberCount").type(JsonFieldType.NUMBER).description("잇 참여 인원 수"),
+			fieldWithPath("data.its[].memberIn").type(JsonFieldType.BOOLEAN).description("잇 참여 여부"),
+		};
+	}
+
+	public static FieldDescriptor[] readInIts() {
+		return new FieldDescriptor[] {
+			fieldWithPath("data").type(JsonFieldType.OBJECT).description("잇 참여 리스트"),
+			fieldWithPath("data.itInInfos").type(JsonFieldType.ARRAY).description("잇 참여 리스트"),
+			fieldWithPath("data.itInInfos[].id").type(JsonFieldType.NUMBER).description("잇 참여 id"),
+			fieldWithPath("data.itInInfos[].title").type(JsonFieldType.STRING).description("잇 참여 제목"),
+			fieldWithPath("data.itInInfos[].topic").type(JsonFieldType.STRING).description("잇 참여 주제"),
+			fieldWithPath("data.itInInfos[].startTime")
 					.type(JsonFieldType.NUMBER)
-					.description("it 참여 횟수"),
+					.description("잇 참여 시작 시간"),
+			fieldWithPath("data.itInInfos[].endTime")
+					.type(JsonFieldType.NUMBER)
+					.description("잇 참여 종료 시간"),
+			fieldWithPath("data.itInInfos[].days").type(JsonFieldType.STRING).description("잇 참여 날짜 코드"),
+			fieldWithPath("data.itInInfos[].inMemberCount")
+					.type(JsonFieldType.NUMBER)
+					.description("잇 참여 인원 수"),
 		};
 	}
 
 	public static FieldDescriptor[] browseInIt() {
 		return new FieldDescriptor[] {
-			fieldWithPath("data").type(JsonFieldType.OBJECT).description("it 리스트"),
-			fieldWithPath("data.its").type(JsonFieldType.ARRAY).description("it 리스트"),
-			fieldWithPath("data.its[].id").type(JsonFieldType.NUMBER).description("it id"),
-			fieldWithPath("data.its[].topic").type(JsonFieldType.STRING).description("it 주제"),
-			fieldWithPath("data.its[].startTime").type(JsonFieldType.NUMBER).description("it 시작 시간"),
-			fieldWithPath("data.its[].endTime").type(JsonFieldType.NUMBER).description("it 종료 시간"),
-			fieldWithPath("data.its[].participatePerson")
-					.type(JsonFieldType.NUMBER)
-					.description("it 참여 인원"),
-			fieldWithPath("data.its[].day").type(JsonFieldType.NUMBER).description("it 참여 날짝 코드"),
+			fieldWithPath("data").type(JsonFieldType.OBJECT).description("잇 참여 정보"),
+			fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("잇 참여 id"),
+			fieldWithPath("data.title").type(JsonFieldType.STRING).description("잇 참여 제목"),
+			fieldWithPath("data.topic").type(JsonFieldType.STRING).description("잇 참여 주제"),
+			fieldWithPath("data.startTime").type(JsonFieldType.NUMBER).description("잇 참여 시작 시간"),
+			fieldWithPath("data.endTime").type(JsonFieldType.NUMBER).description("잇 참여 종료 시간"),
+			fieldWithPath("data.days").type(JsonFieldType.STRING).description("잇 참여 날짜 코드"),
+			fieldWithPath("data.inMemberCount").type(JsonFieldType.NUMBER).description("잇 참여 인원 수"),
 		};
 	}
 
-	public static FieldDescriptor[] readIt() {
+	public static FieldDescriptor[] readItMotivations() {
 		return new FieldDescriptor[] {
-			fieldWithPath("data").type(JsonFieldType.OBJECT).description("it"),
-			fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("it id"),
-			fieldWithPath("data.topic").type(JsonFieldType.STRING).description("it 주제"),
-			fieldWithPath("data.startTime").type(JsonFieldType.NUMBER).description("it 시작 시간"),
-			fieldWithPath("data.endTime").type(JsonFieldType.NUMBER).description("it 종료 시간"),
-			fieldWithPath("data.participatePerson").type(JsonFieldType.NUMBER).description("it 참여 인원"),
-		};
-	}
-
-	public static FieldDescriptor[] readEndIt() {
-		return new FieldDescriptor[] {
-			fieldWithPath("data").type(JsonFieldType.OBJECT).description("it"),
-			fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("it id"),
-			fieldWithPath("data.topic").type(JsonFieldType.STRING).description("it 주제"),
-			fieldWithPath("data.day").type(JsonFieldType.NUMBER).description("it 요일 코드"),
-			fieldWithPath("data.period").type(JsonFieldType.STRING).description("it 기간"),
-			fieldWithPath("data.startTime").type(JsonFieldType.NUMBER).description("it 시작 시간"),
-			fieldWithPath("data.endTime").type(JsonFieldType.NUMBER).description("it 종료 시간"),
-			fieldWithPath("data.participateCount").type(JsonFieldType.NUMBER).description("it 참여 횟수"),
-		};
-	}
-
-	public static FieldDescriptor[] browseTogether() {
-		return new FieldDescriptor[] {
-			fieldWithPath("data").type(JsonFieldType.OBJECT).description("together 리스트"),
-			fieldWithPath("data.togethers").type(JsonFieldType.ARRAY).description("together 리스트"),
-			fieldWithPath("data.togethers[].id").type(JsonFieldType.NUMBER).description("together id"),
-			fieldWithPath("data.togethers[].content")
-					.type(JsonFieldType.STRING)
-					.description("together 내용"),
-			fieldWithPath("data.togethers[].memberName")
-					.type(JsonFieldType.STRING)
-					.description("together 멤버 이름"),
-			fieldWithPath("data.togethers[].memberPicture")
-					.type(JsonFieldType.STRING)
-					.description("together 멤버 사진"),
-			fieldWithPath("data.togethers[].memberComment")
-					.type(JsonFieldType.STRING)
-					.description("together 멤버 다짐"),
-			fieldWithPath("data.togethers[].hits").type(JsonFieldType.NUMBER).description("together 힛 수"),
-		};
-	}
-
-	public static FieldDescriptor[] browseMyTogether() {
-		return new FieldDescriptor[] {
-			fieldWithPath("data").type(JsonFieldType.OBJECT).description("together 리스트"),
-			fieldWithPath("data.togethers").type(JsonFieldType.ARRAY).description("together 리스트"),
-			fieldWithPath("data.togethers[].id").type(JsonFieldType.NUMBER).description("together id"),
-			fieldWithPath("data.togethers[].content")
-					.type(JsonFieldType.STRING)
-					.description("together 내용"),
-			fieldWithPath("data.togethers[].date")
-					.type(JsonFieldType.NUMBER)
-					.description("together 날짜 코드"),
-			fieldWithPath("data.togethers[].hits").type(JsonFieldType.NUMBER).description("together 힛 수"),
-		};
-	}
-
-	public static FieldDescriptor[] browseRankTogether() {
-		return new FieldDescriptor[] {
-			fieldWithPath("data").type(JsonFieldType.OBJECT).description("together 리스트"),
-			fieldWithPath("data.togethers").type(JsonFieldType.ARRAY).description("together 리스트"),
-			fieldWithPath("data.togethers[].id").type(JsonFieldType.NUMBER).description("together id"),
-			fieldWithPath("data.togethers[].content")
-					.type(JsonFieldType.STRING)
-					.description("together 내용"),
-			fieldWithPath("data.togethers[].date")
-					.type(JsonFieldType.NUMBER)
-					.description("together 날짜 코드"),
-			fieldWithPath("data.togethers[].hits").type(JsonFieldType.NUMBER).description("together 힛 수"),
+			fieldWithPath("data").type(JsonFieldType.OBJECT).description("잇 참여 동기부여 정보"),
+			fieldWithPath("data.motivations").type(JsonFieldType.ARRAY).description("잇 참여 동기부여"),
 		};
 	}
 }
