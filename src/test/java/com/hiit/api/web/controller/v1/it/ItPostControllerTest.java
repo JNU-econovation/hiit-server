@@ -1,9 +1,10 @@
 package com.hiit.api.web.controller.v1.it;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -11,9 +12,8 @@ import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
 import com.hiit.api.web.controller.description.Description;
-import com.hiit.api.web.controller.description.ItDescription;
-import com.hiit.api.web.dto.request.it.InItRequest;
-import com.hiit.api.web.dto.request.it.ParticipateTogetherRequest;
+import com.hiit.api.web.dto.request.it.AddInItRequest;
+import com.hiit.api.web.dto.request.it.DeleteInItRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +32,19 @@ class ItPostControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
-	private static final String TAG = "It";
+	private static final String TAG = "It-Controller";
 	private static final String BASE_URL = "/api/v1/its";
 
 	@Test
-	@DisplayName(BASE_URL + "/{id}/in")
-	void inIt() throws Exception {
+	@DisplayName(BASE_URL + "/ins")
+	void addInIt() throws Exception {
 
-		InItRequest request = InItRequest.builder().dayCode(1L).build();
+		AddInItRequest request =
+				AddInItRequest.builder()
+						.id(1L)
+						.dayCode(Long.toBinaryString(000001L))
+						.resolution("다짐")
+						.build();
 
 		String content = objectMapper.writeValueAsString(request);
 
@@ -47,32 +52,35 @@ class ItPostControllerTest {
 
 		mockMvc
 				.perform(
-						post(BASE_URL + "/{id}/in", 1)
+						post(BASE_URL + "/ins", 0)
 								.content(content)
 								.header("Authorization", "{{accessToken}}")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"InIt",
+								"AddInIt",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("잇에 참여")
+												.description("잇에 참여한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("InItRequest"))
-												.pathParameters(parameterWithName("id").description("it id"))
+												.requestSchema(Schema.schema("AddInItRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("InItResponse"))
-												.responseFields(Description.success(ItDescription.withOutData()))
+												.responseSchema(Schema.schema("AddInItResponse"))
+												.responseFields(Description.created())
 												.build())));
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/{id}/together")
-	void participateTogether() throws Exception {
+	@DisplayName(BASE_URL + "/ins")
+	void editInIt() throws Exception {
 
-		ParticipateTogetherRequest request =
-				ParticipateTogetherRequest.builder().content("content").build();
+		AddInItRequest request =
+				AddInItRequest.builder()
+						.id(1L)
+						.dayCode(Long.toBinaryString(000001L))
+						.resolution("다짐")
+						.build();
 
 		String content = objectMapper.writeValueAsString(request);
 
@@ -80,23 +88,53 @@ class ItPostControllerTest {
 
 		mockMvc
 				.perform(
-						post(BASE_URL + "/{id}/together", 1)
+						put(BASE_URL + "/ins", 0)
 								.content(content)
 								.header("Authorization", "{{accessToken}}")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"ParticipateTogether",
+								"EditInIt",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("잇 함께하기 작성")
+												.description("잇 참여 정보를 수정한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("ParticipateTogetherRequest"))
-												.pathParameters(parameterWithName("id").description("it id"))
+												.requestSchema(Schema.schema("EditInItRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("ParticipateTogetherResponse"))
-												.responseFields(Description.success(ItDescription.withOutData()))
+												.responseSchema(Schema.schema("EditInItResponse"))
+												.responseFields(Description.success())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/ins")
+	void deleteInIt() throws Exception {
+
+		DeleteInItRequest request = DeleteInItRequest.builder().id(1L).endTitle("종료 잇 제목").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		// set service mock
+
+		mockMvc
+				.perform(
+						delete(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"DeleteInIt",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇 참여를 종료한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("DeleteInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("DeleteInItResponse"))
+												.responseFields(Description.success())
 												.build())));
 	}
 }
