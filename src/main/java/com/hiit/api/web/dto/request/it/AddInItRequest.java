@@ -13,7 +13,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class InItRequest {
+public class AddInItRequest {
 
-	private Long dayCode;
+	private Long id;
+	private String dayCode;
+	private String resolution;
 }

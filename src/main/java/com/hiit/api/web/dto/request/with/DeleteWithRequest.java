@@ -1,4 +1,4 @@
-package com.hiit.api.web.dto.request.it;
+package com.hiit.api.web.dto.request.with;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HitRequest {
+public class DeleteWithRequest {
 
-	private Long iid;
-	private Long tid;
+	private Long id;
 }
