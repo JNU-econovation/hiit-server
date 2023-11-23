@@ -7,6 +7,7 @@ import com.hiit.api.domain.dto.response.it.ItInfo;
 import com.hiit.api.domain.dto.response.it.ItInfos;
 import com.hiit.api.domain.dto.response.it.ItMotivations;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
+import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.support.ApiResponse;
 import com.hiit.api.web.support.ApiResponseGenerator;
 import com.hiit.api.web.support.MessageCode;
@@ -14,11 +15,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/its")
 @RequiredArgsConstructor
@@ -26,7 +29,7 @@ public class ItGetController {
 
 	@GetMapping("{id}")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseIt(
-			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long id) {
+			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
 		ItInfo it =
 				ItInfo.builder()
 						.id(1L)
@@ -75,7 +78,7 @@ public class ItGetController {
 
 	@GetMapping("/ins/{id}")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseInIt(
-			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long id) {
+			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
 		InItInfo inIt =
 				InItInfo.builder()
 						.id(1L)
@@ -92,7 +95,7 @@ public class ItGetController {
 
 	@GetMapping("/ins/{id}/motivations")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readItMotivations(
-			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long id) {
+			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
 		List<String> motivations = List.of("motivation1", "motivation2");
 		ServiceResponse res = new ItMotivations(motivations);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
