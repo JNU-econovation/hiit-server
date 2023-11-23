@@ -1,6 +1,8 @@
 package com.hiit.api.web.controller.v1;
 
+import com.hiit.api.common.exception.ExceptionSpec;
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.common.support.DayCodeSpec;
 import com.hiit.api.common.support.token.AuthToken;
 import com.hiit.api.common.support.token.TokenGenerator;
 import com.hiit.api.domain.dto.response.Banners;
@@ -9,9 +11,15 @@ import com.hiit.api.domain.dto.response.NoticeInfo;
 import com.hiit.api.security.authentication.authority.Roles;
 import com.hiit.api.web.support.ApiResponse;
 import com.hiit.api.web.support.ApiResponseGenerator;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +49,67 @@ public class HiitController {
 						.build();
 		NotiInfos res = new NotiInfos(List.of(notice));
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
+	}
+
+	@GetMapping("/errors")
+	public ApiResponse<ApiResponse.SuccessBody<ErrorCodeView>> errors() {
+		List<ErrorCode> specs =
+				Arrays.stream(ExceptionSpec.values())
+						.map(e -> new ErrorCode(e.getSituation(), e.getHttpCode(), e.getCode()))
+						.collect(Collectors.toList());
+		ErrorCodeView res = new ErrorCodeView(specs);
+		return ApiResponseGenerator.success(res, HttpStatus.OK);
+	}
+
+	@Getter
+	@ToString
+	@EqualsAndHashCode
+	@RequiredArgsConstructor
+	@Builder(toBuilder = true)
+	static class ErrorCode {
+
+		private final String situation;
+		private final Integer httpCode;
+		private final String code;
+	}
+
+	@Getter
+	@ToString
+	@EqualsAndHashCode
+	@RequiredArgsConstructor
+	@Builder(toBuilder = true)
+	static class ErrorCodeView {
+
+		private final List<ErrorCode> errors;
+	}
+
+	@GetMapping("/dayCode")
+	public ApiResponse<ApiResponse.SuccessBody<DayCodeView>> dayCode() {
+		List<DayCode> days =
+				Arrays.stream(DayCodeSpec.values())
+						.map(e -> new DayCode(e.getCode(), e.getDays()))
+						.collect(Collectors.toList());
+		DayCodeView res = new DayCodeView(days);
+		return ApiResponseGenerator.success(res, HttpStatus.OK);
+	}
+
+	@Getter
+	@ToString
+	@EqualsAndHashCode
+	@RequiredArgsConstructor
+	@Builder(toBuilder = true)
+	static class DayCode {
+		private final String code;
+		private final String day;
+	}
+
+	@Getter
+	@ToString
+	@EqualsAndHashCode
+	@RequiredArgsConstructor
+	@Builder(toBuilder = true)
+	static class DayCodeView {
+		private final List<DayCode> days;
 	}
 
 	// todo for mock server & delete after development

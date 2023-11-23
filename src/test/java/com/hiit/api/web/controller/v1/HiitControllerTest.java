@@ -81,4 +81,54 @@ class HiitControllerTest {
 												.responseFields(Description.success(SupportDescription.notice()))
 												.build())));
 	}
+
+	@Test
+	@DisplayName(BASE_URL + "/errors")
+	void errors() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/errors", 0)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"Errors",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("에러 내역")
+												.tag(TAG)
+												.requestSchema(Schema.schema("ErrorsRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("ErrorsResponse"))
+												.responseFields(Description.success(SupportDescription.errors()))
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/dayCode")
+	void dayCode() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/dayCode", 0)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"DayCode",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("날짜 코드")
+												.tag(TAG)
+												.requestSchema(Schema.schema("DayCodeRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("DayCodeResponse"))
+												.responseFields(Description.success(SupportDescription.dayCode()))
+												.build())));
+	}
 }
