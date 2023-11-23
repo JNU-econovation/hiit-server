@@ -42,7 +42,6 @@ class EndItGetControllerTest {
 				.perform(
 						get(BASE_URL + "/{id}", 1)
 								.header("Authorization", "{{accessToken}}")
-								.param("id", "1")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(

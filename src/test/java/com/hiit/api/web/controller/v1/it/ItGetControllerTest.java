@@ -42,7 +42,6 @@ class ItGetControllerTest {
 				.perform(
 						get(BASE_URL + "/{id}", 1)
 								.header("Authorization", "{{accessToken}}")
-								.param("id", "1")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
@@ -54,7 +53,7 @@ class ItGetControllerTest {
 												.tag(TAG)
 												.requestSchema(Schema.schema("ItInfoRequest"))
 												.requestHeaders(Description.authHeader())
-												.requestParameters(parameterWithName("id").description("잇 id"))
+												.pathParameters(parameterWithName("id").description("잇 id"))
 												.responseSchema(Schema.schema("ItInfoResponse"))
 												.responseFields(Description.success(ItDescription.browseIt()))
 												.build())));
@@ -119,7 +118,6 @@ class ItGetControllerTest {
 				.perform(
 						get(BASE_URL + "/ins/{id}", 1)
 								.header("Authorization", "{{accessToken}}")
-								.param("id", "1")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
@@ -146,7 +144,6 @@ class ItGetControllerTest {
 				.perform(
 						get(BASE_URL + "/ins/{id}/motivations", 1)
 								.header("Authorization", "{{accessToken}}")
-								.param("id", "1")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
