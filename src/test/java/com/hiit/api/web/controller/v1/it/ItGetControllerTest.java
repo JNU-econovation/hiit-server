@@ -60,6 +60,32 @@ class ItGetControllerTest {
 	}
 
 	@Test
+	@DisplayName(BASE_URL + "/{id}")
+	void browseIt_invalidId() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/{id}", -1)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"ItInfo_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇을 조회한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("ItInfoRequest"))
+												.requestHeaders(Description.authHeader())
+												.pathParameters(parameterWithName("id").description("잇 id"))
+												.responseSchema(Schema.schema("ItInfoResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
 	@DisplayName(BASE_URL)
 	void readIts() throws Exception {
 		// set service mock
@@ -136,6 +162,32 @@ class ItGetControllerTest {
 	}
 
 	@Test
+	@DisplayName(BASE_URL + "/ins/{id}")
+	void browseInIt_invalidId() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/ins/{id}", -1)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"InItInfo_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("참여 잇을 조회한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("InItInfoRequest"))
+												.requestHeaders(Description.authHeader())
+												.pathParameters(parameterWithName("id").description("참여 잇 id"))
+												.responseSchema(Schema.schema("InItInfoResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
 	@DisplayName(BASE_URL + "/ins/{id}/motivations")
 	void readItMotivations() throws Exception {
 		// set service mock
@@ -158,6 +210,32 @@ class ItGetControllerTest {
 												.pathParameters(parameterWithName("id").description("참여 잇 id"))
 												.responseSchema(Schema.schema("ItMotivationsResponse"))
 												.responseFields(Description.success(ItDescription.readItMotivations()))
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/ins/{id}/motivations")
+	void readItMotivations_invalidId() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/ins/{id}/motivations", -1)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"ItMotivations_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("참여 잇 동기부여 정보를 조회한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("ItMotivationsRequest"))
+												.requestHeaders(Description.authHeader())
+												.pathParameters(parameterWithName("id").description("참여 잇 id"))
+												.responseSchema(Schema.schema("ItMotivationsResponse"))
+												.responseFields(Description.fail())
 												.build())));
 	}
 }
