@@ -1,12 +1,23 @@
 package com.hiit.api.web.controller.handler;
 
+import static com.hiit.api.web.controller.handler.ExceptionMessage.ACCESS_DENIED;
+import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL;
+import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL_AUTHENTICATION;
+import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL_NOT_FOUND;
+import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL_REQUEST;
+import static com.hiit.api.web.controller.handler.ExceptionMessage.REQUEST_INVALID_FORMAT;
+import static com.hiit.api.web.controller.handler.ExceptionMessage.RESOURCE_NOT_FOUND;
+
 import com.hiit.api.web.exception.MemberNotFoundException;
 import com.hiit.api.web.exception.ResourceNotFoundException;
 import com.hiit.api.web.support.ApiResponse;
+import com.hiit.api.web.support.ApiResponse.FailureBody;
 import com.hiit.api.web.support.ApiResponseGenerator;
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.TypeMismatchException;
@@ -14,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -31,25 +43,13 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @RequiredArgsConstructor
 public class ApiControllerExceptionHandler {
 
-	private static final String FAIL_CODE = "fail";
-
-	private static final String BAD_REQUEST_MESSAGE = "알 수 없는 오류가 발생했어요.";
-
-	private static final String FORBIDDEN_MESSAGE = "접근 권한이 없어요.";
-
-	private static final String UNAUTHORIZED_MESSAGE = "인증이 필요해요.";
-
-	private static final String NOT_FOUND_MESSAGE = "요청과 일치하는 결과를 찾을 수 없어요.";
-
-	private static final String SERVER_ERROR_MESSAGE = "알 수 없는 오류가 발생했어요.";
-
 	private final LoggingHandler loggingHandler;
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public final ApiResponse<ApiResponse.FailureBody> handleBadRequest(
 			final IllegalArgumentException ex, final HttpServletRequest request) {
 		loggingHandler.writeLog(ex, request);
-		return ApiResponseGenerator.fail(FAIL_CODE, BAD_REQUEST_MESSAGE, HttpStatus.BAD_REQUEST);
+		return ApiResponseGenerator.fail(FAIL.getCode(), FAIL.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler({
@@ -63,33 +63,98 @@ public class ApiControllerExceptionHandler {
 		HttpMediaTypeNotAcceptableException.class,
 		HttpMessageNotReadableException.class,
 		MissingServletRequestParameterException.class,
-		ConstraintViolationException.class
+		ConstraintViolationException.class,
+		ValidationException.class
 	})
 	public final ApiResponse<ApiResponse.FailureBody> handleBadRequest(
 			final Exception ex, final HttpServletRequest request) {
 		loggingHandler.writeLog(ex, request);
-		return ApiResponseGenerator.fail(FAIL_CODE, BAD_REQUEST_MESSAGE, HttpStatus.BAD_REQUEST);
+		return handleRequestDetails(ex);
 	}
 
-	@ExceptionHandler({ResourceNotFoundException.class, NoHandlerFoundException.class})
-	public ApiResponse<ApiResponse.FailureBody> handleNotFound(
-			final Exception ex, final HttpServletRequest request) {
-		loggingHandler.writeLog(ex, request);
-		return ApiResponseGenerator.fail(FAIL_CODE, NOT_FOUND_MESSAGE, HttpStatus.NOT_FOUND);
+	private ApiResponse<FailureBody> handleRequestDetails(Exception ex) {
+		if (ex instanceof MethodArgumentTypeMismatchException) {
+			return handleRequestDetail((MethodArgumentTypeMismatchException) ex);
+		}
+		if (ex instanceof ConstraintViolationException) {
+			return handleRequestDetail((ConstraintViolationException) ex);
+		}
+
+		if (ex instanceof MethodArgumentNotValidException) {
+			return handleRequestDetail((MethodArgumentNotValidException) ex);
+		}
+		if (ex instanceof ValidationException) {
+			return handleRequestDetail((ValidationException) ex);
+		}
+		return ApiResponseGenerator.fail(
+				FAIL_REQUEST.getCode(), FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler({AccessDeniedException.class})
-	public ApiResponse<ApiResponse.FailureBody> handleForbidden(
-			final AccessDeniedException ex, final HttpServletRequest request) {
-		loggingHandler.writeLog(ex, request);
-		return ApiResponseGenerator.fail(FAIL_CODE, FORBIDDEN_MESSAGE, HttpStatus.FORBIDDEN);
+	private ApiResponse<FailureBody> handleRequestDetail(MethodArgumentTypeMismatchException ex) {
+		MethodArgumentTypeMismatchException rex = ex;
+		String requestInvalidCode = String.format(REQUEST_INVALID_FORMAT.getCode(), rex.getName());
+		return ApiResponseGenerator.fail(
+				requestInvalidCode, REQUEST_INVALID_FORMAT.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	private ApiResponse<FailureBody> handleRequestDetail(ConstraintViolationException ex) {
+		ConstraintViolationException rex = ex;
+		String message = rex.getMessage();
+		String parameter = message.split("\\.")[1].split(":")[0];
+		String requestInvalidCode = String.format(REQUEST_INVALID_FORMAT.getCode(), parameter);
+		return ApiResponseGenerator.fail(
+				requestInvalidCode, REQUEST_INVALID_FORMAT.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	private ApiResponse<FailureBody> handleRequestDetail(MethodArgumentNotValidException ex) {
+		MethodArgumentNotValidException rex = ex;
+		List<ObjectError> errors = rex.getAllErrors();
+		if (errors.size() == 1) {
+			String parameter = rex.getFieldError().getField();
+			String requestInvalidCode = String.format(REQUEST_INVALID_FORMAT.getCode(), parameter);
+			return ApiResponseGenerator.fail(
+					requestInvalidCode, REQUEST_INVALID_FORMAT.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return ApiResponseGenerator.fail(
+				FAIL_REQUEST.getCode(), FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	private ApiResponse<FailureBody> handleRequestDetail(ValidationException ex) {
+		ValidationException rex = ex;
+		return ApiResponseGenerator.fail(
+				FAIL_REQUEST.getCode(), FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler({AuthenticationException.class, MemberNotFoundException.class})
 	public ApiResponse<ApiResponse.FailureBody> handle(
 			final Exception ex, final HttpServletRequest request) {
 		loggingHandler.writeLog(ex, request);
-		return ApiResponseGenerator.fail(FAIL_CODE, UNAUTHORIZED_MESSAGE, HttpStatus.UNAUTHORIZED);
+		return ApiResponseGenerator.fail(
+				FAIL_AUTHENTICATION.getCode(), FAIL_AUTHENTICATION.getMessage(), HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler({NoHandlerFoundException.class})
+	public ApiResponse<ApiResponse.FailureBody> handleNotFound(
+			final Exception ex, final HttpServletRequest request) {
+		loggingHandler.writeLog(ex, request);
+		return ApiResponseGenerator.fail(
+				FAIL_NOT_FOUND.getCode(), FAIL_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler({AccessDeniedException.class})
+	public ApiResponse<ApiResponse.FailureBody> handleForbidden(
+			final AccessDeniedException ex, final HttpServletRequest request) {
+		loggingHandler.writeLog(ex, request);
+		return ApiResponseGenerator.fail(
+				ACCESS_DENIED.getCode(), ACCESS_DENIED.getMessage(), HttpStatus.FORBIDDEN);
+	}
+
+	@ExceptionHandler({ResourceNotFoundException.class})
+	public ApiResponse<ApiResponse.FailureBody> handleResourceNotFound(
+			final Exception ex, final HttpServletRequest request) {
+		loggingHandler.writeLog(ex, request);
+		return ApiResponseGenerator.fail(
+				RESOURCE_NOT_FOUND.getCode(), ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(Exception.class)
@@ -97,6 +162,6 @@ public class ApiControllerExceptionHandler {
 			final Exception ex, final HttpServletRequest request) {
 		loggingHandler.writeLog(ex, request);
 		return ApiResponseGenerator.fail(
-				FAIL_CODE, SERVER_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
+				FAIL.getCode(), FAIL.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
