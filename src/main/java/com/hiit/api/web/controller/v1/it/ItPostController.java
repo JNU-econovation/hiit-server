@@ -1,14 +1,18 @@
 package com.hiit.api.web.controller.v1.it;
 
-import com.hiit.api.web.dto.request.it.InItRequest;
-import com.hiit.api.web.dto.request.it.ParticipateTogetherRequest;
+import com.hiit.api.security.authentication.token.TokenUserDetails;
+import com.hiit.api.web.dto.request.it.AddInItRequest;
+import com.hiit.api.web.dto.request.it.DeleteInItRequest;
 import com.hiit.api.web.support.ApiResponse;
 import com.hiit.api.web.support.ApiResponseGenerator;
+import com.hiit.api.web.support.MessageCode;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,15 +22,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ItPostController {
 
-	@PostMapping("/{id}/in")
-	public ApiResponse<ApiResponse.SuccessBody<Void>> inIt(
-			@PathVariable Long id, @Valid @RequestBody InItRequest request) {
-		return ApiResponseGenerator.success(HttpStatus.CREATED);
+	@PostMapping("/ins")
+	public ApiResponse<ApiResponse.Success> createInIt(
+			@AuthenticationPrincipal TokenUserDetails userDetails,
+			@Valid @RequestBody AddInItRequest request) {
+		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
 
-	@PostMapping("/{id}/together")
-	public ApiResponse<ApiResponse.SuccessBody<Void>> participateTogether(
-			@PathVariable Long id, @Valid @RequestBody ParticipateTogetherRequest request) {
-		return ApiResponseGenerator.success(HttpStatus.CREATED);
+	@PutMapping("/ins")
+	public ApiResponse<ApiResponse.Success> editInIt(
+			@AuthenticationPrincipal TokenUserDetails userDetails,
+			@Valid @RequestBody AddInItRequest request) {
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	@DeleteMapping("/ins")
+	public ApiResponse<ApiResponse.Success> deleteInIt(
+			@AuthenticationPrincipal TokenUserDetails userDetails,
+			@Valid @RequestBody DeleteInItRequest request) {
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.SUCCESS);
 	}
 }

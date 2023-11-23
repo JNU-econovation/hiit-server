@@ -43,4 +43,12 @@ public class ApiResponse<B> extends ResponseEntity<B> {
 		private String message;
 		private String code;
 	}
+
+	/** API 응답 성공 객체 */
+	@Getter
+	@AllArgsConstructor
+	public static class Success implements Serializable {
+		private String message;
+		private String code;
+	}
 }

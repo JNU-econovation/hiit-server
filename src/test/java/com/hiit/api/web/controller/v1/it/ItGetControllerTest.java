@@ -30,62 +30,12 @@ class ItGetControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
-	private static final String TAG = "It";
+	private static final String TAG = "It-Controller";
 	private static final String BASE_URL = "/api/v1/its";
 
 	@Test
-	@DisplayName(BASE_URL)
-	void browseIt() throws Exception {
-		// set service mock
-
-		mockMvc
-				.perform(
-						get(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is2xxSuccessful())
-				.andDo(
-						document(
-								"BrowseIt",
-								resource(
-										ResourceSnippetParameters.builder()
-												.description("잇 주제 내역")
-												.tag(TAG)
-												.requestSchema(Schema.schema("BrowseItRequest"))
-												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("BrowseItResponse"))
-												.responseFields(Description.success(ItDescription.browseIt()))
-												.build())));
-	}
-
-	@Test
-	@DisplayName(BASE_URL + "/in")
-	void browseInIt() throws Exception {
-		// set service mock
-
-		mockMvc
-				.perform(
-						get(BASE_URL + "/in", 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is2xxSuccessful())
-				.andDo(
-						document(
-								"BrowseInIt",
-								resource(
-										ResourceSnippetParameters.builder()
-												.description("멤버가 참여중인 잇 내역")
-												.tag(TAG)
-												.requestSchema(Schema.schema("BrowseInItRequest"))
-												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("BrowseInItResponse"))
-												.responseFields(Description.success(ItDescription.browseInIt()))
-												.build())));
-	}
-
-	@Test
 	@DisplayName(BASE_URL + "/{id}")
-	void readIt() throws Exception {
+	void browseIt() throws Exception {
 		// set service mock
 
 		mockMvc
@@ -96,100 +46,118 @@ class ItGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"ReadIt",
+								"ItInfo",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("잇이 주제 정보")
+												.description("잇을 조회한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("ReadItRequest"))
-												.pathParameters(parameterWithName("id").description("it id"))
+												.requestSchema(Schema.schema("ItInfoRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("ReadItResponse"))
-												.responseFields(Description.success(ItDescription.readIt()))
+												.pathParameters(parameterWithName("id").description("잇 id"))
+												.responseSchema(Schema.schema("ItInfoResponse"))
+												.responseFields(Description.success(ItDescription.browseIt()))
 												.build())));
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/{id}/together")
-	void browseTogether() throws Exception {
+	@DisplayName(BASE_URL)
+	void readIts() throws Exception {
 		// set service mock
 
 		mockMvc
 				.perform(
-						get(BASE_URL + "/{id}/together", 1)
-								.param("all", "false")
+						get(BASE_URL, 0)
 								.header("Authorization", "{{accessToken}}")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"BrowseTogether",
+								"ItInfos",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("잇이 주제 정보")
+												.description("잇 목록을 조회한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("BrowseTogetherRequest"))
-												.pathParameters(parameterWithName("id").description("it id"))
-												.requestParameters(
-														parameterWithName("all")
-																.description("전체 조회 여부")
-																.optional()
-																.defaultValue("false"))
+												.requestSchema(Schema.schema("ItInfosRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("BrowseTogetherResponse"))
-												.responseFields(Description.success(ItDescription.browseTogether()))
+												.responseSchema(Schema.schema("ItInfosResponse"))
+												.responseFields(Description.success(ItDescription.readIts()))
 												.build())));
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/{id}/together/my")
-	void browseMyTogether() throws Exception {
+	@DisplayName(BASE_URL + "/ins")
+	void readInIts() throws Exception {
 		// set service mock
 
 		mockMvc
 				.perform(
-						get(BASE_URL + "/{id}/together/my", 1)
+						get(BASE_URL + "/ins", 0)
 								.header("Authorization", "{{accessToken}}")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"BrowseMyTogether",
+								"InItInfo",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("나의 잇 함께하기 내역")
+												.description("참여 잇 목록을 조회한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("BrowseMyTogetherRequest"))
-												.pathParameters(parameterWithName("id").description("it id"))
+												.requestSchema(Schema.schema("InItInfoRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("BrowseMyTogetherResponse"))
-												.responseFields(Description.success(ItDescription.browseMyTogether()))
+												.responseSchema(Schema.schema("InItInfoResponse"))
+												.responseFields(Description.success(ItDescription.readInIts()))
 												.build())));
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/{id}/together/rank")
-	void browseRankTogether() throws Exception {
+	@DisplayName(BASE_URL + "/ins/{id}")
+	void browseInIt() throws Exception {
 		// set service mock
 
 		mockMvc
 				.perform(
-						get(BASE_URL + "/{id}/together/rank", 1)
+						get(BASE_URL + "/ins/{id}", 1)
 								.header("Authorization", "{{accessToken}}")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"BrowseRankTogether",
+								"InItInfo",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("잇 함께하기 랭킹 내역")
+												.description("참여 잇을 조회한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("BrowseRankTogetherRequest"))
-												.pathParameters(parameterWithName("id").description("it id"))
+												.requestSchema(Schema.schema("InItInfoRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("BrowseRankTogetherResponse"))
-												.responseFields(Description.success(ItDescription.browseRankTogether()))
+												.pathParameters(parameterWithName("id").description("참여 잇 id"))
+												.responseSchema(Schema.schema("InItInfoResponse"))
+												.responseFields(Description.success(ItDescription.browseInIt()))
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/ins/{id}/motivations")
+	void readItMotivations() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/ins/{id}/motivations", 1)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"ItMotivations",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("참여 잇 동기부여 정보를 조회한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("ItMotivationsRequest"))
+												.requestHeaders(Description.authHeader())
+												.pathParameters(parameterWithName("id").description("참여 잇 id"))
+												.responseSchema(Schema.schema("ItMotivationsResponse"))
+												.responseFields(Description.success(ItDescription.readItMotivations()))
 												.build())));
 	}
 }

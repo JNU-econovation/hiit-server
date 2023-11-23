@@ -1,24 +1,22 @@
 package com.hiit.api.web.controller.v1.it;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
-import com.hiit.api.domain.dto.response.it.DayItResponse;
-import com.hiit.api.domain.dto.response.it.ItResponse;
-import com.hiit.api.domain.dto.response.it.MemberInItResponse;
-import com.hiit.api.domain.dto.response.it.list.DayItResponses;
-import com.hiit.api.domain.dto.response.it.list.MemberInItResponses;
-import com.hiit.api.domain.dto.response.together.MyTogetherResponse;
-import com.hiit.api.domain.dto.response.together.TogetherResponse;
-import com.hiit.api.domain.dto.response.together.list.MyTogetherResponses;
-import com.hiit.api.domain.dto.response.together.list.TogetherResponses;
+import com.hiit.api.domain.dto.response.it.InItInfo;
+import com.hiit.api.domain.dto.response.it.InItInfos;
+import com.hiit.api.domain.dto.response.it.ItInfo;
+import com.hiit.api.domain.dto.response.it.ItInfos;
+import com.hiit.api.domain.dto.response.it.ItMotivations;
+import com.hiit.api.security.authentication.token.TokenUserDetails;
 import com.hiit.api.web.support.ApiResponse;
 import com.hiit.api.web.support.ApiResponseGenerator;
+import com.hiit.api.web.support.MessageCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,80 +24,77 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ItGetController {
 
-	@GetMapping()
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseIt() {
-		MemberInItResponse it =
-				MemberInItResponse.builder()
+	@GetMapping("{id}")
+	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseIt(
+			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long id) {
+		ItInfo it =
+				ItInfo.builder()
 						.id(1L)
-						.topic("topic")
+						.topic("잇 주제")
 						.startTime(1L)
 						.endTime(2L)
-						.participatePerson(10L)
+						.inMemberCount(10L)
 						.memberIn(true)
 						.build();
-		ServiceResponse res = new MemberInItResponses(List.of(it));
-		return ApiResponseGenerator.success(res, HttpStatus.OK);
+		ServiceResponse res = it;
+		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
-	@GetMapping("/in")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseInIt() {
-		DayItResponse it =
-				DayItResponse.builder()
+	@GetMapping()
+	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readIts(
+			@AuthenticationPrincipal TokenUserDetails userDetails) {
+		ItInfo it =
+				ItInfo.builder()
 						.id(1L)
-						.topic("topic")
+						.topic("잇 주제")
 						.startTime(1L)
 						.endTime(2L)
-						.participatePerson(10L)
-						.day(1L)
+						.inMemberCount(10L)
+						.memberIn(true)
 						.build();
-		ServiceResponse res = new DayItResponses(List.of(it));
-		return ApiResponseGenerator.success(res, HttpStatus.OK);
+		ServiceResponse res = new ItInfos(List.of(it));
+		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
-	@GetMapping("/{id}")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readIt(@PathVariable Long id) {
-		ServiceResponse res =
-				ItResponse.builder()
+	@GetMapping("/ins")
+	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readInIts(
+			@AuthenticationPrincipal TokenUserDetails userDetails) {
+		InItInfo inIt =
+				InItInfo.builder()
 						.id(1L)
-						.topic("topic")
-						.startTime(1L)
-						.endTime(2L)
-						.participatePerson(10L)
+						.title("참여 잇 제목")
+						.topic("참여 잇 주제")
+						.startTime(7L)
+						.endTime(9L)
+						.days(Long.toBinaryString(000001L))
+						.inMemberCount(10L)
 						.build();
-		return ApiResponseGenerator.success(res, HttpStatus.OK);
+		ServiceResponse res = new InItInfos(List.of(inIt));
+		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
-	@GetMapping("/{id}/together")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseTogether(
-			@PathVariable Long id, @RequestParam(required = false, defaultValue = "false") Boolean all) {
-		TogetherResponse together =
-				TogetherResponse.builder()
+	@GetMapping("/ins/{id}")
+	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseInIt(
+			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long id) {
+		InItInfo inIt =
+				InItInfo.builder()
 						.id(1L)
-						.content("content")
-						.memberName("memberName")
-						.memberPicture("url")
-						.memberComment("comment")
-						.hits(10L)
+						.title("참여 잇 제목")
+						.topic("참여 잇 주제")
+						.startTime(7L)
+						.endTime(9L)
+						.days(Long.toBinaryString(000001L))
+						.inMemberCount(10L)
 						.build();
-		ServiceResponse res = new TogetherResponses(List.of(together));
-		return ApiResponseGenerator.success(res, HttpStatus.OK);
+		ServiceResponse res = inIt;
+		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
-	@GetMapping("/{id}/together/my")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseMyTogether(
-			@PathVariable Long id) {
-		MyTogetherResponse together =
-				MyTogetherResponse.builder().id(1L).content("content").date(1L).hits(10L).build();
-		ServiceResponse res = new MyTogetherResponses(List.of(together));
-		return ApiResponseGenerator.success(res, HttpStatus.OK);
-	}
-
-	@GetMapping("/{id}/together/rank")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseRankTogether(
-			@PathVariable Long id) {
-		MyTogetherResponse together =
-				MyTogetherResponse.builder().id(1L).content("content").date(1L).hits(10L).build();
-		ServiceResponse res = new MyTogetherResponses(List.of(together));
-		return ApiResponseGenerator.success(res, HttpStatus.OK);
+	@GetMapping("/ins/{id}/motivations")
+	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readItMotivations(
+			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long id) {
+		List<String> motivations = List.of("motivation1", "motivation2");
+		ServiceResponse res = new ItMotivations(motivations);
+		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 }

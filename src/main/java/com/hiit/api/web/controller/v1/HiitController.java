@@ -3,13 +3,13 @@ package com.hiit.api.web.controller.v1;
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
 import com.hiit.api.common.support.token.AuthToken;
 import com.hiit.api.common.support.token.TokenGenerator;
-import com.hiit.api.domain.dto.response.noti.NotiResponse;
-import com.hiit.api.domain.dto.response.noti.list.NotiResponses;
-import com.hiit.api.domain.dto.response.support.Banners;
+import com.hiit.api.domain.dto.response.Banners;
+import com.hiit.api.domain.dto.response.NotiInfos;
+import com.hiit.api.domain.dto.response.NoticeInfo;
 import com.hiit.api.security.authentication.authority.Roles;
 import com.hiit.api.web.support.ApiResponse;
 import com.hiit.api.web.support.ApiResponseGenerator;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,26 +25,25 @@ public class HiitController {
 
 	@GetMapping("/banners")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> banners() {
-		Banners res = Banners.builder().size(1L).urls(List.of("url1")).build();
+		Banners res = Banners.builder().size(1L).urls(List.of("배너 이미지 주소")).build();
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 
-	@GetMapping("/noti")
+	@GetMapping("/notice")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> noti() {
-		NotiResponse noti =
-				NotiResponse.builder()
+		NoticeInfo notice =
+				NoticeInfo.builder()
 						.id(1L)
-						.date(LocalDate.now())
-						.type("type")
-						.title("title")
-						.content("content")
+						.date(new Date())
+						.type("공지 타입")
+						.title("공지 제목")
+						.content("공지 내용")
 						.build();
-		NotiResponses res = new NotiResponses(List.of(noti));
+		NotiInfos res = new NotiInfos(List.of(notice));
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 
-	// todo for mock server
-	// todo delete
+	// todo for mock server & delete after development
 	private final TokenGenerator tokenGenerator;
 
 	@GetMapping("/token")

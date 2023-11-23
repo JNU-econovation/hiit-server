@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.controller.description.MemberDescription;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,144 +30,61 @@ class MemberGetControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
-	private static final String TAG = "Member";
+	private static final String TAG = "Member-Controller";
 	private static final String BASE_URL = "/api/v1/members";
 
 	@Test
-	@DisplayName(BASE_URL + "/friends")
-	void browseFriend() throws Exception {
+	@DisplayName(BASE_URL)
+	void browseMember() throws Exception {
 		// set service mock
 
 		mockMvc
 				.perform(
-						get(BASE_URL + "/friends", 0)
+						get(BASE_URL, 0)
 								.header("Authorization", "{{accessToken}}")
-								.param("ban", "false")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"BrowseFriend",
+								"MemberInfo",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("친구 내역")
+												.description("회원 정보를 조회한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("BrowseFriendRequest"))
+												.requestSchema(Schema.schema("MemberInfoRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("MemberInfoResponse"))
+												.responseFields(Description.success(MemberDescription.browseMember()))
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/stats/it")
+	void browseItStat() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/stats/it", 2)
+								.header("Authorization", "{{accessToken}}")
+								.queryParam("id", "1")
+								.queryParam("iid", "1")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"MemberItInfo",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("회원 잇 통계를 조회한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("MemberItInfoRequest"))
+												.requestHeaders(Description.authHeader())
 												.requestParameters(
-														parameterWithName("ban")
-																.description("차단 친구 조회 여부")
-																.optional()
-																.defaultValue("false"))
-												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("BrowseFriendResponse"))
-												.responseFields(Description.success(MemberDescription.browseFriend()))
-												.build())));
-	}
-
-	@Test
-	@DisplayName(BASE_URL + "/mypage")
-	void mypage() throws Exception {
-		// set service mock
-
-		mockMvc
-				.perform(
-						get(BASE_URL + "/mypage", 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is2xxSuccessful())
-				.andDo(
-						document(
-								"MyPage",
-								resource(
-										ResourceSnippetParameters.builder()
-												.description("나의 프로필")
-												.tag(TAG)
-												.requestSchema(Schema.schema("MyPageRequest"))
-												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("MyPageResponse"))
-												.responseFields(Description.success(MemberDescription.mypage()))
-												.build())));
-	}
-
-	@Test
-	@DisplayName(BASE_URL + "/{mid}")
-	void read() throws Exception {
-		// set service mock
-
-		mockMvc
-				.perform(
-						get(BASE_URL + "/{mid}", 1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is2xxSuccessful())
-				.andDo(
-						document(
-								"ReadMember",
-								resource(
-										ResourceSnippetParameters.builder()
-												.description("멤버의 프로필")
-												.tag(TAG)
-												.requestSchema(Schema.schema("ReadMemberRequest"))
-												.pathParameters(parameterWithName("mid").description("member id"))
-												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("ReadMemberResponse"))
-												.responseFields(Description.success(MemberDescription.read()))
-												.build())));
-	}
-
-	@Test
-	@DisplayName(BASE_URL + "/{mid}/common/its")
-	void browseCommonIts() throws Exception {
-		// set service mock
-
-		mockMvc
-				.perform(
-						get(BASE_URL + "/{mid}/common/its", 1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is2xxSuccessful())
-				.andDo(
-						document(
-								"BrowseCommonIts",
-								resource(
-										ResourceSnippetParameters.builder()
-												.description("멤버와 공통 참여 잇 내역")
-												.tag(TAG)
-												.requestSchema(Schema.schema("BrowseCommonItsRequest"))
-												.pathParameters(parameterWithName("mid").description("member id"))
-												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("BrowseCommonItsResponse"))
-												.responseFields(Description.success(MemberDescription.browseCommonIts()))
-												.build())));
-	}
-
-	@Test
-	@DisplayName(BASE_URL + "/{mid}/common/its/{iid}/together")
-	void readMemberItCommonTogether() throws Exception {
-		// set service mock
-
-		mockMvc
-				.perform(
-						get(BASE_URL + "/{mid}/common/its/{iid}/together", 1, 1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().is2xxSuccessful())
-				.andDo(
-						document(
-								"ReadMemberItCommonTogether",
-								resource(
-										ResourceSnippetParameters.builder()
-												.description("멤버의 잇 함께하기 정보")
-												.tag(TAG)
-												.requestSchema(Schema.schema("ReadMemberItCommonTogetherRequest"))
-												.pathParameters(
-														List.of(
-																parameterWithName("mid").description("member id"),
-																parameterWithName("iid").description("it id")))
-												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("ReadMemberItCommonTogetherResponse"))
-												.responseFields(
-														Description.success(MemberDescription.readMemberItCommonTogether()))
+														parameterWithName("id").description("멤버 id"),
+														parameterWithName("iid").description("잇 id"))
+												.responseSchema(Schema.schema("MemberItInfoResponse"))
+												.responseFields(Description.success(MemberDescription.browseItStat()))
 												.build())));
 	}
 }

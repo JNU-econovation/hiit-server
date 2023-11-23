@@ -3,6 +3,7 @@ package com.hiit.api.web.controller.v1.hit;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -10,8 +11,7 @@ import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
 import com.hiit.api.web.controller.description.Description;
-import com.hiit.api.web.controller.description.ItDescription;
-import com.hiit.api.web.dto.request.it.HitRequest;
+import com.hiit.api.web.dto.request.hit.HitRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,8 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,14 +32,14 @@ class HitPostControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
-	private static final String TAG = "Hit";
-	private static final String BASE_URL = "/api/v1/hit";
+	private static final String TAG = "Hit-Controller";
+	private static final String BASE_URL = "/api/v1/its/withs/hits";
 
 	@Test
 	@DisplayName(BASE_URL)
-	void inIt() throws Exception {
+	void hit() throws Exception {
 
-		HitRequest request = HitRequest.builder().iid(1L).tid(1L).build();
+		HitRequest request = HitRequest.builder().id(1L).build();
 
 		String content = objectMapper.writeValueAsString(request);
 
@@ -55,12 +57,18 @@ class HitPostControllerTest {
 								"Hit",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("힛")
+												.description("힛을 수행한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("HitRequest"))
 												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("HitResponse"))
-												.responseFields(Description.success(ItDescription.withOutData()))
+												.responseFields(
+														Description.success(
+																new FieldDescriptor[] {
+																	fieldWithPath("data.count")
+																			.type(JsonFieldType.NUMBER)
+																			.description("힛 수")
+																}))
 												.build())));
 	}
 }
