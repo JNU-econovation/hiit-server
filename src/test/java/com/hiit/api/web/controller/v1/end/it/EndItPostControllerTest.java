@@ -61,4 +61,124 @@ class EndItPostControllerTest {
 												.responseFields(Description.success())
 												.build())));
 	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void editEndIt_invalidId() throws Exception {
+		// set service mock
+
+		EditEndIpRequest request = EditEndIpRequest.builder().id(-1L).title("종료잇 수정 제목").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						put(BASE_URL, 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"EditEndItInfo_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("종료 잇 수정한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("EditEndItInfoRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("EditEndItInfoResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void editEndIt_nullTitle() throws Exception {
+		// set service mock
+
+		EditEndIpRequest request = EditEndIpRequest.builder().id(1L).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						put(BASE_URL, 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"EditEndItInfo_nullTitle",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("종료 잇 수정한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("EditEndItInfoRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("EditEndItInfoResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void editEndIt_emptyTitle() throws Exception {
+		// set service mock
+
+		EditEndIpRequest request = EditEndIpRequest.builder().id(1L).title("").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						put(BASE_URL, 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"EditEndItInfo_emptyTitle",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("종료 잇 수정한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("EditEndItInfoRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("EditEndItInfoResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void editEndIt_overMaxLength() throws Exception {
+		// set service mock
+		String overMaxLength = "1234567890123456"; // max : 15
+		EditEndIpRequest request = EditEndIpRequest.builder().id(1L).title(overMaxLength).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						put(BASE_URL, 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"EditEndItInfo_overMaxLength",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("종료 잇 수정한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("EditEndItInfoRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("EditEndItInfoResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
 }

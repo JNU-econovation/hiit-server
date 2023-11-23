@@ -60,6 +60,32 @@ class EndItGetControllerTest {
 	}
 
 	@Test
+	@DisplayName(BASE_URL + "/{id}")
+	void browseEndIt_invalidId() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/{id}", -1)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"EndItInfo_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("종료 잇")
+												.tag(TAG)
+												.requestSchema(Schema.schema("EndItInfoRequest"))
+												.pathParameters(parameterWithName("id").description("종료 잇 id"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("EndItInfoResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
 	@DisplayName(BASE_URL)
 	void readEndIts() throws Exception {
 		// set service mock
@@ -108,6 +134,33 @@ class EndItGetControllerTest {
 												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EndWithInfoResponse"))
 												.responseFields(Description.success(EndItDescription.browseEndWith()))
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/withs")
+	void browseEndWith_invalidId() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/withs", 0)
+								.header("Authorization", "{{accessToken}}")
+								.queryParam("id", "-1")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"EndWithInfo_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("종료 잇 윗")
+												.tag(TAG)
+												.requestSchema(Schema.schema("EndWithInfoRequest"))
+												.requestParameters(parameterWithName("id").description("종료 잇 id"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("EndWithInfoResponse"))
+												.responseFields(Description.fail())
 												.build())));
 	}
 }

@@ -139,4 +139,13 @@ public enum DayCodeSpec {
 		this.code = code;
 		this.days = days;
 	}
+
+	public static boolean isExist(String value) {
+		for (DayCodeSpec dayCodeSpec : DayCodeSpec.values()) {
+			if (dayCodeSpec.getCode().equals(value)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

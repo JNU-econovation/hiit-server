@@ -87,4 +87,64 @@ class MemberGetControllerTest {
 												.responseFields(Description.success(MemberDescription.browseItStat()))
 												.build())));
 	}
+
+	@Test
+	@DisplayName(BASE_URL + "/stats/it")
+	void browseItStat_invalidId() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/stats/it", 2)
+								.header("Authorization", "{{accessToken}}")
+								.queryParam("id", "-1")
+								.queryParam("iid", "1")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"MemberItInfo_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("회원 잇 통계를 조회한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("MemberItInfoRequest"))
+												.requestHeaders(Description.authHeader())
+												.requestParameters(
+														parameterWithName("id").description("멤버 id"),
+														parameterWithName("iid").description("잇 id"))
+												.responseSchema(Schema.schema("MemberItInfoResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/stats/it")
+	void browseItStat_invalidIId() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(
+						get(BASE_URL + "/stats/it", 2)
+								.header("Authorization", "{{accessToken}}")
+								.queryParam("id", "1")
+								.queryParam("iid", "-1")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"MemberItInfo_invalidIId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("회원 잇 통계를 조회한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("MemberItInfoRequest"))
+												.requestHeaders(Description.authHeader())
+												.requestParameters(
+														parameterWithName("id").description("멤버 id"),
+														parameterWithName("iid").description("잇 id"))
+												.responseSchema(Schema.schema("MemberItInfoResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
 }

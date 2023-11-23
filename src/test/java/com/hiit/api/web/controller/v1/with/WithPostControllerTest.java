@@ -64,6 +64,123 @@ class WithPostControllerTest {
 
 	@Test
 	@DisplayName(BASE_URL)
+	void readWiths_invalidId() throws Exception {
+		// set service mock
+		AddWithRequest request = AddWithRequest.builder().id(-1L).content("윗 내용").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						post(BASE_URL, 0)
+								.header("Authorization", "{{accessToken}}")
+								.content(content)
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"AddWith_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("윗 추가한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("AddWithRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("AddWithResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void readWiths_nullWith() throws Exception {
+		// set service mock
+		AddWithRequest request = AddWithRequest.builder().id(1L).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						post(BASE_URL, 0)
+								.header("Authorization", "{{accessToken}}")
+								.content(content)
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"AddWith_nullWith",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("윗 추가한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("AddWithRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("AddWithResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void readWiths_emptyWith() throws Exception {
+		// set service mock
+		AddWithRequest request = AddWithRequest.builder().id(1L).content("").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						post(BASE_URL, 0)
+								.header("Authorization", "{{accessToken}}")
+								.content(content)
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"AddWith_emptyWith",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("윗 추가한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("AddWithRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("AddWithResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void readWiths_overMaxLength() throws Exception {
+		// set service mock
+		String overMaxLength = "123456789012345678901";
+		AddWithRequest request = AddWithRequest.builder().id(1L).content(overMaxLength).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						post(BASE_URL, 0)
+								.header("Authorization", "{{accessToken}}")
+								.content(content)
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"AddWith_overMaxLength",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("윗 추가한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("AddWithRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("AddWithResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
 	void deleteWith() throws Exception {
 		// set service mock
 		DeleteWithRequest request = DeleteWithRequest.builder().id(1L).build();
@@ -88,6 +205,35 @@ class WithPostControllerTest {
 												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteWithResponse"))
 												.responseFields(Description.success())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void deleteWith_invalidId() throws Exception {
+		// set service mock
+		DeleteWithRequest request = DeleteWithRequest.builder().id(-1L).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						delete(BASE_URL, 0)
+								.header("Authorization", "{{accessToken}}")
+								.content(content)
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"DeleteWith_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("윗 삭제한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("DeleteWithRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("DeleteWithResponse"))
+												.responseFields(Description.fail())
 												.build())));
 	}
 }

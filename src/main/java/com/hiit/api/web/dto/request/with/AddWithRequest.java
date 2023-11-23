@@ -1,5 +1,7 @@
 package com.hiit.api.web.dto.request.with;
 
+import com.hiit.api.web.dto.validator.DataId;
+import com.hiit.api.web.dto.validator.With;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -15,6 +17,6 @@ import lombok.ToString;
 @Builder
 public class AddWithRequest {
 
-	private Long id;
-	private String content;
+	@DataId private Long id;
+	@With private String content;
 }

@@ -38,6 +38,18 @@ public class Description {
 		return new FieldDescriptor[] {getCreateCodeDescriptor(), getCreateMessageDescriptor()};
 	}
 
+	public static FieldDescriptor[] fail() {
+		return new FieldDescriptor[] {getFailCodeDescriptor(), getFailMessageDescriptor()};
+	}
+
+	private static FieldDescriptor getFailCodeDescriptor() {
+		return fieldWithPath("code").type(JsonFieldType.STRING).description("code");
+	}
+
+	private static FieldDescriptor getFailMessageDescriptor() {
+		return fieldWithPath("message").type(JsonFieldType.STRING).description("message");
+	}
+
 	public static HeaderDescriptorWithType authHeader() {
 		return headerWithName("Authorization")
 				.defaultValue("{{accessToken}}")

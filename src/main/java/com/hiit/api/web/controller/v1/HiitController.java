@@ -38,7 +38,7 @@ public class HiitController {
 	}
 
 	@GetMapping("/notice")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> noti() {
+	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> notice() {
 		NoticeInfo notice =
 				NoticeInfo.builder()
 						.id(1L)

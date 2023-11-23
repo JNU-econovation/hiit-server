@@ -39,12 +39,9 @@ class ItPostControllerTest {
 	@DisplayName(BASE_URL + "/ins")
 	void addInIt() throws Exception {
 
+		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
 		AddInItRequest request =
-				AddInItRequest.builder()
-						.id(1L)
-						.dayCode(Long.toBinaryString(000001L))
-						.resolution("다짐")
-						.build();
+				AddInItRequest.builder().id(1L).dayCode(dayCode).resolution("다짐").build();
 
 		String content = objectMapper.writeValueAsString(request);
 
@@ -73,14 +70,176 @@ class ItPostControllerTest {
 
 	@Test
 	@DisplayName(BASE_URL + "/ins")
+	void addInIt_invalidId() throws Exception {
+
+		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
+		AddInItRequest request =
+				AddInItRequest.builder().id(-1L).dayCode(dayCode).resolution("다짐").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		// set service mock
+
+		mockMvc
+				.perform(
+						post(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"AddInIt_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇에 참여한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("AddInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("AddInItResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/ins")
+	void addInIt_invalidDayCode() throws Exception {
+
+		String dayCode = Long.toBinaryString(0000001L);
+		AddInItRequest request =
+				AddInItRequest.builder().id(1L).dayCode(dayCode).resolution("다짐").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		// set service mock
+
+		mockMvc
+				.perform(
+						post(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"AddInIt_invalidDayCode",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇에 참여한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("AddInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("AddInItResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/ins")
+	void addInIt_nullResolution() throws Exception {
+
+		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
+		AddInItRequest request = AddInItRequest.builder().id(1L).dayCode(dayCode).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		// set service mock
+
+		mockMvc
+				.perform(
+						post(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"AddInIt_nullResolution",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇에 참여한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("AddInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("AddInItResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/ins")
+	void addInIt_emptyResolution() throws Exception {
+
+		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
+		AddInItRequest request =
+				AddInItRequest.builder().id(1L).dayCode(dayCode).resolution("").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		// set service mock
+
+		mockMvc
+				.perform(
+						post(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"AddInIt_emptyResolution",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇에 참여한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("AddInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("AddInItResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/ins")
+	void addInIt_overMaxLength() throws Exception {
+
+		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
+		String overMaxLength = "1234567890123456"; // max : 15
+		AddInItRequest request =
+				AddInItRequest.builder().id(1L).dayCode(dayCode).resolution(overMaxLength).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		// set service mock
+
+		mockMvc
+				.perform(
+						post(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"AddInIt_overMaxLength",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇에 참여한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("AddInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("AddInItResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/ins")
 	void editInIt() throws Exception {
 
+		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
 		AddInItRequest request =
-				AddInItRequest.builder()
-						.id(1L)
-						.dayCode(Long.toBinaryString(000001L))
-						.resolution("다짐")
-						.build();
+				AddInItRequest.builder().id(1L).dayCode(dayCode).resolution("다짐").build();
 
 		String content = objectMapper.writeValueAsString(request);
 

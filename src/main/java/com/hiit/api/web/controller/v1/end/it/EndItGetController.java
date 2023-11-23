@@ -7,6 +7,7 @@ import com.hiit.api.domain.dto.response.end.with.EndWithInfo;
 import com.hiit.api.domain.dto.response.end.with.EndWithInfos;
 import com.hiit.api.domain.dto.response.end.with.EndWithMemberInfo;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
+import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.support.ApiResponse;
 import com.hiit.api.web.support.ApiResponseGenerator;
 import com.hiit.api.web.support.MessageCode;
@@ -15,12 +16,14 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/end/its")
 @RequiredArgsConstructor
@@ -28,7 +31,7 @@ public class EndItGetController {
 
 	@GetMapping("{id}")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseEndIt(
-			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long id) {
+			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
 		EndItInfo endIt =
 				EndItInfo.builder()
 						.id(1L)
@@ -45,7 +48,8 @@ public class EndItGetController {
 	}
 
 	@GetMapping()
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readEndIts() {
+	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readEndIts(
+			@AuthenticationPrincipal TokenUserDetails userDetails) {
 		EndItInfo endIt =
 				EndItInfo.builder()
 						.id(1L)
@@ -63,7 +67,7 @@ public class EndItGetController {
 
 	@GetMapping("/withs")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseEndWith(
-			@AuthenticationPrincipal TokenUserDetails userDetails, @RequestParam Long id) {
+			@AuthenticationPrincipal TokenUserDetails userDetails, @RequestParam @DataId Long id) {
 		EndWithMemberInfo withMemberInfo =
 				EndWithMemberInfo.builder().id(1L).profile("프로필 사진").name("이름").resolution("잇 다짐").build();
 		EndWithInfo withInfo =

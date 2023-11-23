@@ -1,5 +1,7 @@
 package com.hiit.api.web.dto.request.it;
 
+import com.hiit.api.web.dto.validator.DataId;
+import com.hiit.api.web.dto.validator.ItTitle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -15,6 +17,6 @@ import lombok.ToString;
 @Builder
 public class DeleteInItRequest {
 
-	private Long id;
-	private String endTitle;
+	@DataId private Long id;
+	@ItTitle private String endTitle;
 }

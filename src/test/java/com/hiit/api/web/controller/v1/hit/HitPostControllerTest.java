@@ -71,4 +71,35 @@ class HitPostControllerTest {
 																}))
 												.build())));
 	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void hit_invalidId() throws Exception {
+
+		HitRequest request = HitRequest.builder().id(-1L).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		// set service mock
+
+		mockMvc
+				.perform(
+						post(BASE_URL, 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								"Hit_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("힛을 수행한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("HitRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("HitResponse"))
+												.responseFields(Description.fail())
+												.build())));
+	}
 }
