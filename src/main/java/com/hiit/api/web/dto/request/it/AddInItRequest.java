@@ -1,5 +1,8 @@
 package com.hiit.api.web.dto.request.it;
 
+import com.hiit.api.web.dto.validator.DataId;
+import com.hiit.api.web.dto.validator.DayCode;
+import com.hiit.api.web.dto.validator.ItResolution;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -15,7 +18,7 @@ import lombok.ToString;
 @Builder
 public class AddInItRequest {
 
-	private Long id;
-	private String dayCode;
-	private String resolution;
+	@DataId private Long id;
+	@DayCode private String dayCode;
+	@ItResolution private String resolution;
 }
