@@ -15,6 +15,6 @@ class UserAuthority implements GrantedAuthority {
 
 	@Override
 	public String getAuthority() {
-		return Roles.USER.getRole();
+		return Roles.ROLE_USER.getRole();
 	}
 }

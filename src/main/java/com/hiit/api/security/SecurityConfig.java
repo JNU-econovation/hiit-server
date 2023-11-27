@@ -1,6 +1,7 @@
 package com.hiit.api.security;
 
 import com.hiit.api.security.authentication.token.TokenAuthProvider;
+import com.hiit.api.security.filter.exception.TokenInvalidExceptionHandlerFilter;
 import com.hiit.api.security.filter.token.TokenAuthenticationFilter;
 import com.hiit.api.security.handler.DelegatedAccessDeniedHandler;
 import com.hiit.api.security.handler.DelegatedAuthenticationEntryPoint;
@@ -11,9 +12,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 /** Spring Security 설정 */
 @EnableWebSecurity
@@ -37,6 +43,8 @@ public class SecurityConfig {
 		http.csrf().disable();
 		http.formLogin().disable();
 		http.httpBasic().disable();
+		http.cors().configurationSource(corsConfigurationSource());
+
 		http.authorizeRequests()
 				.antMatchers(
 						HttpMethod.GET,
@@ -57,6 +65,8 @@ public class SecurityConfig {
 				.anyRequest()
 				.denyAll();
 
+		http.addFilterBefore(
+				getTokenInvalidExceptionHandlerFilter(), AbstractPreAuthenticatedProcessingFilter.class);
 		http.addFilterAt(
 				generateAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class);
 
@@ -81,6 +91,7 @@ public class SecurityConfig {
 		http.csrf().disable();
 		http.formLogin().disable();
 		http.httpBasic().disable();
+		http.cors().configurationSource(corsConfigurationSource());
 
 		http.authorizeRequests()
 				.antMatchers(HttpMethod.GET, "/openapi3.yaml", "/actuator/health", "/reports/**", "/error")
@@ -92,6 +103,8 @@ public class SecurityConfig {
 				.anyRequest()
 				.denyAll();
 
+		http.addFilterBefore(
+				getTokenInvalidExceptionHandlerFilter(), AbstractPreAuthenticatedProcessingFilter.class);
 		http.addFilterAt(
 				generateAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class);
 
@@ -112,5 +125,33 @@ public class SecurityConfig {
 		TokenAuthenticationFilter tokenAuthenticationFilter = new TokenAuthenticationFilter();
 		tokenAuthenticationFilter.setAuthenticationManager(new ProviderManager(tokenAuthProvider));
 		return tokenAuthenticationFilter;
+	}
+
+	/**
+	 * ExceptionHandlerFilter를 생성합니다.
+	 *
+	 * @return ExceptionHandlerFilter
+	 */
+	public OncePerRequestFilter getTokenInvalidExceptionHandlerFilter() {
+		return new TokenInvalidExceptionHandlerFilter();
+	}
+
+	@Bean
+	public WebSecurityCustomizer webSecurityFilterIgnoreCustomizer() {
+		return web -> web.ignoring().antMatchers("/api/v1/token");
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+
+		configuration.addAllowedOriginPattern("*");
+		configuration.addAllowedHeader("*");
+		configuration.addAllowedMethod("*");
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 }

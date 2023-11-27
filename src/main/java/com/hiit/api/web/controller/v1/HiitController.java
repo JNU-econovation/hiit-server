@@ -117,7 +117,7 @@ public class HiitController {
 
 	@GetMapping("/token")
 	public ApiResponse<ApiResponse.SuccessBody<AuthToken>> token() {
-		AuthToken res = tokenGenerator.generateAuthToken(1L, List.of(Roles.USER));
+		AuthToken res = tokenGenerator.generateAuthToken(1L, List.of(Roles.ROLE_USER));
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 }

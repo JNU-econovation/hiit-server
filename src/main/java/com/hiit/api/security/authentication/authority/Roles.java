@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Getter
 @ToString
 public enum Roles {
-	USER("ROLE_USER") {
+	ROLE_USER("ROLE_USER") {
 		@Override
 		public GrantedAuthority getAuthority() {
 			return UserAuthority.builder().build();
