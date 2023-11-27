@@ -16,6 +16,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /** Spring Security 설정 */
@@ -40,6 +43,7 @@ public class SecurityConfig {
 		http.csrf().disable();
 		http.formLogin().disable();
 		http.httpBasic().disable();
+		http.cors().configurationSource(corsConfigurationSource());
 
 		http.authorizeRequests()
 				.antMatchers(
@@ -87,6 +91,7 @@ public class SecurityConfig {
 		http.csrf().disable();
 		http.formLogin().disable();
 		http.httpBasic().disable();
+		http.cors().configurationSource(corsConfigurationSource());
 
 		http.authorizeRequests()
 				.antMatchers(HttpMethod.GET, "/openapi3.yaml", "/actuator/health", "/reports/**", "/error")
@@ -134,5 +139,19 @@ public class SecurityConfig {
 	@Bean
 	public WebSecurityCustomizer webSecurityFilterIgnoreCustomizer() {
 		return web -> web.ignoring().antMatchers("/api/v1/token");
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+
+		configuration.addAllowedOriginPattern("*");
+		configuration.addAllowedHeader("*");
+		configuration.addAllowedMethod("*");
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 }
