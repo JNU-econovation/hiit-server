@@ -137,8 +137,33 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public WebSecurityCustomizer webSecurityFilterIgnoreCustomizer() {
-		return web -> web.ignoring().antMatchers("/api/v1/token");
+	@Profile("!prod")
+	public WebSecurityCustomizer localWebSecurityFilterIgnoreCustomizer() {
+		return web ->
+				web.ignoring()
+						.antMatchers(
+								HttpMethod.GET,
+								"/swagger-ui/*",
+								"/api-docs/*",
+								"/openapi3.yaml",
+								"/actuator/health",
+								"/reports/**",
+								"/error",
+								"/api/v1/token");
+	}
+
+	@Bean
+	@Profile("prod")
+	public WebSecurityCustomizer prodWebSecurityFilterIgnoreCustomizer() {
+		return web ->
+				web.ignoring()
+						.antMatchers(
+								HttpMethod.GET,
+								"/openapi3.yaml",
+								"/actuator/health",
+								"/reports/**",
+								"/error",
+								"/api/v1/token");
 	}
 
 	@Bean
