@@ -35,7 +35,7 @@ public class ItPostController {
 	public ApiResponse<ApiResponse.Success> editInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody AddInItRequest request) {
-		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.SUCCESS);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
 	}
 
 	// todo : test DeleteInItRequest
@@ -43,6 +43,6 @@ public class ItPostController {
 	public ApiResponse<ApiResponse.Success> deleteInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody DeleteInItRequest request) {
-		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.SUCCESS);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 }

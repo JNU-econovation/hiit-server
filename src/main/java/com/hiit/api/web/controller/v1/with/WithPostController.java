@@ -33,6 +33,6 @@ public class WithPostController {
 	@DeleteMapping()
 	public ApiResponse<ApiResponse.Success> deleteWith(
 			@Valid @RequestBody DeleteWithRequest request) {
-		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.SUCCESS);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 }
