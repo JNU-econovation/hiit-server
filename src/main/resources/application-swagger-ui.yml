@@ -1,0 +1,4 @@
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /openapi3.yaml

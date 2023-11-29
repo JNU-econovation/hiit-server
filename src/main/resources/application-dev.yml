@@ -4,5 +4,6 @@ spring:
   profiles:
     include:
       - flyway
+      - swagger-ui
       - mysql-dev
       - security-dev
