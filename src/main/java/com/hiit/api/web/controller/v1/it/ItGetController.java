@@ -46,7 +46,7 @@ public class ItGetController {
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		ItInfo it =
+		ItInfo it1 =
 				ItInfo.builder()
 						.id(1L)
 						.topic("잇 주제")
@@ -55,14 +55,23 @@ public class ItGetController {
 						.inMemberCount(10L)
 						.memberIn(true)
 						.build();
-		ServiceResponse res = new ItInfos(List.of(it));
+		ItInfo it2 =
+				ItInfo.builder()
+						.id(2L)
+						.topic("잇 주제")
+						.startTime(1L)
+						.endTime(2L)
+						.inMemberCount(10L)
+						.memberIn(true)
+						.build();
+		ServiceResponse res = new ItInfos(List.of(it1, it2));
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
 	@GetMapping("/ins")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readInIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		InItInfo inIt =
+		InItInfo inIt1 =
 				InItInfo.builder()
 						.id(1L)
 						.title("참여 잇 제목")
@@ -72,7 +81,17 @@ public class ItGetController {
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
 						.build();
-		ServiceResponse res = new InItInfos(List.of(inIt));
+		InItInfo inIt2 =
+				InItInfo.builder()
+						.id(2L)
+						.title("참여 잇 제목")
+						.topic("참여 잇 주제")
+						.startTime(7L)
+						.endTime(9L)
+						.days(Long.toBinaryString(000001L))
+						.inMemberCount(10L)
+						.build();
+		ServiceResponse res = new InItInfos(List.of(inIt1, inIt2));
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
