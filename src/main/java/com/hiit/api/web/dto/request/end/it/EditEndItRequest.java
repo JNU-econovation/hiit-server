@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EditEndIpRequest {
+public class EditEndItRequest {
 
 	@DataId private Long id;
 	@ItTitle private String title;
