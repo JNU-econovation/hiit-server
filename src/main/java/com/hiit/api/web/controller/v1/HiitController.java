@@ -42,13 +42,13 @@ public class HiitController {
 
 	@GetMapping("/banners")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> banners() {
-		Banners res = Banners.builder().size(1L).urls(List.of("배너 이미지 주소")).build();
+		Banners res = Banners.builder().size(1L).urls(List.of("배너 이미지 주소1", "배너 이미지 주소2")).build();
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 
 	@GetMapping("/notice")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> notice() {
-		NoticeInfo notice =
+		NoticeInfo notice1 =
 				NoticeInfo.builder()
 						.id(1L)
 						.date(new Date())
@@ -56,7 +56,15 @@ public class HiitController {
 						.title("공지 제목")
 						.content("공지 내용")
 						.build();
-		NotiInfos res = new NotiInfos(List.of(notice));
+		NoticeInfo notice2 =
+				NoticeInfo.builder()
+						.id(2L)
+						.date(new Date())
+						.type("공지 타입")
+						.title("공지 제목")
+						.content("공지 내용")
+						.build();
+		NotiInfos res = new NotiInfos(List.of(notice1, notice2));
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 

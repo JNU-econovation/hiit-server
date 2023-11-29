@@ -36,9 +36,11 @@ public class WithGetController {
 			@RequestParam Boolean my) {
 		WithMemberInfo withMemberInfo =
 				WithMemberInfo.builder().name("멤버 이름").profile("멤버 프로필").resolution("멤버 다짐").build();
-		WithInfo withInfo =
+		WithInfo withInfo1 =
 				WithInfo.builder().id(1L).content("윗 내용").hit(10L).withMemberInfo(withMemberInfo).build();
-		List<WithInfo> withInfos = List.of(withInfo);
+		WithInfo withInfo2 =
+				WithInfo.builder().id(2L).content("윗 내용").hit(10L).withMemberInfo(withMemberInfo).build();
+		List<WithInfo> withInfos = List.of(withInfo1, withInfo2);
 		PageImpl<WithInfo> withInfoPage = new PageImpl<>(withInfos, pageable, withInfos.size());
 		Page<WithInfo> page = new Page<>(withInfoPage);
 		return ApiResponseGenerator.success(page, HttpStatus.OK, MessageCode.SUCCESS);

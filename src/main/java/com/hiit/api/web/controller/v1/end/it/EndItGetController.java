@@ -50,7 +50,7 @@ public class EndItGetController {
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readEndIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		EndItInfo endIt =
+		EndItInfo endIt1 =
 				EndItInfo.builder()
 						.id(1L)
 						.title("종료 잇 제목")
@@ -61,7 +61,19 @@ public class EndItGetController {
 						.endDate(new Date())
 						.withCount(10L)
 						.build();
-		ServiceResponse res = new EndItInfos(List.of(endIt));
+		EndItInfo endIt2 =
+				EndItInfo.builder()
+						.id(2L)
+						.title("종료 잇 제목")
+						.topic("종료 잇 주제")
+						.startTime(1L)
+						.endTime(2L)
+						.startDate(new Date())
+						.endDate(new Date())
+						.withCount(10L)
+						.build();
+
+		ServiceResponse res = new EndItInfos(List.of(endIt1, endIt2));
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -70,14 +82,21 @@ public class EndItGetController {
 			@AuthenticationPrincipal TokenUserDetails userDetails, @RequestParam @DataId Long id) {
 		EndWithMemberInfo withMemberInfo =
 				EndWithMemberInfo.builder().id(1L).profile("프로필 사진").name("이름").resolution("잇 다짐").build();
-		EndWithInfo withInfo =
+		EndWithInfo withInfo1 =
 				EndWithInfo.builder()
 						.id(1L)
 						.content("윗 내용")
 						.hit(10L)
 						.withMemberInfo(withMemberInfo)
 						.build();
-		ServiceResponse res = new EndWithInfos(List.of(withInfo));
+		EndWithInfo withInfo2 =
+				EndWithInfo.builder()
+						.id(2L)
+						.content("윗 내용")
+						.hit(10L)
+						.withMemberInfo(withMemberInfo)
+						.build();
+		ServiceResponse res = new EndWithInfos(List.of(withInfo1, withInfo2));
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 }
