@@ -1,4 +1,4 @@
-가# HIIT
+# HIIT
 
 ## HIIT 프로젝트는?
 
