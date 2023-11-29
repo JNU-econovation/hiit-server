@@ -45,25 +45,7 @@ public class SecurityConfig {
 		http.httpBasic().disable();
 		http.cors().configurationSource(corsConfigurationSource());
 
-		http.authorizeRequests()
-				.antMatchers(
-						HttpMethod.GET,
-						"/swagger-ui/*",
-						"/api-docs/*",
-						"/openapi3.yaml",
-						"/actuator/health",
-						"/reports/**",
-						"/error",
-						// todo delete add for mock server
-						"/api/v1/token")
-				.permitAll()
-				// todo delete
-				.antMatchers(HttpMethod.POST, "/api/v1/foo")
-				.permitAll()
-				.antMatchers("/api/v1/**")
-				.authenticated()
-				.anyRequest()
-				.denyAll();
+		http.authorizeRequests().antMatchers("/api/v1/**").authenticated().anyRequest().denyAll();
 
 		http.addFilterBefore(
 				getTokenInvalidExceptionHandlerFilter(), AbstractPreAuthenticatedProcessingFilter.class);
@@ -93,15 +75,7 @@ public class SecurityConfig {
 		http.httpBasic().disable();
 		http.cors().configurationSource(corsConfigurationSource());
 
-		http.authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/openapi3.yaml", "/actuator/health", "/reports/**", "/error")
-				.permitAll()
-				.antMatchers(HttpMethod.POST, "/api/v1/foo")
-				.permitAll()
-				.antMatchers("/api/v1/**")
-				.authenticated()
-				.anyRequest()
-				.denyAll();
+		http.authorizeRequests().antMatchers("/api/v1/**").authenticated().anyRequest().denyAll();
 
 		http.addFilterBefore(
 				getTokenInvalidExceptionHandlerFilter(), AbstractPreAuthenticatedProcessingFilter.class);
@@ -136,6 +110,11 @@ public class SecurityConfig {
 		return new TokenInvalidExceptionHandlerFilter();
 	}
 
+	/**
+	 * 개발 환경에서 사용할 WebSecurityCustomizer 빈을 생성합니다.
+	 *
+	 * @return WebSecurityCustomizer
+	 */
 	@Bean
 	@Profile("!prod")
 	public WebSecurityCustomizer localWebSecurityFilterIgnoreCustomizer() {
@@ -143,15 +122,21 @@ public class SecurityConfig {
 				web.ignoring()
 						.antMatchers(
 								HttpMethod.GET,
-								"/swagger-ui/*",
-								"/api-docs/*",
-								"/openapi3.yaml",
 								"/actuator/health",
-								"/reports/**",
 								"/error",
+								"/swagger-ui/*",
+								"/swagger-resources/**",
+								"/v3/api-docs/**",
+								"/openapi3.yaml",
+								"/reports/**",
 								"/api/v1/token");
 	}
 
+	/**
+	 * 프로덕션 환경에서 사용할 WebSecurityCustomizer 빈을 생성합니다.
+	 *
+	 * @return WebSecurityCustomizer
+	 */
 	@Bean
 	@Profile("prod")
 	public WebSecurityCustomizer prodWebSecurityFilterIgnoreCustomizer() {
@@ -159,10 +144,13 @@ public class SecurityConfig {
 				web.ignoring()
 						.antMatchers(
 								HttpMethod.GET,
-								"/openapi3.yaml",
 								"/actuator/health",
-								"/reports/**",
 								"/error",
+								"/swagger-ui/*",
+								"/swagger-resources/**",
+								"/v3/api-docs/**",
+								"/openapi3.yaml",
+								"/reports/**",
 								"/api/v1/token");
 	}
 

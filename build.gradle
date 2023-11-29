@@ -111,6 +111,9 @@ dependencies {
     // flyway
     implementation "org.flywaydb:flyway-core:${flywayVersion}"
     implementation 'org.flywaydb:flyway-mysql'
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 }
 
 test {
