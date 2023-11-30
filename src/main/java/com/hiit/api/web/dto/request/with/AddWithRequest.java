@@ -2,6 +2,7 @@ package com.hiit.api.web.dto.request.with;
 
 import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.dto.validator.With;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,5 +19,5 @@ import lombok.ToString;
 public class AddWithRequest {
 
 	@DataId private Long id;
-	@With private String content;
+	@With @NotNull private String content;
 }

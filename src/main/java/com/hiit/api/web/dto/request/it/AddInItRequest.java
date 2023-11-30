@@ -3,6 +3,7 @@ package com.hiit.api.web.dto.request.it;
 import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.dto.validator.DayCode;
 import com.hiit.api.web.dto.validator.ItResolution;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,6 @@ import lombok.ToString;
 public class AddInItRequest {
 
 	@DataId private Long id;
-	@DayCode private String dayCode;
-	@ItResolution private String resolution;
+	@DayCode @NotNull private String dayCode;
+	@ItResolution @NotNull private String resolution;
 }
