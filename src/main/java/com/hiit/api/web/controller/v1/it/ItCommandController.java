@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/its")
 @RequiredArgsConstructor
-public class ItPostController {
+public class ItCommandController {
 
 	@PostMapping("/ins")
 	public ApiResponse<ApiResponse.Success> createInIt(
@@ -38,7 +38,6 @@ public class ItPostController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
 	}
 
-	// todo : test DeleteInItRequest
 	@DeleteMapping("/ins")
 	public ApiResponse<ApiResponse.Success> deleteInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,

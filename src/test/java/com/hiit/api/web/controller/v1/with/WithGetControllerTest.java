@@ -32,6 +32,8 @@ class WithGetControllerTest {
 	private static final String TAG = "With-Controller";
 	private static final String BASE_URL = "/api/v1/its/withs";
 
+	private static final String WITH_BASE_ID = "WithInfo";
+
 	@Test
 	@DisplayName(BASE_URL)
 	void readWiths() throws Exception {
@@ -50,7 +52,7 @@ class WithGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"WithInfo",
+								WITH_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("윗 정보 조회를 조회한다.")
@@ -86,7 +88,7 @@ class WithGetControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"WithInfo_invalidId",
+								WITH_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("윗 정보 조회를 조회한다.")

@@ -28,12 +28,14 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(classes = AppMain.class)
-class ItPostControllerTest {
+class ItCommandControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
 	private static final String TAG = "It-Controller";
 	private static final String BASE_URL = "/api/v1/its";
+
+	private static final String ADD_INIT_BASE_ID = "AddInIt";
 
 	@Test
 	@DisplayName(BASE_URL + "/ins")
@@ -56,7 +58,7 @@ class ItPostControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"AddInIt",
+								ADD_INIT_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇에 참여한다.")
@@ -89,7 +91,7 @@ class ItPostControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"AddInIt_invalidId",
+								ADD_INIT_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇에 참여한다.")
@@ -122,7 +124,7 @@ class ItPostControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"AddInIt_invalidDayCode",
+								ADD_INIT_BASE_ID + "_invalidDayCode",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇에 참여한다.")
@@ -154,7 +156,7 @@ class ItPostControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"AddInIt_nullResolution",
+								ADD_INIT_BASE_ID + "_nullResolution",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇에 참여한다.")
@@ -187,7 +189,7 @@ class ItPostControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"AddInIt_emptyResolution",
+								ADD_INIT_BASE_ID + "_emptyResolution",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇에 참여한다.")
@@ -221,7 +223,7 @@ class ItPostControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"AddInIt_overMaxLength",
+								ADD_INIT_BASE_ID + "_overMaxLength",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇에 참여한다.")
@@ -232,6 +234,8 @@ class ItPostControllerTest {
 												.responseFields(Description.fail())
 												.build())));
 	}
+
+	private static final String EDIT_INIT_BASE_ID = "EditInIt";
 
 	@Test
 	@DisplayName(BASE_URL + "/ins")
@@ -254,7 +258,7 @@ class ItPostControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"EditInIt",
+								EDIT_INIT_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇 참여 정보를 수정한다.")
@@ -265,6 +269,8 @@ class ItPostControllerTest {
 												.responseFields(Description.success())
 												.build())));
 	}
+
+	private static final String DELETE_INIT_BASE_ID = "DeleteInIt";
 
 	@Test
 	@DisplayName(BASE_URL + "/ins")
@@ -285,7 +291,126 @@ class ItPostControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"DeleteInIt",
+								DELETE_INIT_BASE_ID,
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇 참여를 종료한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("DeleteInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("DeleteInItResponse"))
+												.responseFields(Description.success())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL + "/ins")
+	void deleteInIt_invalidId() throws Exception {
+
+		DeleteInItRequest request = DeleteInItRequest.builder().id(-1L).endTitle("종료 잇 제목").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		// set service mock
+
+		mockMvc
+				.perform(
+						delete(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								DELETE_INIT_BASE_ID + "_invalidId",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇 참여를 종료한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("DeleteInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("DeleteInItResponse"))
+												.responseFields(Description.success())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void deleteInIt_nullTitle() throws Exception {
+		// set service mock
+		DeleteInItRequest request = DeleteInItRequest.builder().id(1L).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						delete(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								DELETE_INIT_BASE_ID + "_nullTitle",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇 참여를 종료한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("DeleteInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("DeleteInItResponse"))
+												.responseFields(Description.success())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void deleteInIt_emptyTitle() throws Exception {
+		// set service mock
+		DeleteInItRequest request = DeleteInItRequest.builder().id(1L).endTitle("").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						delete(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								DELETE_INIT_BASE_ID + "_emptyTitle",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("잇 참여를 종료한다.")
+												.tag(TAG)
+												.requestSchema(Schema.schema("DeleteInItRequest"))
+												.requestHeaders(Description.authHeader())
+												.responseSchema(Schema.schema("DeleteInItResponse"))
+												.responseFields(Description.success())
+												.build())));
+	}
+
+	@Test
+	@DisplayName(BASE_URL)
+	void deleteInIt_overMaxLength() throws Exception {
+		// set service mock
+		String overMaxLength = "1234567890123456"; // max : 15
+		DeleteInItRequest request = DeleteInItRequest.builder().id(1L).endTitle(overMaxLength).build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						delete(BASE_URL + "/ins", 0)
+								.content(content)
+								.header("Authorization", "{{accessToken}}")
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andDo(
+						document(
+								DELETE_INIT_BASE_ID + "_overMaxLength",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇 참여를 종료한다.")

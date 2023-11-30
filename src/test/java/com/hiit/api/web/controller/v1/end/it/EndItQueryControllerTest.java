@@ -26,12 +26,14 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(classes = AppMain.class)
-class EndItGetControllerTest {
+class EndItQueryControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
 	private static final String TAG = "EndIt-Controller";
 	private static final String BASE_URL = "/api/v1/end/its";
+
+	private static final String ENDIT_BASE_ID = "EndItInfo";
 
 	@Test
 	@DisplayName(BASE_URL + "/{id}")
@@ -46,7 +48,7 @@ class EndItGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"EndItInfo",
+								ENDIT_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("종료 잇")
@@ -72,7 +74,7 @@ class EndItGetControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"EndItInfo_invalidId",
+								ENDIT_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("종료 잇")
@@ -98,7 +100,7 @@ class EndItGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"EndItInfos",
+								ENDIT_BASE_ID + "s",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("종료 잇 목록")
@@ -109,6 +111,8 @@ class EndItGetControllerTest {
 												.responseFields(Description.success(EndItDescription.readEndIts()))
 												.build())));
 	}
+
+	private static final String END_WITHIN_BASE_ID = "EndWithinInfo";
 
 	@Test
 	@DisplayName(BASE_URL + "/withs")
@@ -124,7 +128,7 @@ class EndItGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"EndWithInfo",
+								END_WITHIN_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("종료 잇 윗")
@@ -151,7 +155,7 @@ class EndItGetControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"EndWithInfo_invalidId",
+								END_WITHIN_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("종료 잇 윗")

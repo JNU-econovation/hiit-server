@@ -28,12 +28,14 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(classes = AppMain.class)
-class HitPostControllerTest {
+class HitCommandControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
 	private static final String TAG = "Hit-Controller";
 	private static final String BASE_URL = "/api/v1/its/withs/hits";
+
+	private static final String HIT_BASE_ID = "HitInfo";
 
 	@Test
 	@DisplayName(BASE_URL)
@@ -54,7 +56,7 @@ class HitPostControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"Hit",
+								HIT_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("힛을 수행한다.")
@@ -91,7 +93,7 @@ class HitPostControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"Hit_invalidId",
+								HIT_BASE_ID + "invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("힛을 수행한다.")

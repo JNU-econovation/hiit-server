@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/its/withs")
 @RequiredArgsConstructor
-public class WithGetController {
+public class WithQueryController {
 
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<Page<WithInfo>>> readWiths(

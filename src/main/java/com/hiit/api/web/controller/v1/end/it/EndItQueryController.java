@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/end/its")
 @RequiredArgsConstructor
-public class EndItGetController {
+public class EndItQueryController {
 
 	@GetMapping("{id}")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseEndIt(
