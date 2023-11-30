@@ -26,12 +26,14 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(classes = AppMain.class)
-class MemberGetControllerTest {
+class MemberQueryControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
 	private static final String TAG = "Member-Controller";
 	private static final String BASE_URL = "/api/v1/members";
+
+	private static final String MEMBER_BASE_ID = "MemberInfo";
 
 	@Test
 	@DisplayName(BASE_URL)
@@ -46,7 +48,7 @@ class MemberGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"MemberInfo",
+								MEMBER_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("회원 정보를 조회한다.")
@@ -57,6 +59,8 @@ class MemberGetControllerTest {
 												.responseFields(Description.success(MemberDescription.browseMember()))
 												.build())));
 	}
+
+	private static final String MEMBER_IT_BASE_ID = "MemberItInfo";
 
 	@Test
 	@DisplayName(BASE_URL + "/stats/it")
@@ -73,7 +77,7 @@ class MemberGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"MemberItInfo",
+								MEMBER_IT_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("회원 잇 통계를 조회한다.")
@@ -103,7 +107,7 @@ class MemberGetControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"MemberItInfo_invalidId",
+								MEMBER_IT_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("회원 잇 통계를 조회한다.")
@@ -133,7 +137,7 @@ class MemberGetControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"MemberItInfo_invalidIId",
+								MEMBER_IT_BASE_ID + "_invalidIId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("회원 잇 통계를 조회한다.")

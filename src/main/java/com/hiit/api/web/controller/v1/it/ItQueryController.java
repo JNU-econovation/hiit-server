@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/its")
 @RequiredArgsConstructor
-public class ItGetController {
+public class ItQueryController {
 
 	@GetMapping("{id}")
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseIt(

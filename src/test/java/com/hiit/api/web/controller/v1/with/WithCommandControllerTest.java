@@ -1,9 +1,9 @@
-package com.hiit.api.web.controller.v1.end.it;
+package com.hiit.api.web.controller.v1.with;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -11,8 +11,8 @@ import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
 import com.hiit.api.web.controller.description.Description;
-import com.hiit.api.web.dto.request.end.it.DeleteEndItRequest;
-import com.hiit.api.web.dto.request.end.it.EditEndItRequest;
+import com.hiit.api.web.dto.request.with.AddWithRequest;
+import com.hiit.api.web.dto.request.with.DeleteWithRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,219 +27,216 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(classes = AppMain.class)
-class EndItPostControllerTest {
-
+class WithCommandControllerTest {
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
-	private static final String TAG = "EndIt-Controller";
-	private static final String BASE_URL = "/api/v1/end/its";
+	private static final String TAG = "With-Controller";
+	private static final String BASE_URL = "/api/v1/its/withs";
+
+	private static final String ADD_WITH_BASE_ID = "AddWithInfo";
 
 	@Test
 	@DisplayName(BASE_URL)
-	void editEndIt() throws Exception {
+	void readWiths() throws Exception {
 		// set service mock
-
-		EditEndItRequest request = EditEndItRequest.builder().id(1L).title("종료잇 수정 제목").build();
+		AddWithRequest request = AddWithRequest.builder().id(1L).content("윗 내용").build();
 
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
 				.perform(
-						put(BASE_URL, 0)
-								.content(content)
+						post(BASE_URL, 0)
 								.header("Authorization", "{{accessToken}}")
+								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"EditEndItInfo",
+								ADD_WITH_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("종료 잇 수정한다.")
+												.description("윗 추가한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("EditEndItInfoRequest"))
+												.requestSchema(Schema.schema("AddWithRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("EditEndItInfoResponse"))
-												.responseFields(Description.success())
+												.responseSchema(Schema.schema("AddWithResponse"))
+												.responseFields(Description.created())
 												.build())));
 	}
 
 	@Test
 	@DisplayName(BASE_URL)
-	void editEndIt_invalidId() throws Exception {
+	void readWiths_invalidId() throws Exception {
 		// set service mock
-
-		EditEndItRequest request = EditEndItRequest.builder().id(-1L).title("종료잇 수정 제목").build();
+		AddWithRequest request = AddWithRequest.builder().id(-1L).content("윗 내용").build();
 
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
 				.perform(
-						put(BASE_URL, 0)
-								.content(content)
+						post(BASE_URL, 0)
 								.header("Authorization", "{{accessToken}}")
+								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"EditEndItInfo_invalidId",
+								ADD_WITH_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("종료 잇 수정한다.")
+												.description("윗 추가한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("EditEndItInfoRequest"))
+												.requestSchema(Schema.schema("AddWithRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("EditEndItInfoResponse"))
+												.responseSchema(Schema.schema("AddWithResponse"))
 												.responseFields(Description.fail())
 												.build())));
 	}
 
 	@Test
 	@DisplayName(BASE_URL)
-	void editEndIt_nullTitle() throws Exception {
+	void readWiths_nullWith() throws Exception {
 		// set service mock
-
-		EditEndItRequest request = EditEndItRequest.builder().id(1L).build();
+		AddWithRequest request = AddWithRequest.builder().id(1L).build();
 
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
 				.perform(
-						put(BASE_URL, 0)
-								.content(content)
+						post(BASE_URL, 0)
 								.header("Authorization", "{{accessToken}}")
+								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"EditEndItInfo_nullTitle",
+								ADD_WITH_BASE_ID + "_nullWith",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("종료 잇 수정한다.")
+												.description("윗 추가한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("EditEndItInfoRequest"))
+												.requestSchema(Schema.schema("AddWithRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("EditEndItInfoResponse"))
+												.responseSchema(Schema.schema("AddWithResponse"))
 												.responseFields(Description.fail())
 												.build())));
 	}
 
 	@Test
 	@DisplayName(BASE_URL)
-	void editEndIt_emptyTitle() throws Exception {
+	void readWiths_emptyWith() throws Exception {
 		// set service mock
-
-		EditEndItRequest request = EditEndItRequest.builder().id(1L).title("").build();
+		AddWithRequest request = AddWithRequest.builder().id(1L).content("").build();
 
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
 				.perform(
-						put(BASE_URL, 0)
-								.content(content)
+						post(BASE_URL, 0)
 								.header("Authorization", "{{accessToken}}")
+								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"EditEndItInfo_emptyTitle",
+								ADD_WITH_BASE_ID + "_emptyWith",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("종료 잇 수정한다.")
+												.description("윗 추가한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("EditEndItInfoRequest"))
+												.requestSchema(Schema.schema("AddWithRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("EditEndItInfoResponse"))
+												.responseSchema(Schema.schema("AddWithResponse"))
 												.responseFields(Description.fail())
 												.build())));
 	}
 
 	@Test
 	@DisplayName(BASE_URL)
-	void editEndIt_overMaxLength() throws Exception {
+	void readWiths_overMaxLength() throws Exception {
 		// set service mock
-		String overMaxLength = "1234567890123456"; // max : 15
-		EditEndItRequest request = EditEndItRequest.builder().id(1L).title(overMaxLength).build();
+		String overMaxLength = "123456789012345678901";
+		AddWithRequest request = AddWithRequest.builder().id(1L).content(overMaxLength).build();
 
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
 				.perform(
-						put(BASE_URL, 0)
-								.content(content)
+						post(BASE_URL, 0)
 								.header("Authorization", "{{accessToken}}")
+								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"EditEndItInfo_overMaxLength",
+								ADD_WITH_BASE_ID + "_overMaxLength",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("종료 잇 수정한다.")
+												.description("윗 추가한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("EditEndItInfoRequest"))
+												.requestSchema(Schema.schema("AddWithRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("EditEndItInfoResponse"))
+												.responseSchema(Schema.schema("AddWithResponse"))
 												.responseFields(Description.fail())
 												.build())));
 	}
 
+	private static final String DELETE_WITH_BASE_ID = "DeleteWithInfo";
+
 	@Test
 	@DisplayName(BASE_URL)
-	void deleteEndIt() throws Exception {
+	void deleteWith() throws Exception {
 		// set service mock
-
-		DeleteEndItRequest request = DeleteEndItRequest.builder().id(1L).build();
+		DeleteWithRequest request = DeleteWithRequest.builder().id(1L).build();
 
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
 				.perform(
 						delete(BASE_URL, 0)
-								.content(content)
 								.header("Authorization", "{{accessToken}}")
+								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"DeleteEndItInfo",
+								DELETE_WITH_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("종료 잇 숨긴다.")
+												.description("윗 삭제한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("DeleteEndItInfoRequest"))
+												.requestSchema(Schema.schema("DeleteWithRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("DeleteEndItInfoResponse"))
+												.responseSchema(Schema.schema("DeleteWithResponse"))
 												.responseFields(Description.success())
 												.build())));
 	}
 
 	@Test
 	@DisplayName(BASE_URL)
-	void deleteEndIt_invalidId() throws Exception {
+	void deleteWith_invalidId() throws Exception {
 		// set service mock
-
-		DeleteEndItRequest request = DeleteEndItRequest.builder().id(-1L).build();
+		DeleteWithRequest request = DeleteWithRequest.builder().id(-1L).build();
 
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
 				.perform(
-						put(BASE_URL, 0)
-								.content(content)
+						delete(BASE_URL, 0)
 								.header("Authorization", "{{accessToken}}")
+								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"DeleteEndItInfo_invalidId",
+								DELETE_WITH_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("종료 잇 숨긴다.")
+												.description("윗 삭제한다.")
 												.tag(TAG)
-												.requestSchema(Schema.schema("DeleteEndItInfoRequest"))
+												.requestSchema(Schema.schema("DeleteWithRequest"))
 												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("DeleteEndItInfoResponse"))
+												.responseSchema(Schema.schema("DeleteWithResponse"))
 												.responseFields(Description.fail())
 												.build())));
 	}

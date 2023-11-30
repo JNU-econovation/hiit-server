@@ -2,6 +2,7 @@ package com.hiit.api.web.dto.request.it;
 
 import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.dto.validator.ItTitle;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,5 +19,5 @@ import lombok.ToString;
 public class DeleteInItRequest {
 
 	@DataId private Long id;
-	@ItTitle private String endTitle;
+	@ItTitle @NotNull private String endTitle;
 }

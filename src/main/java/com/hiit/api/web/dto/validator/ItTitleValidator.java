@@ -1,6 +1,5 @@
 package com.hiit.api.web.dto.validator;
 
-import java.util.Objects;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -15,10 +14,6 @@ public class ItTitleValidator implements ConstraintValidator<ItTitle, String> {
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		if (Objects.isNull(value)) {
-			return false;
-		}
-
 		if (value.isEmpty()) {
 			return false;
 		}

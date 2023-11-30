@@ -26,12 +26,14 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(classes = AppMain.class)
-class ItGetControllerTest {
+class ItQueryControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
 	private static final String TAG = "It-Controller";
 	private static final String BASE_URL = "/api/v1/its";
+
+	private static final String IT_BASE_ID = "ItInfo";
 
 	@Test
 	@DisplayName(BASE_URL + "/{id}")
@@ -46,7 +48,7 @@ class ItGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"ItInfo",
+								IT_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇을 조회한다.")
@@ -72,7 +74,7 @@ class ItGetControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"ItInfo_invalidId",
+								IT_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇을 조회한다.")
@@ -98,7 +100,7 @@ class ItGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"ItInfos",
+								IT_BASE_ID + "s",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("잇 목록을 조회한다.")
@@ -109,6 +111,8 @@ class ItGetControllerTest {
 												.responseFields(Description.success(ItDescription.readIts()))
 												.build())));
 	}
+
+	private static final String INIT_BASE_ID = "InItInfo";
 
 	@Test
 	@DisplayName(BASE_URL + "/ins")
@@ -123,7 +127,7 @@ class ItGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"InItInfo",
+								INIT_BASE_ID + "s",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("참여 잇 목록을 조회한다.")
@@ -148,7 +152,7 @@ class ItGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"InItInfo",
+								INIT_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("참여 잇을 조회한다.")
@@ -174,7 +178,7 @@ class ItGetControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"InItInfo_invalidId",
+								INIT_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("참여 잇을 조회한다.")
@@ -186,6 +190,8 @@ class ItGetControllerTest {
 												.responseFields(Description.fail())
 												.build())));
 	}
+
+	private static final String IT_MOTIVATIONS_BASE_ID = "ItMotivations";
 
 	@Test
 	@DisplayName(BASE_URL + "/ins/{id}/motivations")
@@ -200,7 +206,7 @@ class ItGetControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
-								"ItMotivations",
+								IT_MOTIVATIONS_BASE_ID,
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("참여 잇 동기부여 정보를 조회한다.")
@@ -226,7 +232,7 @@ class ItGetControllerTest {
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
-								"ItMotivations_invalidId",
+								IT_MOTIVATIONS_BASE_ID + "_invalidId",
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("참여 잇 동기부여 정보를 조회한다.")

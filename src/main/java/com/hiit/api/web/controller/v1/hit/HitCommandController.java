@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/its/withs/hits")
 @RequiredArgsConstructor
-public class HitPostController {
+public class HitCommandController {
 
 	@PostMapping()
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> hit(
