@@ -16,6 +16,7 @@ buildscript {
         jsonwebtokenVersion = '0.11.5'
         flywayVersion = '9.16.0'
         jsr305Version = '3.0.1'
+        firebaseAdminVersion = '9.1.1'
     }
 }
 
@@ -111,6 +112,9 @@ dependencies {
     // flyway
     implementation "org.flywaydb:flyway-core:${flywayVersion}"
     implementation 'org.flywaydb:flyway-mysql'
+
+    // fcm
+    implementation "com.google.firebase:firebase-admin:${firebaseAdminVersion}"
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
