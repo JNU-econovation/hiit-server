@@ -41,10 +41,7 @@ class ItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/{id}", 1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/{id}", 1).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -54,7 +51,6 @@ class ItQueryControllerTest {
 												.description("잇을 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("ItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.pathParameters(parameterWithName("id").description("잇 id"))
 												.responseSchema(Schema.schema("ItInfoResponse"))
 												.responseFields(Description.success(ItDescription.browseIt()))
@@ -67,10 +63,7 @@ class ItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/{id}", -1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/{id}", -1).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -80,7 +73,6 @@ class ItQueryControllerTest {
 												.description("잇을 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("ItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.pathParameters(parameterWithName("id").description("잇 id"))
 												.responseSchema(Schema.schema("ItInfoResponse"))
 												.responseFields(Description.fail())
@@ -93,10 +85,7 @@ class ItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL, 0).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -106,7 +95,6 @@ class ItQueryControllerTest {
 												.description("잇 목록을 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("ItInfosRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("ItInfosResponse"))
 												.responseFields(Description.success(ItDescription.readIts()))
 												.build())));
@@ -120,10 +108,7 @@ class ItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/ins", 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/ins", 0).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -133,7 +118,6 @@ class ItQueryControllerTest {
 												.description("참여 잇 목록을 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("InItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("InItInfoResponse"))
 												.responseFields(Description.success(ItDescription.readInIts()))
 												.build())));
@@ -145,10 +129,7 @@ class ItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/ins/{id}", 1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/ins/{id}", 1).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -158,7 +139,6 @@ class ItQueryControllerTest {
 												.description("참여 잇을 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("InItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.pathParameters(parameterWithName("id").description("참여 잇 id"))
 												.responseSchema(Schema.schema("InItInfoResponse"))
 												.responseFields(Description.success(ItDescription.browseInIt()))
@@ -171,10 +151,7 @@ class ItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/ins/{id}", -1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/ins/{id}", -1).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -184,7 +161,6 @@ class ItQueryControllerTest {
 												.description("참여 잇을 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("InItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.pathParameters(parameterWithName("id").description("참여 잇 id"))
 												.responseSchema(Schema.schema("InItInfoResponse"))
 												.responseFields(Description.fail())
@@ -199,10 +175,7 @@ class ItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/ins/{id}/motivations", 1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/ins/{id}/motivations", 1).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -212,7 +185,6 @@ class ItQueryControllerTest {
 												.description("참여 잇 동기부여 정보를 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("ItMotivationsRequest"))
-												.requestHeaders(Description.authHeader())
 												.pathParameters(parameterWithName("id").description("참여 잇 id"))
 												.responseSchema(Schema.schema("ItMotivationsResponse"))
 												.responseFields(Description.success(ItDescription.readItMotivations()))
@@ -226,9 +198,7 @@ class ItQueryControllerTest {
 
 		mockMvc
 				.perform(
-						get(BASE_URL + "/ins/{id}/motivations", -1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						get(BASE_URL + "/ins/{id}/motivations", -1).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -238,7 +208,6 @@ class ItQueryControllerTest {
 												.description("참여 잇 동기부여 정보를 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("ItMotivationsRequest"))
-												.requestHeaders(Description.authHeader())
 												.pathParameters(parameterWithName("id").description("참여 잇 id"))
 												.responseSchema(Schema.schema("ItMotivationsResponse"))
 												.responseFields(Description.fail())

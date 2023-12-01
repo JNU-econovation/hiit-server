@@ -44,11 +44,7 @@ class WithCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						post(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.content(content)
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -58,7 +54,6 @@ class WithCommandControllerTest {
 												.description("윗 추가한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddWithRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddWithResponse"))
 												.responseFields(Description.created())
 												.build())));
@@ -73,11 +68,7 @@ class WithCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						post(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.content(content)
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -87,7 +78,6 @@ class WithCommandControllerTest {
 												.description("윗 추가한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddWithRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddWithResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -102,11 +92,7 @@ class WithCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						post(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.content(content)
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -116,7 +102,6 @@ class WithCommandControllerTest {
 												.description("윗 추가한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddWithRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddWithResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -131,11 +116,7 @@ class WithCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						post(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.content(content)
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -145,7 +126,6 @@ class WithCommandControllerTest {
 												.description("윗 추가한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddWithRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddWithResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -161,11 +141,7 @@ class WithCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						post(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.content(content)
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -175,7 +151,6 @@ class WithCommandControllerTest {
 												.description("윗 추가한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddWithRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddWithResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -192,11 +167,7 @@ class WithCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						delete(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.content(content)
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(delete(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -206,7 +177,6 @@ class WithCommandControllerTest {
 												.description("윗 삭제한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DeleteWithRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteWithResponse"))
 												.responseFields(Description.success())
 												.build())));
@@ -221,11 +191,7 @@ class WithCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						delete(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.content(content)
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(delete(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -235,7 +201,6 @@ class WithCommandControllerTest {
 												.description("윗 삭제한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DeleteWithRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteWithResponse"))
 												.responseFields(Description.fail())
 												.build())));

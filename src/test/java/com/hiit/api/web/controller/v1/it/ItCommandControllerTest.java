@@ -51,10 +51,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						post(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						post(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -64,7 +61,6 @@ class ItCommandControllerTest {
 												.description("잇에 참여한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddInItResponse"))
 												.responseFields(Description.created())
 												.build())));
@@ -84,10 +80,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						post(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						post(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -97,7 +90,6 @@ class ItCommandControllerTest {
 												.description("잇에 참여한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddInItResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -117,10 +109,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						post(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						post(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -130,7 +119,6 @@ class ItCommandControllerTest {
 												.description("잇에 참여한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddInItResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -149,10 +137,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						post(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						post(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -162,7 +147,6 @@ class ItCommandControllerTest {
 												.description("잇에 참여한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddInItResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -182,10 +166,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						post(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						post(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -195,7 +176,6 @@ class ItCommandControllerTest {
 												.description("잇에 참여한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddInItResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -216,10 +196,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						post(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						post(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -229,7 +206,6 @@ class ItCommandControllerTest {
 												.description("잇에 참여한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("AddInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("AddInItResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -250,11 +226,7 @@ class ItCommandControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						put(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(put(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -264,7 +236,6 @@ class ItCommandControllerTest {
 												.description("잇 참여 정보를 수정한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("EditInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EditInItResponse"))
 												.responseFields(Description.success())
 												.build())));
@@ -284,10 +255,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						delete(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						delete(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -297,7 +265,6 @@ class ItCommandControllerTest {
 												.description("잇 참여를 종료한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DeleteInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteInItResponse"))
 												.responseFields(Description.success())
 												.build())));
@@ -315,10 +282,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						delete(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						delete(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -328,7 +292,6 @@ class ItCommandControllerTest {
 												.description("잇 참여를 종료한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DeleteInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteInItResponse"))
 												.responseFields(Description.success())
 												.build())));
@@ -344,10 +307,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						delete(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						delete(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -357,7 +317,6 @@ class ItCommandControllerTest {
 												.description("잇 참여를 종료한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DeleteInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteInItResponse"))
 												.responseFields(Description.success())
 												.build())));
@@ -373,10 +332,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						delete(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						delete(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -386,7 +342,6 @@ class ItCommandControllerTest {
 												.description("잇 참여를 종료한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DeleteInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteInItResponse"))
 												.responseFields(Description.success())
 												.build())));
@@ -403,10 +358,7 @@ class ItCommandControllerTest {
 
 		mockMvc
 				.perform(
-						delete(BASE_URL + "/ins", 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+						delete(BASE_URL + "/ins", 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -416,7 +368,6 @@ class ItCommandControllerTest {
 												.description("잇 참여를 종료한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DeleteInItRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteInItResponse"))
 												.responseFields(Description.success())
 												.build())));

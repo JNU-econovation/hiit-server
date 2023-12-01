@@ -48,11 +48,7 @@ class HitCommandControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						post(BASE_URL, 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -62,7 +58,6 @@ class HitCommandControllerTest {
 												.description("힛을 수행한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("HitRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("HitResponse"))
 												.responseFields(
 														Description.success(
@@ -85,11 +80,7 @@ class HitCommandControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						post(BASE_URL, 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -99,7 +90,6 @@ class HitCommandControllerTest {
 												.description("힛을 수행한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("HitRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("HitResponse"))
 												.responseFields(Description.fail())
 												.build())));

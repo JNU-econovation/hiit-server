@@ -41,10 +41,7 @@ class MemberQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL, 0).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -54,7 +51,6 @@ class MemberQueryControllerTest {
 												.description("회원 정보를 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("MemberInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("MemberInfoResponse"))
 												.responseFields(Description.success(MemberDescription.browseMember()))
 												.build())));
@@ -70,7 +66,6 @@ class MemberQueryControllerTest {
 		mockMvc
 				.perform(
 						get(BASE_URL + "/stats/it", 2)
-								.header("Authorization", "{{accessToken}}")
 								.queryParam("id", "1")
 								.queryParam("iid", "1")
 								.contentType(MediaType.APPLICATION_JSON))
@@ -83,7 +78,6 @@ class MemberQueryControllerTest {
 												.description("회원 잇 통계를 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("MemberItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.requestParameters(
 														parameterWithName("id").description("멤버 id"),
 														parameterWithName("iid").description("잇 id"))
@@ -100,7 +94,6 @@ class MemberQueryControllerTest {
 		mockMvc
 				.perform(
 						get(BASE_URL + "/stats/it", 2)
-								.header("Authorization", "{{accessToken}}")
 								.queryParam("id", "-1")
 								.queryParam("iid", "1")
 								.contentType(MediaType.APPLICATION_JSON))
@@ -113,7 +106,6 @@ class MemberQueryControllerTest {
 												.description("회원 잇 통계를 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("MemberItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.requestParameters(
 														parameterWithName("id").description("멤버 id"),
 														parameterWithName("iid").description("잇 id"))
@@ -130,7 +122,6 @@ class MemberQueryControllerTest {
 		mockMvc
 				.perform(
 						get(BASE_URL + "/stats/it", 2)
-								.header("Authorization", "{{accessToken}}")
 								.queryParam("id", "1")
 								.queryParam("iid", "-1")
 								.contentType(MediaType.APPLICATION_JSON))
@@ -143,7 +134,6 @@ class MemberQueryControllerTest {
 												.description("회원 잇 통계를 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("MemberItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.requestParameters(
 														parameterWithName("id").description("멤버 id"),
 														parameterWithName("iid").description("잇 id"))
