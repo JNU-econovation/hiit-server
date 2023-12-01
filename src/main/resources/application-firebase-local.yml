@@ -1,0 +1,12 @@
+firebase:
+  multicast-message:
+    size: 500
+  projectId: hiit-dev-a8917
+  private:
+    keyId: ${FIREBASE_PRIVATE_KEY_ID}
+    key: ${FIREBASE_PRIVATE_KEY}
+  client:
+    id: 101929051198596598209
+    email: firebase-adminsdk-7j1ke@hiit-dev-a8917.iam.gserviceaccount.com
+  token:
+    uri: https://oauth2.googleapis.com/token
