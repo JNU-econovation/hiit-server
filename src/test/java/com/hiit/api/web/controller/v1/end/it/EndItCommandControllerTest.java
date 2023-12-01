@@ -44,11 +44,7 @@ class EndItCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						put(BASE_URL, 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(put(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -58,7 +54,6 @@ class EndItCommandControllerTest {
 												.description("종료 잇 수정한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("EditEndItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EditEndItInfoResponse"))
 												.responseFields(Description.success())
 												.build())));
@@ -76,11 +71,7 @@ class EndItCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						put(BASE_URL, 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(put(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -90,7 +81,6 @@ class EndItCommandControllerTest {
 												.description("종료 잇 수정한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("EditEndItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EditEndItInfoResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -106,11 +96,7 @@ class EndItCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						put(BASE_URL, 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(put(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -120,7 +106,6 @@ class EndItCommandControllerTest {
 												.description("종료 잇 수정한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("EditEndItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EditEndItInfoResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -136,11 +121,7 @@ class EndItCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						put(BASE_URL, 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(put(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -150,7 +131,6 @@ class EndItCommandControllerTest {
 												.description("종료 잇 수정한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("EditEndItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EditEndItInfoResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -166,11 +146,7 @@ class EndItCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						put(BASE_URL, 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(put(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -180,7 +156,6 @@ class EndItCommandControllerTest {
 												.description("종료 잇 수정한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("EditEndItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EditEndItInfoResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -198,11 +173,7 @@ class EndItCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						delete(BASE_URL, 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(delete(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -212,7 +183,6 @@ class EndItCommandControllerTest {
 												.description("종료 잇 숨긴다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DeleteEndItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteEndItInfoResponse"))
 												.responseFields(Description.success())
 												.build())));
@@ -228,11 +198,7 @@ class EndItCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(
-						put(BASE_URL, 0)
-								.content(content)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(put(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -242,7 +208,6 @@ class EndItCommandControllerTest {
 												.description("종료 잇 숨긴다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DeleteEndItInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DeleteEndItInfoResponse"))
 												.responseFields(Description.fail())
 												.build())));

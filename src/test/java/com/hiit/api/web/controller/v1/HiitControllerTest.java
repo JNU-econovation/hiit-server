@@ -41,10 +41,7 @@ class HiitControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/banners", 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/banners", 0).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -54,7 +51,6 @@ class HiitControllerTest {
 												.description("배너 내역")
 												.tag(TAG)
 												.requestSchema(Schema.schema("BannerRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("BannerResponse"))
 												.responseFields(Description.success(SupportDescription.banners()))
 												.build())));
@@ -66,10 +62,7 @@ class HiitControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/notice", 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/notice", 0).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -79,7 +72,6 @@ class HiitControllerTest {
 												.description("알림 내역")
 												.tag(TAG)
 												.requestSchema(Schema.schema("NoticeRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("NoticeResponse"))
 												.responseFields(Description.success(SupportDescription.notice()))
 												.build())));
@@ -103,7 +95,6 @@ class HiitControllerTest {
 		mockMvc
 				.perform(
 						post(BASE_URL + "/suggest/its", 0)
-								.header("Authorization", "{{accessToken}}")
 								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
@@ -115,7 +106,6 @@ class HiitControllerTest {
 												.description("잇 제안")
 												.tag(TAG)
 												.requestSchema(Schema.schema("SuggestItsRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("SuggestItsResponse"))
 												.responseFields(Description.success())
 												.build())));
@@ -139,7 +129,6 @@ class HiitControllerTest {
 		mockMvc
 				.perform(
 						post(BASE_URL + "/suggest/its", 0)
-								.header("Authorization", "{{accessToken}}")
 								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
@@ -151,7 +140,6 @@ class HiitControllerTest {
 												.description("잇 제안")
 												.tag(TAG)
 												.requestSchema(Schema.schema("SuggestItsRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("SuggestItsResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -174,7 +162,6 @@ class HiitControllerTest {
 		mockMvc
 				.perform(
 						post(BASE_URL + "/suggest/its", 0)
-								.header("Authorization", "{{accessToken}}")
 								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
@@ -186,7 +173,6 @@ class HiitControllerTest {
 												.description("잇 제안")
 												.tag(TAG)
 												.requestSchema(Schema.schema("SuggestItsRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("SuggestItsResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -210,7 +196,6 @@ class HiitControllerTest {
 		mockMvc
 				.perform(
 						post(BASE_URL + "/suggest/its", 0)
-								.header("Authorization", "{{accessToken}}")
 								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
@@ -222,7 +207,6 @@ class HiitControllerTest {
 												.description("잇 제안")
 												.tag(TAG)
 												.requestSchema(Schema.schema("SuggestItsRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("SuggestItsResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -245,7 +229,6 @@ class HiitControllerTest {
 		mockMvc
 				.perform(
 						post(BASE_URL + "/suggest/its", 0)
-								.header("Authorization", "{{accessToken}}")
 								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
@@ -257,7 +240,6 @@ class HiitControllerTest {
 												.description("잇 제안")
 												.tag(TAG)
 												.requestSchema(Schema.schema("SuggestItsRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("SuggestItsResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -281,7 +263,6 @@ class HiitControllerTest {
 		mockMvc
 				.perform(
 						post(BASE_URL + "/suggest/its", 0)
-								.header("Authorization", "{{accessToken}}")
 								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
@@ -293,7 +274,6 @@ class HiitControllerTest {
 												.description("잇 제안")
 												.tag(TAG)
 												.requestSchema(Schema.schema("SuggestItsRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("SuggestItsResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -318,7 +298,6 @@ class HiitControllerTest {
 		mockMvc
 				.perform(
 						post(BASE_URL + "/suggest/its", 0)
-								.header("Authorization", "{{accessToken}}")
 								.content(content)
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
@@ -330,7 +309,6 @@ class HiitControllerTest {
 												.description("잇 제안")
 												.tag(TAG)
 												.requestSchema(Schema.schema("SuggestItsRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("SuggestItsResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -342,10 +320,7 @@ class HiitControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/errors", 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/errors", 0).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -355,7 +330,6 @@ class HiitControllerTest {
 												.description("에러 내역")
 												.tag(TAG)
 												.requestSchema(Schema.schema("ErrorsRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("ErrorsResponse"))
 												.responseFields(Description.success(SupportDescription.errors()))
 												.build())));
@@ -367,10 +341,7 @@ class HiitControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/dayCode", 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/dayCode", 0).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -380,7 +351,6 @@ class HiitControllerTest {
 												.description("날짜 코드")
 												.tag(TAG)
 												.requestSchema(Schema.schema("DayCodeRequest"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("DayCodeResponse"))
 												.responseFields(Description.success(SupportDescription.dayCode()))
 												.build())));

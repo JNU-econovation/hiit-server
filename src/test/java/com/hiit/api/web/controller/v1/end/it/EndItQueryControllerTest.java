@@ -41,10 +41,7 @@ class EndItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/{id}", 1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/{id}", 1).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -55,7 +52,6 @@ class EndItQueryControllerTest {
 												.tag(TAG)
 												.requestSchema(Schema.schema("EndItInfoRequest"))
 												.pathParameters(parameterWithName("id").description("종료 잇 id"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EndItInfoResponse"))
 												.responseFields(Description.success(EndItDescription.browseEndIt()))
 												.build())));
@@ -67,10 +63,7 @@ class EndItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL + "/{id}", -1)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/{id}", -1).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(
@@ -81,7 +74,6 @@ class EndItQueryControllerTest {
 												.tag(TAG)
 												.requestSchema(Schema.schema("EndItInfoRequest"))
 												.pathParameters(parameterWithName("id").description("종료 잇 id"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EndItInfoResponse"))
 												.responseFields(Description.fail())
 												.build())));
@@ -93,10 +85,7 @@ class EndItQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(
-						get(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
-								.contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL, 0).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -106,8 +95,6 @@ class EndItQueryControllerTest {
 												.description("종료 잇 목록")
 												.tag(TAG)
 												.requestSchema(Schema.schema("EndItInfosRequest"))
-												.requestHeaders(Description.authHeader())
-												.responseSchema(Schema.schema("EndItInfosResponse"))
 												.responseFields(Description.success(EndItDescription.readEndIts()))
 												.build())));
 	}
@@ -122,7 +109,6 @@ class EndItQueryControllerTest {
 		mockMvc
 				.perform(
 						get(BASE_URL + "/withs", 0)
-								.header("Authorization", "{{accessToken}}")
 								.queryParam("id", "1")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
@@ -132,10 +118,8 @@ class EndItQueryControllerTest {
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("종료 잇 윗")
-												.tag(TAG)
 												.requestSchema(Schema.schema("EndWithInfoRequest"))
 												.requestParameters(parameterWithName("id").description("종료 잇 id"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EndWithInfoResponse"))
 												.responseFields(Description.success(EndItDescription.browseEndWith()))
 												.build())));
@@ -149,7 +133,6 @@ class EndItQueryControllerTest {
 		mockMvc
 				.perform(
 						get(BASE_URL + "/withs", 0)
-								.header("Authorization", "{{accessToken}}")
 								.queryParam("id", "-1")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
@@ -159,10 +142,8 @@ class EndItQueryControllerTest {
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("종료 잇 윗")
-												.tag(TAG)
 												.requestSchema(Schema.schema("EndWithInfoRequest"))
 												.requestParameters(parameterWithName("id").description("종료 잇 id"))
-												.requestHeaders(Description.authHeader())
 												.responseSchema(Schema.schema("EndWithInfoResponse"))
 												.responseFields(Description.fail())
 												.build())));

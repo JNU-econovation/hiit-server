@@ -42,7 +42,6 @@ class WithGetControllerTest {
 		mockMvc
 				.perform(
 						get(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
 								.queryParam("page", "0")
 								.queryParam("size", "10")
 								.queryParam("sort", "id,desc")
@@ -58,7 +57,6 @@ class WithGetControllerTest {
 												.description("윗 정보 조회를 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("WithInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.requestParameters(
 														parameterWithName("id").description("윗 id"),
 														parameterWithName("my").description("나의 윗 정보 조회 여부"),
@@ -78,7 +76,6 @@ class WithGetControllerTest {
 		mockMvc
 				.perform(
 						get(BASE_URL, 0)
-								.header("Authorization", "{{accessToken}}")
 								.queryParam("page", "0")
 								.queryParam("size", "10")
 								.queryParam("sort", "id,desc")
@@ -94,7 +91,6 @@ class WithGetControllerTest {
 												.description("윗 정보 조회를 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("WithInfoRequest"))
-												.requestHeaders(Description.authHeader())
 												.requestParameters(
 														parameterWithName("id").description("윗 id"),
 														parameterWithName("my").description("나의 윗 정보 조회 여부"),
