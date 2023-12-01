@@ -7,3 +7,4 @@ spring:
       - swagger-ui
       - mysql-local
       - security-local
+      - firebase-local

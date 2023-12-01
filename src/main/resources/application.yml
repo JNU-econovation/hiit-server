@@ -7,3 +7,4 @@ spring:
       - swagger-ui
       - mysql
       - security
+      - firebase

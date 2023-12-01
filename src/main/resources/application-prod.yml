@@ -7,3 +7,4 @@ spring:
       - swagger-ui
       - mysql-prod
       - security-prod
+      - firebase-prod
