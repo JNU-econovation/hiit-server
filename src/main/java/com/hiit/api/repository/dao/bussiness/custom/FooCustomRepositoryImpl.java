@@ -2,7 +2,6 @@ package com.hiit.api.repository.dao.bussiness.custom;
 
 import com.hiit.api.repository.entity.business.FooEntity;
 import com.hiit.api.repository.entity.business.QFooEntity;
-import com.hiit.api.repository.entity.business.param.FooEntitySearchParam;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.Optional;

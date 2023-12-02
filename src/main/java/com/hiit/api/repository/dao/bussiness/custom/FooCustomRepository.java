@@ -1,7 +1,6 @@
 package com.hiit.api.repository.dao.bussiness.custom;
 
 import com.hiit.api.repository.entity.business.FooEntity;
-import com.hiit.api.repository.entity.business.param.FooEntitySearchParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

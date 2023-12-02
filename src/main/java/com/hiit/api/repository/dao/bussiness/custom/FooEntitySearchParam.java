@@ -1,4 +1,4 @@
-package com.hiit.api.repository.entity.business.param;
+package com.hiit.api.repository.dao.bussiness.custom;
 
 import java.util.Optional;
 import lombok.AllArgsConstructor;
