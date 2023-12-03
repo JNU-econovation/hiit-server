@@ -16,7 +16,17 @@
 | 1     | 잇이 존재하지 않으면 예외를 발생시킨다.             |
 | 4     | 힛 수가 0보다 작아지면 예외 로그를 남기고 0으로 반환한다. |
 
+### 쿼리
+
+| 관련 번호 | 쿼리                                                               |
+|-------|------------------------------------------------------------------|
+| 1     | WithRepository#existsById                                        |
+| 2, 3  | HitRepository#findByWithEntityAndHitterAndStatusAndCreateAtAfter |
+| 4     | HitRepository#countByWithEntityAndStatusAndCreateAtBetween       |
+
 ### 특이 사항
 
 - 윗의 힛 수를 갱신할 때 동시성 문제 발생 가능성이 있다.
+    - 힛 수를 count 쿼리를 통해 가져오기 때문에 갱신할 필요가 없어졌다.
 - 힛 수행, 취소에 대한 기록은 힛 테이블에 저장한다.
+    - rdms를 통해 기록하기 보다는 다른 방법을 찾아보는 것이 좋을 것 같다.
