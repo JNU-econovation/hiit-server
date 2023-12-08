@@ -5,6 +5,7 @@ import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import java.util.List;
+import java.util.Optional;
 
 public interface InItCustomRepository {
 
@@ -16,6 +17,6 @@ public interface InItCustomRepository {
 			Long targetId, ItStatus status, DayCodeList dayCode);
 
 	/** 특정 타겟 아이디와 특정 상태, 특정 멤버를 가진 잇을 조회한다. */
-	InItEntity findByTargetIdAndStatusAndHiitMember(
+	Optional<InItEntity> findByTargetIdAndStatusAndHiitMember(
 			Long targetId, ItStatus status, HiitMemberEntity hiitMember);
 }

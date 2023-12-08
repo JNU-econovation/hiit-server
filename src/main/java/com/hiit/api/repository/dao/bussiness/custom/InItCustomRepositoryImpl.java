@@ -7,6 +7,7 @@ import com.hiit.api.repository.entity.business.it.QInItEntity;
 import com.hiit.api.repository.entity.business.it.QItRelationEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 public class InItCustomRepositoryImpl extends QuerydslRepositorySupport
@@ -44,19 +45,20 @@ public class InItCustomRepositoryImpl extends QuerydslRepositorySupport
 	}
 
 	@Override
-	public InItEntity findByTargetIdAndStatusAndHiitMember(
+	public Optional<InItEntity> findByTargetIdAndStatusAndHiitMember(
 			Long targetId, ItStatus status, HiitMemberEntity hiitMember) {
 		QInItEntity inIt = QInItEntity.inItEntity;
 		QItRelationEntity relation = QItRelationEntity.itRelationEntity;
 
-		return from(inIt)
-				.leftJoin(inIt.itRelationEntity, relation)
-				.fetchJoin()
-				.where(
-						inIt.status
-								.eq(status)
-								.and(inIt.hiitMember.eq(hiitMember))
-								.and(relation.targetItId.eq(targetId)))
-				.fetchOne();
+		return Optional.ofNullable(
+				from(inIt)
+						.leftJoin(inIt.itRelationEntity, relation)
+						.fetchJoin()
+						.where(
+								inIt.status
+										.eq(status)
+										.and(inIt.hiitMember.eq(hiitMember))
+										.and(relation.targetItId.eq(targetId)))
+						.fetchOne());
 	}
 }
