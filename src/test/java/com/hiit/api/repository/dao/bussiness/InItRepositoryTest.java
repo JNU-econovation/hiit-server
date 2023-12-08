@@ -1,5 +1,6 @@
 package com.hiit.api.repository.dao.bussiness;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.hiit.api.repository.AbstractRepositoryTest;
@@ -11,6 +12,7 @@ import com.hiit.api.repository.init.it.InItInitializer;
 import com.hiit.api.repository.init.it.RegisteredItInitializer;
 import com.hiit.api.repository.init.member.HiitMemberInitializer;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -115,11 +117,11 @@ class InItRepositoryTest extends AbstractRepositoryTest {
 		HiitMemberEntity member = hiitMemberInitializer.getData();
 
 		// when
-		InItEntity result =
+		Optional<InItEntity> result =
 				repository.findByTargetIdAndStatusAndHiitMember(targetId, ItStatus.ACTIVE, member);
 
 		// then
-		assertEquals(source, result);
+		assertThat(result).contains(source);
 	}
 
 	private void setAdditionalData(int size, HiitMemberEntity member) {

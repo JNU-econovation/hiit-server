@@ -8,6 +8,7 @@ import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL_REQUEST;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.REQUEST_INVALID_FORMAT;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.RESOURCE_NOT_FOUND;
 
+import com.hiit.api.domain.dao.exception.DataNotFoundException;
 import com.hiit.api.web.exception.MemberNotFoundException;
 import com.hiit.api.web.exception.ResourceNotFoundException;
 import com.hiit.api.web.support.ApiResponse;
@@ -149,12 +150,12 @@ public class ApiControllerExceptionHandler {
 				ACCESS_DENIED.getCode(), ACCESS_DENIED.getMessage(), HttpStatus.FORBIDDEN);
 	}
 
-	@ExceptionHandler({ResourceNotFoundException.class})
+	@ExceptionHandler({ResourceNotFoundException.class, DataNotFoundException.class})
 	public ApiResponse<ApiResponse.FailureBody> handleResourceNotFound(
 			final Exception ex, final HttpServletRequest request) {
 		loggingHandler.writeLog(ex, request);
 		return ApiResponseGenerator.fail(
-				RESOURCE_NOT_FOUND.getCode(), ex.getMessage(), HttpStatus.NOT_FOUND);
+				RESOURCE_NOT_FOUND.getCode(), RESOURCE_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(Exception.class)
