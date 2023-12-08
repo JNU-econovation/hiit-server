@@ -118,6 +118,7 @@ class EndItQueryControllerTest {
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("종료 잇 윗")
+												.tag(TAG)
 												.requestSchema(Schema.schema("EndWithInfoRequest"))
 												.requestParameters(parameterWithName("id").description("종료 잇 id"))
 												.responseSchema(Schema.schema("EndWithInfoResponse"))
@@ -142,6 +143,7 @@ class EndItQueryControllerTest {
 								resource(
 										ResourceSnippetParameters.builder()
 												.description("종료 잇 윗")
+												.tag(TAG)
 												.requestSchema(Schema.schema("EndWithInfoRequest"))
 												.requestParameters(parameterWithName("id").description("종료 잇 id"))
 												.responseSchema(Schema.schema("EndWithInfoResponse"))
