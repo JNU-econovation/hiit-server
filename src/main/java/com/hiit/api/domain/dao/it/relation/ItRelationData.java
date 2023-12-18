@@ -13,4 +13,12 @@ public class ItRelationData extends BaseData {
 	private Long targetId;
 	private TargetItTypeInfo targetType;
 	private Long inItId;
+
+	public boolean isType(TargetItTypeInfo targetType) {
+		return targetType.equals(this.targetType);
+	}
+
+	public boolean isTarget(Long targetId) {
+		return targetId.equals(this.targetId);
+	}
 }
