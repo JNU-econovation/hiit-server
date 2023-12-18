@@ -12,8 +12,8 @@ public class ItDescription {
 			fieldWithPath("data").type(JsonFieldType.OBJECT).description("잇 정보"),
 			fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("잇 id"),
 			fieldWithPath("data.topic").type(JsonFieldType.STRING).description("잇 주제"),
-			fieldWithPath("data.startTime").type(JsonFieldType.NUMBER).description("잇 시작 시간"),
-			fieldWithPath("data.endTime").type(JsonFieldType.NUMBER).description("잇 종료 시간"),
+			fieldWithPath("data.startTime").type(JsonFieldType.STRING).description("잇 시작 시간"),
+			fieldWithPath("data.endTime").type(JsonFieldType.STRING).description("잇 종료 시간"),
 			fieldWithPath("data.inMemberCount").type(JsonFieldType.NUMBER).description("잇 참여 인원 수"),
 			fieldWithPath("data.memberIn").type(JsonFieldType.BOOLEAN).description("잇 참여 여부"),
 		};
@@ -25,8 +25,8 @@ public class ItDescription {
 			fieldWithPath("data.its").type(JsonFieldType.ARRAY).description("잇 리스트"),
 			fieldWithPath("data.its[].id").type(JsonFieldType.NUMBER).description("잇 id"),
 			fieldWithPath("data.its[].topic").type(JsonFieldType.STRING).description("잇 주제"),
-			fieldWithPath("data.its[].startTime").type(JsonFieldType.NUMBER).description("잇 시작 시간"),
-			fieldWithPath("data.its[].endTime").type(JsonFieldType.NUMBER).description("잇 종료 시간"),
+			fieldWithPath("data.its[].startTime").type(JsonFieldType.STRING).description("잇 시작 시간"),
+			fieldWithPath("data.its[].endTime").type(JsonFieldType.STRING).description("잇 종료 시간"),
 			fieldWithPath("data.its[].inMemberCount").type(JsonFieldType.NUMBER).description("잇 참여 인원 수"),
 			fieldWithPath("data.its[].memberIn").type(JsonFieldType.BOOLEAN).description("잇 참여 여부"),
 		};
@@ -40,10 +40,10 @@ public class ItDescription {
 			fieldWithPath("data.itInInfos[].title").type(JsonFieldType.STRING).description("잇 참여 제목"),
 			fieldWithPath("data.itInInfos[].topic").type(JsonFieldType.STRING).description("잇 참여 주제"),
 			fieldWithPath("data.itInInfos[].startTime")
-					.type(JsonFieldType.NUMBER)
+					.type(JsonFieldType.STRING)
 					.description("잇 참여 시작 시간"),
 			fieldWithPath("data.itInInfos[].endTime")
-					.type(JsonFieldType.NUMBER)
+					.type(JsonFieldType.STRING)
 					.description("잇 참여 종료 시간"),
 			fieldWithPath("data.itInInfos[].days").type(JsonFieldType.STRING).description("잇 참여 날짜 코드"),
 			fieldWithPath("data.itInInfos[].inMemberCount")
@@ -58,8 +58,8 @@ public class ItDescription {
 			fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("잇 참여 id"),
 			fieldWithPath("data.title").type(JsonFieldType.STRING).description("잇 참여 제목"),
 			fieldWithPath("data.topic").type(JsonFieldType.STRING).description("잇 참여 주제"),
-			fieldWithPath("data.startTime").type(JsonFieldType.NUMBER).description("잇 참여 시작 시간"),
-			fieldWithPath("data.endTime").type(JsonFieldType.NUMBER).description("잇 참여 종료 시간"),
+			fieldWithPath("data.startTime").type(JsonFieldType.STRING).description("잇 참여 시작 시간"),
+			fieldWithPath("data.endTime").type(JsonFieldType.STRING).description("잇 참여 종료 시간"),
 			fieldWithPath("data.days").type(JsonFieldType.STRING).description("잇 참여 날짜 코드"),
 			fieldWithPath("data.inMemberCount").type(JsonFieldType.NUMBER).description("잇 참여 인원 수"),
 		};

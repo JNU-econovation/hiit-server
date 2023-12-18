@@ -1,6 +1,7 @@
 package com.hiit.api.domain.dto.response.it;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,8 +19,8 @@ public class ItInfo implements ServiceResponse {
 
 	private Long id;
 	private String topic;
-	private Long startTime;
-	private Long endTime;
+	private LocalTime startTime;
+	private LocalTime endTime;
 	private Long inMemberCount;
 	private Boolean memberIn;
 }

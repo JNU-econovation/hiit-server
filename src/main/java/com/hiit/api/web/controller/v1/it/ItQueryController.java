@@ -6,11 +6,14 @@ import com.hiit.api.domain.dto.response.it.InItInfos;
 import com.hiit.api.domain.dto.response.it.ItInfo;
 import com.hiit.api.domain.dto.response.it.ItInfos;
 import com.hiit.api.domain.dto.response.it.ItMotivations;
+import com.hiit.api.domain.usecase.in.GetItUseCase;
+import com.hiit.api.domain.usecase.in.GetItsUseCase;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
 import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.support.ApiResponse;
 import com.hiit.api.web.support.ApiResponseGenerator;
 import com.hiit.api.web.support.MessageCode;
+import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,19 +30,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ItQueryController {
 
+	private final GetItUseCase getItUseCase;
+	private final GetItsUseCase getItsUseCase;
+
 	@GetMapping("{id}")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseIt(
+	public ApiResponse<ApiResponse.SuccessBody<ItInfo>> browseIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
-		ItInfo it =
+		ItInfo res =
 				ItInfo.builder()
 						.id(1L)
 						.topic("잇 주제")
-						.startTime(1L)
-						.endTime(2L)
+						.startTime(LocalTime.of(1, 0))
+						.endTime(LocalTime.of(2, 0))
 						.inMemberCount(10L)
 						.memberIn(true)
 						.build();
-		ServiceResponse res = it;
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -50,8 +55,8 @@ public class ItQueryController {
 				ItInfo.builder()
 						.id(1L)
 						.topic("잇 주제")
-						.startTime(1L)
-						.endTime(2L)
+						.startTime(LocalTime.of(1, 0))
+						.endTime(LocalTime.of(2, 0))
 						.inMemberCount(10L)
 						.memberIn(true)
 						.build();
@@ -59,12 +64,12 @@ public class ItQueryController {
 				ItInfo.builder()
 						.id(2L)
 						.topic("잇 주제")
-						.startTime(1L)
-						.endTime(2L)
+						.startTime(LocalTime.of(1, 0))
+						.endTime(LocalTime.of(2, 0))
 						.inMemberCount(10L)
 						.memberIn(true)
 						.build();
-		ServiceResponse res = new ItInfos(List.of(it1, it2));
+		ItInfos res = new ItInfos(List.of(it1, it2));
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -76,8 +81,8 @@ public class ItQueryController {
 						.id(1L)
 						.title("참여 잇 제목")
 						.topic("참여 잇 주제")
-						.startTime(7L)
-						.endTime(9L)
+						.startTime(LocalTime.of(7, 0))
+						.endTime(LocalTime.of(9, 0))
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
 						.build();
@@ -86,8 +91,8 @@ public class ItQueryController {
 						.id(2L)
 						.title("참여 잇 제목")
 						.topic("참여 잇 주제")
-						.startTime(7L)
-						.endTime(9L)
+						.startTime(LocalTime.of(7, 0))
+						.endTime(LocalTime.of(9, 0))
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
 						.build();
@@ -103,8 +108,8 @@ public class ItQueryController {
 						.id(1L)
 						.title("참여 잇 제목")
 						.topic("참여 잇 주제")
-						.startTime(7L)
-						.endTime(9L)
+						.startTime(LocalTime.of(7, 0))
+						.endTime(LocalTime.of(9, 0))
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
 						.build();
