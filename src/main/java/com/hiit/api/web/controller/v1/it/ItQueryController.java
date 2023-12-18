@@ -1,6 +1,8 @@
 package com.hiit.api.web.controller.v1.it;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.domain.dto.request.it.GetItUseCaseRequest;
+import com.hiit.api.domain.dto.request.it.GetItsUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.InItInfo;
 import com.hiit.api.domain.dto.response.it.InItInfos;
 import com.hiit.api.domain.dto.response.it.ItInfo;
@@ -36,21 +38,50 @@ public class ItQueryController {
 	@GetMapping("{id}")
 	public ApiResponse<ApiResponse.SuccessBody<ItInfo>> browseIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
-		ItInfo res =
-				ItInfo.builder()
-						.id(1L)
-						.topic("잇 주제")
-						.startTime(LocalTime.of(1, 0))
-						.endTime(LocalTime.of(2, 0))
-						.inMemberCount(10L)
-						.memberIn(true)
-						.build();
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		GetItUseCaseRequest request = GetItUseCaseRequest.builder().itId(id).memberId(memberId).build();
+
+		ItInfo res = null;
+		try {
+			res = getItUseCase.execute(request);
+			if (res == null) {
+				res = getItInfoMockResponse();
+			}
+		} catch (Exception e) {
+			res = getItInfoMockResponse();
+		}
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	private ItInfo getItInfoMockResponse() {
+		return ItInfo.builder()
+				.id(1L)
+				.topic("잇 주제")
+				.startTime(LocalTime.of(1, 0))
+				.endTime(LocalTime.of(2, 0))
+				.inMemberCount(10L)
+				.memberIn(true)
+				.build();
 	}
 
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		GetItsUseCaseRequest request = GetItsUseCaseRequest.builder().memberId(memberId).build();
+		ItInfos res = null;
+		try {
+			res = getItsUseCase.execute(request);
+			if (res.getIts().isEmpty()) {
+				res = getItInfosMockResponse();
+			}
+		} catch (Exception e) {
+			res = getItInfosMockResponse();
+		}
+		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	private ItInfos getItInfosMockResponse() {
 		ItInfo it1 =
 				ItInfo.builder()
 						.id(1L)
@@ -69,8 +100,7 @@ public class ItQueryController {
 						.inMemberCount(10L)
 						.memberIn(true)
 						.build();
-		ItInfos res = new ItInfos(List.of(it1, it2));
-		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
+		return new ItInfos(List.of(it1, it2));
 	}
 
 	@GetMapping("/ins")
