@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 
 	private final RegisteredItDao registeredItDao;
+
 	private final ItRelationDao itRelationDao;
 	private final MemberRegisteredItRelationService memberRegisteredItRelationService;
 
@@ -31,8 +32,9 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 		Long memberId = request.getMemberId();
 
 		RegisteredItData registeredIt = getRegisteredIt(registeredItId);
-		Long inMemberCount = itRelationDao.countByTargetItId(registeredItId);
-		List<ItRelationData> memberRegisteredIts = getMemberInRegisteredIts(memberId);
+
+		Long inMemberCount = calcInMemberCount(registeredItId);
+		List<ItRelationData> memberRegisteredIts = browseMemberInRegisteredIts(memberId);
 
 		for (ItRelationData memberRegisteredIt : memberRegisteredIts) {
 			if (memberRegisteredIt.isTarget(registeredItId)) {
@@ -48,10 +50,6 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 				.orElseThrow(() -> new DataNotFoundException("registeredIt : " + itId));
 	}
 
-	private List<ItRelationData> getMemberInRegisteredIts(Long memberId) {
-		return memberRegisteredItRelationService.browse(memberId);
-	}
-
 	private ItInfo buildResponse(
 			RegisteredItData registeredIt, Long inMemberCount, boolean memberIn) {
 		return ItInfo.builder()
@@ -62,5 +60,13 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 				.inMemberCount(inMemberCount)
 				.memberIn(memberIn)
 				.build();
+	}
+
+	private Long calcInMemberCount(Long targetId) {
+		return itRelationDao.countByTargetItId(targetId);
+	}
+
+	private List<ItRelationData> browseMemberInRegisteredIts(Long memberId) {
+		return memberRegisteredItRelationService.browse(memberId);
 	}
 }

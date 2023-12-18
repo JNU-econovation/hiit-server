@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 
 	private final RegisteredItDao registeredItDao;
+
 	private final ItRelationDao itRelationDao;
 	private final MemberRegisteredItRelationService memberRegisteredItRelationService;
 
@@ -32,11 +33,12 @@ public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 		Long memberId = request.getMemberId();
 
 		List<RegisteredItData> registeredIts = getRegisteredIt();
-		List<Long> memberRegisteredItIds = getMemberRegisteredItIds(memberId);
+
+		List<Long> memberRegisteredItIds = browseMemberRegisteredItIds(memberId);
 
 		List<ItInfo> source = new ArrayList<>();
 		for (RegisteredItData registeredIt : registeredIts) {
-			Long inMemberCount = itRelationDao.countByTargetItId(registeredIt.getId());
+			Long inMemberCount = calcInMemberCount(registeredIt);
 			boolean memberIn = memberRegisteredItIds.contains(registeredIt.getId());
 			source.add(makeItInfo(registeredIt, inMemberCount, memberIn));
 		}
@@ -47,10 +49,18 @@ public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 		return registeredItDao.findAll();
 	}
 
-	private List<Long> getMemberRegisteredItIds(Long memberId) {
+	private ItInfos buildResponse(List<ItInfo> source) {
+		return new ItInfos(source);
+	}
+
+	private List<Long> browseMemberRegisteredItIds(Long memberId) {
 		return memberRegisteredItRelationService.browse(memberId).stream()
 				.map(ItRelationData::getTargetId)
 				.collect(Collectors.toList());
+	}
+
+	private Long calcInMemberCount(RegisteredItData registeredIt) {
+		return itRelationDao.countByTargetItId(registeredIt.getId());
 	}
 
 	private ItInfo makeItInfo(RegisteredItData registeredIt, Long inMemberCount, boolean memberIn) {
@@ -62,9 +72,5 @@ public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 				.inMemberCount(inMemberCount)
 				.memberIn(memberIn)
 				.build();
-	}
-
-	private ItInfos buildResponse(List<ItInfo> source) {
-		return new ItInfos(source);
 	}
 }
