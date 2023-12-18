@@ -8,7 +8,7 @@ import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL_REQUEST;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.REQUEST_INVALID_FORMAT;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.RESOURCE_NOT_FOUND;
 
-import com.hiit.api.domain.dao.exception.DataNotFoundException;
+import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.web.exception.MemberNotFoundException;
 import com.hiit.api.web.exception.ResourceNotFoundException;
 import com.hiit.api.web.support.ApiResponse;

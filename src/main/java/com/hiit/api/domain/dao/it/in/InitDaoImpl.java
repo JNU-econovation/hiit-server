@@ -2,7 +2,7 @@ package com.hiit.api.domain.dao.it.in;
 
 import com.hiit.api.domain.dao.AbstractDataConverter;
 import com.hiit.api.domain.dao.AbstractJpaDao;
-import com.hiit.api.domain.dao.exception.DataNotFoundException;
+import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.repository.dao.bussiness.InItRepository;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;

@@ -1,4 +1,4 @@
-package com.hiit.api.domain.dao.exception;
+package com.hiit.api.domain.exception;
 
 /** 데이터 조회 오류 예외 */
 public class DataNotFoundException extends RuntimeException {
