@@ -38,11 +38,11 @@ public class ItQueryController {
 	@GetMapping("{id}")
 	public ApiResponse<ApiResponse.SuccessBody<ItInfo>> browseIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
-		Long memberId = Long.valueOf(userDetails.getUsername());
-		GetItUseCaseRequest request = GetItUseCaseRequest.builder().itId(id).memberId(memberId).build();
-
 		ItInfo res = null;
 		try {
+			Long memberId = Long.valueOf(userDetails.getUsername());
+			GetItUseCaseRequest request =
+					GetItUseCaseRequest.builder().itId(id).memberId(memberId).build();
 			res = getItUseCase.execute(request);
 			if (res == null) {
 				res = getItInfoMockResponse();
@@ -67,10 +67,10 @@ public class ItQueryController {
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		Long memberId = Long.valueOf(userDetails.getUsername());
-		GetItsUseCaseRequest request = GetItsUseCaseRequest.builder().memberId(memberId).build();
 		ItInfos res = null;
 		try {
+			Long memberId = Long.valueOf(userDetails.getUsername());
+			GetItsUseCaseRequest request = GetItsUseCaseRequest.builder().memberId(memberId).build();
 			res = getItsUseCase.execute(request);
 			if (res.getIts().isEmpty()) {
 				res = getItInfosMockResponse();
