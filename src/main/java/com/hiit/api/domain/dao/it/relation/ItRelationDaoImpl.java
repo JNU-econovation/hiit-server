@@ -2,6 +2,7 @@ package com.hiit.api.domain.dao.it.relation;
 
 import com.hiit.api.domain.dao.AbstractDataConverter;
 import com.hiit.api.domain.dao.AbstractJpaDao;
+import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.repository.dao.bussiness.jpa.ItRelationJpaRepository;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,5 +25,14 @@ public class ItRelationDaoImpl extends AbstractJpaDao<ItRelationEntity, Long, It
 	@Override
 	public Long countByTargetItId(Long targetItId) {
 		return repository.countByTargetItId(targetItId);
+	}
+
+	@Override
+	public ItRelationData findByInItId(Long inItId) {
+		ItRelationEntity source =
+				repository
+						.findByInItId(inItId)
+						.orElseThrow(() -> new DataNotFoundException("InIt id : " + inItId));
+		return converter.from(source);
 	}
 }
