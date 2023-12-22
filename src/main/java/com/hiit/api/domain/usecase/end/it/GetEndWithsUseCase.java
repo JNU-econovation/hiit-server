@@ -66,7 +66,7 @@ public class GetEndWithsUseCase implements AbstractUseCase<GetEndWithsUseCaseReq
 	private MemberData readMember(Long memberId) {
 		return memberDao
 				.findById(memberId)
-				.orElseThrow(() -> new DataNotFoundException("memberId : " + memberId));
+				.orElseThrow(() -> new DataNotFoundException("Member id : " + memberId));
 	}
 
 	private InItData readEndInIt(Long endInItId, Long memberId) {

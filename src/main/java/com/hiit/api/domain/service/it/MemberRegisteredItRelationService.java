@@ -41,6 +41,6 @@ public class MemberRegisteredItRelationService {
 		return itRelationDao
 				.findById(memberInIt.getItRelationId())
 				.orElseThrow(
-						() -> new DataNotFoundException("itRelation : " + memberInIt.getItRelationId()));
+						() -> new DataNotFoundException("ItRelation id : " + memberInIt.getItRelationId()));
 	}
 }

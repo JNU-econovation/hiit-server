@@ -47,7 +47,7 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 	private RegisteredItData getRegisteredIt(Long itId) {
 		return registeredItDao
 				.findById(itId)
-				.orElseThrow(() -> new DataNotFoundException("registeredIt : " + itId));
+				.orElseThrow(() -> new DataNotFoundException("RegisteredIt id : " + itId));
 	}
 
 	private ItInfo buildResponse(
