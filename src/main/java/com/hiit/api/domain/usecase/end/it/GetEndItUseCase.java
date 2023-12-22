@@ -4,8 +4,8 @@ import com.hiit.api.domain.dao.it.in.InItDao;
 import com.hiit.api.domain.dao.it.in.InItData;
 import com.hiit.api.domain.dto.request.end.GetEndItUseCaseRequest;
 import com.hiit.api.domain.dto.response.end.it.EndItInfo;
-import com.hiit.api.domain.service.end.it.ItTimeInfo;
-import com.hiit.api.domain.service.end.it.ItTimeInfoService;
+import com.hiit.api.domain.service.end.it.EndItTimeInfo;
+import com.hiit.api.domain.service.end.it.EndItTimeInfoService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> {
 
 	private final InItDao inItDao;
-	private final ItTimeInfoService itTimeInfoService;
+	private final EndItTimeInfoService endItTimeInfoService;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -28,7 +28,7 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 
 		InItData endInIt = getEndInIt(memberId, endInItId);
 
-		ItTimeInfo timeInfo = readTimeInfo(endInIt.getItRelationId());
+		EndItTimeInfo timeInfo = readTimeInfo(endInIt.getItRelationId());
 
 		return buildResponse(endInIt, timeInfo);
 	}
@@ -37,7 +37,7 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 		return inItDao.findEndStatusByIdAndMember(memberId, endInIt);
 	}
 
-	private EndItInfo buildResponse(InItData endInItData, ItTimeInfo timeInfo) {
+	private EndItInfo buildResponse(InItData endInItData, EndItTimeInfo timeInfo) {
 		return EndItInfo.builder()
 				.id(endInItData.getId())
 				.title(endInItData.getTitle())
@@ -46,7 +46,7 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 				.build();
 	}
 
-	private ItTimeInfo readTimeInfo(Long id) {
-		return itTimeInfoService.read(id);
+	private EndItTimeInfo readTimeInfo(Long id) {
+		return endItTimeInfoService.read(id);
 	}
 }
