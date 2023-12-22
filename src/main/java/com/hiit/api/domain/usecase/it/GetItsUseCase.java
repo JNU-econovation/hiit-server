@@ -1,4 +1,4 @@
-package com.hiit.api.domain.usecase.in;
+package com.hiit.api.domain.usecase.it;
 
 import com.hiit.api.domain.dao.it.registerd.RegisteredItDao;
 import com.hiit.api.domain.dao.it.registerd.RegisteredItData;
@@ -7,7 +7,7 @@ import com.hiit.api.domain.dao.it.relation.ItRelationData;
 import com.hiit.api.domain.dto.request.it.GetItsUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.ItInfo;
 import com.hiit.api.domain.dto.response.it.ItInfos;
-import com.hiit.api.domain.service.in.MemberRegisteredItRelationService;
+import com.hiit.api.domain.service.it.MemberRegisteredItRelationService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import java.util.ArrayList;
 import java.util.List;

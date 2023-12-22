@@ -1,4 +1,4 @@
-package com.hiit.api.domain.service.in;
+package com.hiit.api.domain.service.it;
 
 import static com.hiit.api.domain.dao.it.relation.TargetItTypeInfo.REGISTERED_IT;
 

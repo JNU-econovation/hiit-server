@@ -1,4 +1,4 @@
-package com.hiit.api.domain.service.in;
+package com.hiit.api.domain.service.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
