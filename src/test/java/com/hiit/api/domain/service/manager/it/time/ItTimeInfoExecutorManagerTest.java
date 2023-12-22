@@ -1,4 +1,4 @@
-package com.hiit.api.domain.service.end.it;
+package com.hiit.api.domain.service.manager.it.time;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
