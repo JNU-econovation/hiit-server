@@ -11,6 +11,7 @@ import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.support.ApiResponse;
 import com.hiit.api.web.support.ApiResponseGenerator;
 import com.hiit.api.web.support.MessageCode;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +38,8 @@ public class EndItQueryController {
 						.id(1L)
 						.title("종료 잇 제목")
 						.topic("종료 잇 주제")
-						.startTime(7L)
-						.endTime(9L)
+						.startTime(LocalTime.of(7, 0))
+						.endTime(LocalTime.of(9, 0))
 						.startDate(new Date())
 						.endDate(new Date())
 						.withCount(10L)
@@ -55,8 +56,8 @@ public class EndItQueryController {
 						.id(1L)
 						.title("종료 잇 제목")
 						.topic("종료 잇 주제")
-						.startTime(1L)
-						.endTime(2L)
+						.startTime(LocalTime.of(7, 0))
+						.endTime(LocalTime.of(9, 0))
 						.startDate(new Date())
 						.endDate(new Date())
 						.withCount(10L)
@@ -66,8 +67,8 @@ public class EndItQueryController {
 						.id(2L)
 						.title("종료 잇 제목")
 						.topic("종료 잇 주제")
-						.startTime(1L)
-						.endTime(2L)
+						.startTime(LocalTime.of(7, 0))
+						.endTime(LocalTime.of(9, 0))
 						.startDate(new Date())
 						.endDate(new Date())
 						.withCount(10L)
