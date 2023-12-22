@@ -37,6 +37,13 @@ public class WithCustomRepositoryImpl extends QuerydslRepositorySupport
 		return new PageImpl<>(withs, pageable, total);
 	}
 
+	@Override
+	public List<WithEntity> findAllByInIt(InItEntity init, HiitMemberEntity member) {
+		QWithEntity with = QWithEntity.withEntity;
+
+		return from(with).where(with.inIt.eq(init), memberEqual(member)).fetch();
+	}
+
 	private BooleanExpression memberEqual(HiitMemberEntity member) {
 		if (Objects.isNull(member)) {
 			return null;
