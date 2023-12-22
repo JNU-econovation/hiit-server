@@ -65,7 +65,7 @@ public class ItQueryController {
 	}
 
 	@GetMapping()
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readIts(
+	public ApiResponse<ApiResponse.SuccessBody<ItInfos>> readIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
 		ItInfos res = null;
 		try {
