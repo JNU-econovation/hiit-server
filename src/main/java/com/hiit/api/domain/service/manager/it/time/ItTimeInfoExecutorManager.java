@@ -1,4 +1,4 @@
-package com.hiit.api.domain.service.end.it;
+package com.hiit.api.domain.service.manager.it.time;
 
 import com.hiit.api.domain.dao.it.relation.TargetItTypeInfo;
 import java.util.Map;

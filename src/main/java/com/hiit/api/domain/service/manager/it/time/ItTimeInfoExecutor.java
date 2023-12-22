@@ -1,4 +1,4 @@
-package com.hiit.api.domain.service.end.it;
+package com.hiit.api.domain.service.manager.it.time;
 
 public interface ItTimeInfoExecutor {
 
