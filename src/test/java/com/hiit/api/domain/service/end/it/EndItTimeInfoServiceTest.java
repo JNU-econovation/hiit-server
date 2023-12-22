@@ -10,6 +10,8 @@ import com.hiit.api.domain.dao.it.registerd.RegisteredItData;
 import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dao.it.relation.ItRelationData;
 import com.hiit.api.domain.dao.it.relation.TargetItTypeInfo;
+import com.hiit.api.domain.service.manager.it.time.ItTimeInfoExecutorManager;
+import com.hiit.api.domain.service.manager.it.time.RegisteredItTimeInfoExecutor;
 import com.hiit.api.repository.RepositoryConfig;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -26,14 +28,14 @@ import org.springframework.test.context.ContextConfiguration;
 @SpringBootTest
 @ContextConfiguration(
 		classes = {
-			ItTimeInfoService.class,
+			EndItTimeInfoService.class,
 			ItTimeInfoExecutorManager.class,
 			RegisteredItTimeInfoExecutor.class,
 			RepositoryConfig.class
 		})
-class ItTimeInfoServiceTest {
+class EndItTimeInfoServiceTest {
 
-	@InjectMocks @Autowired private ItTimeInfoService itTimeInfoService;
+	@InjectMocks @Autowired private EndItTimeInfoService endItTimeInfoService;
 
 	@MockBean private ItRelationDao itRelationDao;
 
@@ -53,7 +55,7 @@ class ItTimeInfoServiceTest {
 		given(registeredItDao.findById(anyLong())).willReturn(setRegisteredItData(startTime, endTime));
 
 		// when
-		ItTimeInfo res = itTimeInfoService.read(relationId);
+		EndItTimeInfo res = endItTimeInfoService.read(relationId);
 
 		// then
 		assertThat(res.getStartTime()).isEqualTo(startTime);
