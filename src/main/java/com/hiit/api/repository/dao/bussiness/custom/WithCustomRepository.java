@@ -6,13 +6,15 @@ import com.hiit.api.repository.entity.business.with.WithEntity;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface WithCustomRepository {
 
 	/** 특정 잇과 페이징 정보 그리고 특정 멤버 필터링 여부를 통해 페이징 처리된 with 목록을 반환한다. */
-	Page<WithEntity> findAllByInIt(InItEntity init, Pageable pageable, HiitMemberEntity member);
+	Page<WithEntity> findAllByInIt(
+			InItEntity init, Pageable pageable, @Nullable HiitMemberEntity member);
 
 	/** 멤버의 특정 잇과 특정 with 목록을 반환한다. */
 	List<WithEntity> findAllByInIt(InItEntity init, HiitMemberEntity member);
