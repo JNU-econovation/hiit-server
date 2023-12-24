@@ -5,7 +5,6 @@ import com.hiit.api.domain.dao.AbstractJpaDao;
 import com.hiit.api.domain.dao.support.PageData;
 import com.hiit.api.domain.dao.support.PageableInfo;
 import com.hiit.api.domain.dao.support.Period;
-import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.repository.dao.bussiness.WithRepository;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
@@ -38,7 +37,7 @@ public class WithDaoImpl extends AbstractJpaDao<WithEntity, Long, WithData> impl
 	}
 
 	@Override
-	public PageData<WithData> findAllByInIt(Long init, PageableInfo pageable, Long member) {
+	public PageData<WithData> findAllByInItAndMember(Long init, PageableInfo pageable, Long member) {
 		InItEntity inItEntity = InItEntity.builder().id(init).build();
 		HiitMemberEntity hiitMemberEntity = HiitMemberEntity.builder().id(member).build();
 		Page<WithEntity> source = repository.findAllByInIt(inItEntity, pageable, hiitMemberEntity);
@@ -48,7 +47,16 @@ public class WithDaoImpl extends AbstractJpaDao<WithEntity, Long, WithData> impl
 	}
 
 	@Override
-	public List<WithData> findAllByInIt(Long init, Long member) {
+	public PageData<WithData> findAllByInIt(Long init, PageableInfo pageable) {
+		InItEntity inItEntity = InItEntity.builder().id(init).build();
+		Page<WithEntity> source = repository.findAllByInIt(inItEntity, pageable, null);
+		List<WithData> data =
+				source.getContent().stream().map(converter::from).collect(Collectors.toList());
+		return new PageData<>(pageable, source.getTotalPages(), source.getTotalElements(), data);
+	}
+
+	@Override
+	public List<WithData> findAllByInItAndMember(Long init, Long member) {
 		InItEntity inItEntity = InItEntity.builder().id(init).build();
 		HiitMemberEntity hiitMemberEntity = HiitMemberEntity.builder().id(member).build();
 		List<WithEntity> source = repository.findAllByInIt(inItEntity, hiitMemberEntity);
@@ -56,7 +64,8 @@ public class WithDaoImpl extends AbstractJpaDao<WithEntity, Long, WithData> impl
 	}
 
 	@Override
-	public WithData findByInItEntityAndMemberAndPeriod(Long inIt, Long memberId, Period period) {
+	public Optional<WithData> findByInItEntityAndMemberAndPeriod(
+			Long inIt, Long memberId, Period period) {
 		LocalDateTime start = period.getStart();
 		LocalDateTime end = period.getEnd();
 		InItEntity inItEntity = InItEntity.builder().id(inIt).build();
@@ -65,8 +74,8 @@ public class WithDaoImpl extends AbstractJpaDao<WithEntity, Long, WithData> impl
 				repository.findByInItEntityAndHiitMemberAndCreateAtBetween(
 						inItEntity, hiitMemberEntity, start, end);
 		if (source.isEmpty()) {
-			throw new DataNotFoundException("InIt id : " + inIt + " Member id : " + memberId);
+			return Optional.empty();
 		}
-		return converter.from(source.get());
+		return Optional.of(converter.from(source.get()));
 	}
 }
