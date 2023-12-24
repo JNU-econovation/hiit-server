@@ -28,12 +28,12 @@ public class HitDaoImpl extends AbstractJpaDao<HitEntity, Long, HitData> impleme
 	}
 
 	@Override
-	public Long countHitStatusByWithAndStatusAndPeriod(Long with, Period period) {
+	public Long countHitStatusByWithAndPeriod(Long with, Period period) {
 		return countStatusByWithAndStatusAndPeriodExecute(period, with, HitStatus.HIT);
 	}
 
 	@Override
-	public Long countMissStatusByWithAndStatusAndPeriod(Long with, Period period) {
+	public Long countMissStatusByWithAndPeriod(Long with, Period period) {
 		return countStatusByWithAndStatusAndPeriodExecute(period, with, HitStatus.MISS);
 	}
 
@@ -45,13 +45,13 @@ public class HitDaoImpl extends AbstractJpaDao<HitEntity, Long, HitData> impleme
 	}
 
 	@Override
-	public Optional<HitData> findHitStatusByWithAndHitterAndStatusAndPeriod(
+	public Optional<HitData> findHitStatusByWithAndHitterAndPeriod(
 			Long with, HitterInfo hitter, Period period) {
 		return findStatusByWithAndHitterAndStatusAndPeriodExecute(period, with, HitStatus.HIT, hitter);
 	}
 
 	@Override
-	public Optional<HitData> findMissStatusByWithAndHitterAndStatusAndPeriod(
+	public Optional<HitData> findMissStatusByWithAndHitterAndPeriod(
 			Long with, HitterInfo hitter, Period period) {
 		return findStatusByWithAndHitterAndStatusAndPeriodExecute(period, with, HitStatus.MISS, hitter);
 	}
@@ -75,12 +75,12 @@ public class HitDaoImpl extends AbstractJpaDao<HitEntity, Long, HitData> impleme
 	}
 
 	@Override
-	public Long countHitByInItAndStatusAndPeriod(Long inIt, Period period) {
+	public Long countHitByInItAndPeriod(Long inIt, Period period) {
 		return countStatusByInItAndStatusAndPeriodExecute(period, HitStatus.HIT, inIt);
 	}
 
 	@Override
-	public Long countMissByInItAndStatusAndPeriod(Long inIt, Period period) {
+	public Long countMissByInItAndPeriod(Long inIt, Period period) {
 		return countStatusByInItAndStatusAndPeriodExecute(period, HitStatus.MISS, inIt);
 	}
 

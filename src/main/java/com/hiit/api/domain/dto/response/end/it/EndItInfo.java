@@ -1,6 +1,7 @@
 package com.hiit.api.domain.dto.response.end.it;
 
 import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import java.time.LocalTime;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,8 +21,8 @@ public class EndItInfo implements ServiceResponse {
 	private Long id;
 	private String title;
 	private String topic;
-	private Long startTime;
-	private Long endTime;
+	private LocalTime startTime;
+	private LocalTime endTime;
 	private Date startDate;
 	private Date endDate;
 	private Long withCount;

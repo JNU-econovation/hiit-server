@@ -6,17 +6,17 @@ import java.util.Optional;
 
 public interface HitDao extends JpaDao<HitData, Long> {
 
-	Long countHitStatusByWithAndStatusAndPeriod(Long with, Period period);
+	Long countHitStatusByWithAndPeriod(Long with, Period period);
 
-	Long countMissStatusByWithAndStatusAndPeriod(Long with, Period period);
+	Long countMissStatusByWithAndPeriod(Long with, Period period);
 
-	Optional<HitData> findHitStatusByWithAndHitterAndStatusAndPeriod(
+	Optional<HitData> findHitStatusByWithAndHitterAndPeriod(
 			Long with, HitterInfo hitter, Period period);
 
-	Optional<HitData> findMissStatusByWithAndHitterAndStatusAndPeriod(
+	Optional<HitData> findMissStatusByWithAndHitterAndPeriod(
 			Long with, HitterInfo hitter, Period period);
 
-	Long countHitByInItAndStatusAndPeriod(Long inIt, Period period);
+	Long countHitByInItAndPeriod(Long inIt, Period period);
 
-	Long countMissByInItAndStatusAndPeriod(Long inIt, Period period);
+	Long countMissByInItAndPeriod(Long inIt, Period period);
 }

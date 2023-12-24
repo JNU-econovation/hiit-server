@@ -48,6 +48,14 @@ public class WithDaoImpl extends AbstractJpaDao<WithEntity, Long, WithData> impl
 	}
 
 	@Override
+	public List<WithData> findAllByInIt(Long init, Long member) {
+		InItEntity inItEntity = InItEntity.builder().id(init).build();
+		HiitMemberEntity hiitMemberEntity = HiitMemberEntity.builder().id(member).build();
+		List<WithEntity> source = repository.findAllByInIt(inItEntity, hiitMemberEntity);
+		return source.stream().map(converter::from).collect(Collectors.toList());
+	}
+
+	@Override
 	public WithData findByInItEntityAndMemberAndPeriod(Long inIt, Long memberId, Period period) {
 		LocalDateTime start = period.getStart();
 		LocalDateTime end = period.getEnd();
