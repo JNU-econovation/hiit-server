@@ -21,7 +21,9 @@
 | 관련 번호 | 쿼리                                          |
 |-------|---------------------------------------------|
 | 1     | RegisteredItRepository#findById             |
+| 2     | ItRelationRepository#countByTargetItId      |
 | 3     | InItRepository#findAllByHiitMemberAndStatus |
+| 3     | ItRelationRepository#findById               |
 
 ## 등록된 잇 목록을 조회합니다.
 
@@ -29,11 +31,15 @@
 
 1. 잇 목록을 조회합니다.
 2. 멤버가 참여 중인 잇을 조회합니다.
-3. 조회한 잇 목록에 멤버가 참여 중인 잇이 포함되면 member_in을 true로 설정합니다.
-4. 잇 목록을 응답합니다.
+3. 잇 정보를 조회합니다.
+4. 조회한 잇 목록에 멤버가 참여 중인 잇이 포함되면 member_in을 true로 설정합니다.
+5. 잇 목록을 응답합니다.
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                             |
-|-------|--------------------------------|
-| 1     | RegisteredItRepository#findAll |
+| 관련 번호 | 쿼리                                          |
+|-------|---------------------------------------------|
+| 1     | RegisteredItRepository#findAll              |
+| 2     | InItRepository#findAllByHiitMemberAndStatus |
+| 2     | ItRelationRepository#findById               |
+| 3     | ItRelationRepository#countByTargetItId      |

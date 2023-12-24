@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum TargetItTypeInfo {
 	REGISTERED_IT("registered", true),
+	FOR_TEST("forTest", false),
 	;
 
 	private String type;
