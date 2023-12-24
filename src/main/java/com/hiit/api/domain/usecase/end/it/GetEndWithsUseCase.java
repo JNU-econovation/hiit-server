@@ -6,6 +6,7 @@ import com.hiit.api.domain.dao.it.in.InItData;
 import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.dao.member.MemberData;
 import com.hiit.api.domain.dao.support.Period;
+import com.hiit.api.domain.dao.support.PeriodUtils;
 import com.hiit.api.domain.dao.with.WithDao;
 import com.hiit.api.domain.dao.with.WithData;
 import com.hiit.api.domain.dto.request.end.GetEndWithsUseCaseRequest;
@@ -14,7 +15,6 @@ import com.hiit.api.domain.dto.response.end.with.EndWithInfos;
 import com.hiit.api.domain.dto.response.end.with.EndWithMemberInfo;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.usecase.AbstractUseCase;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class GetEndWithsUseCase implements AbstractUseCase<GetEndWithsUseCaseReq
 		EndWithMemberInfo memberInfo = makeMemberInfo(member, endInIt);
 		List<EndWithInfo> source = new ArrayList<>();
 		for (WithData with : withs) {
-			Period period = makePeriod(with);
+			Period period = PeriodUtils.make(with);
 			Long hitCount = readHitCount(with, period);
 			source.add(makeWithInfo(with, memberInfo, hitCount));
 		}
@@ -56,7 +56,7 @@ public class GetEndWithsUseCase implements AbstractUseCase<GetEndWithsUseCaseReq
 	}
 
 	private List<WithData> getWiths(Long endInItId, Long memberId) {
-		return withDao.findAllByInIt(endInItId, memberId);
+		return withDao.findAllByInItAndMember(endInItId, memberId);
 	}
 
 	private EndWithInfos buildResponse(List<EndWithInfo> source) {
@@ -80,12 +80,6 @@ public class GetEndWithsUseCase implements AbstractUseCase<GetEndWithsUseCaseReq
 				.name(member.getNickName())
 				.resolution(endInIt.getResolution())
 				.build();
-	}
-
-	private Period makePeriod(WithData with) {
-		LocalDateTime startTime = with.getCreateAt();
-		LocalDateTime endTime = with.getUpdateAt();
-		return Period.builder().start(startTime).end(endTime).build();
 	}
 
 	private Long readHitCount(WithData with, Period period) {
