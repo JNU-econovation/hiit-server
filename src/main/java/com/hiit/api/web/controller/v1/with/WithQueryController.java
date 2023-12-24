@@ -7,6 +7,7 @@ import com.hiit.api.domain.dto.response.with.WithMemberInfo;
 import com.hiit.api.domain.dto.response.with.WithPage;
 import com.hiit.api.domain.usecase.with.GetWithsUseCase;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
+import com.hiit.api.web.dto.request.PageableInfoRequest;
 import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.support.ApiResponse;
 import com.hiit.api.web.support.ApiResponseGenerator;
@@ -42,7 +43,7 @@ public class WithQueryController {
 		WithPage withPage = null;
 		try {
 			Long memberId = Long.valueOf(userDetails.getUsername());
-			PageableInfo pageableInfo = (PageableInfo) pageable;
+			PageableInfo pageableInfo = new PageableInfoRequest(pageable);
 			GetWithsUseCaseRequest request =
 					GetWithsUseCaseRequest.builder()
 							.memberId(memberId)
