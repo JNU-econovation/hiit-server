@@ -4,6 +4,7 @@ import com.hiit.api.domain.dao.hit.HitDao;
 import com.hiit.api.domain.dao.hit.HitData;
 import com.hiit.api.domain.dao.hit.HitterInfo;
 import com.hiit.api.domain.dao.support.Period;
+import com.hiit.api.domain.dao.support.PeriodUtils;
 import com.hiit.api.domain.dao.with.WithDao;
 import com.hiit.api.domain.dao.with.WithData;
 import com.hiit.api.domain.dto.request.hit.HitUseCaseRequest;
@@ -12,8 +13,6 @@ import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.service.hit.HitItTimeInfo;
 import com.hiit.api.domain.service.hit.HitItTimeInfoService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +37,7 @@ public class HitUseCase implements AbstractUseCase<HitUseCaseRequest> {
 		HitterInfo hitter = HitterInfo.of(memberId);
 		WithData with = readWith(withId);
 		HitItTimeInfo timeSource = readTimeSource(with);
-		Period period = makePeriod(timeSource);
+		Period period = PeriodUtils.make(timeSource);
 
 		Optional<HitData> isHit = getHit(withId, hitter, period);
 
@@ -69,15 +68,6 @@ public class HitUseCase implements AbstractUseCase<HitUseCaseRequest> {
 
 	private HitItTimeInfo readTimeSource(WithData with) {
 		return hitItTimeInfoService.read(with);
-	}
-
-	private Period makePeriod(HitItTimeInfo timeSource) {
-		LocalTime startTime = timeSource.getStartTime();
-		LocalTime endTime = timeSource.getEndTime();
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime startDateTime = LocalDateTime.of(now.toLocalDate(), startTime);
-		LocalDateTime endDateTime = LocalDateTime.of(now.toLocalDate(), endTime);
-		return Period.builder().start(startDateTime).end(endDateTime).build();
 	}
 
 	private Long calcHitCount(WithData with, Period period) {

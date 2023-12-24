@@ -5,6 +5,7 @@ import com.hiit.api.domain.dao.support.PageData;
 import com.hiit.api.domain.dao.support.PageableInfo;
 import com.hiit.api.domain.dao.support.Period;
 import java.util.List;
+import java.util.Optional;
 
 public interface WithDao extends JpaDao<WithData, Long> {
 
@@ -12,9 +13,11 @@ public interface WithDao extends JpaDao<WithData, Long> {
 
 	boolean existsById(Long id);
 
-	PageData<WithData> findAllByInIt(Long init, PageableInfo pageable, Long member);
+	PageData<WithData> findAllByInItAndMember(Long init, PageableInfo pageable, Long member);
 
-	List<WithData> findAllByInIt(Long init, Long member);
+	PageData<WithData> findAllByInIt(Long init, PageableInfo pageable);
 
-	WithData findByInItEntityAndMemberAndPeriod(Long inIt, Long member, Period period);
+	List<WithData> findAllByInItAndMember(Long init, Long member);
+
+	Optional<WithData> findByInItEntityAndMemberAndPeriod(Long inIt, Long member, Period period);
 }

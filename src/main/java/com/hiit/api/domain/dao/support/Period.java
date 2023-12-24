@@ -27,4 +27,14 @@ public class Period {
 				LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 23, 59, 59);
 		return Period.builder().start(start).end(end).build();
 	}
+
+	public boolean isValid(LocalDateTime time) {
+		if (!start.isBefore(time)) {
+			return false;
+		}
+		if (!end.isAfter(time)) {
+			return false;
+		}
+		return true;
+	}
 }

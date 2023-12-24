@@ -28,8 +28,10 @@
 
 | 관련 번호 | 쿼리                                                             |
 |-------|----------------------------------------------------------------|
-| 1,2   | WithRepository#findByInItEntityAndHiitMemberAndCreateAtBetween |
-| 3     | InItRepository#findById                                        |
+| 1     | InitRepository#findByIdAndHiitMemberAndStatus                  |
+| 2     | ItRelationRepository#findByInItId                              |
+| 2     | RegisteredItRepository#findById                                |
+| 3     | WithRepository#findByInItEntityAndHiitMemberAndCreateAtBetween |
 
 ## 윗을 삭제합니다.
 
@@ -49,9 +51,13 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                                             |
-|-------|----------------------------------------------------------------|
-| 1,2   | WithRepository#findByInItEntityAndHiitMemberAndCreateAtBetween |
+| 관련 번호 | 쿼리                                           |
+|-------|----------------------------------------------|
+| 1     | WithRepository#findById                      |
+| 2     | InItRepository#findActiveStatusByIdAndMember |
+| 2     | ItRelationRepository#findByInItId            |
+| 2     | RegisteredItRepository#findById              |
+| 3     | WithRepository#delete                        |
 
 ## 윗 목록을 조회합니다.
 
@@ -70,6 +76,8 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                           |
-|-------|------------------------------|
-| 1,2   | WithRepository#findAllByInIt |
+| 관련 번호 | 쿼리                                                                    |
+|-------|-----------------------------------------------------------------------|
+| 1     | MemberRepository#findById                                             |
+| 1     | InItRepository#findActiveStatusByIdAndMember                          |
+| 3     | WithRepository#findAllByInIt or WithRepository#findAllByInItAndMember |

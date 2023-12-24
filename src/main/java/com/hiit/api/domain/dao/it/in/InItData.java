@@ -16,4 +16,8 @@ public class InItData extends BaseData {
 	private ItStatusInfo status;
 	private Long memberId;
 	private Long itRelationId;
+
+	public boolean isOwner(Long memberId) {
+		return this.memberId.equals(memberId);
+	}
 }
