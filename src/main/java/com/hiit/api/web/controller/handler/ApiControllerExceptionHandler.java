@@ -8,7 +8,10 @@ import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL_REQUEST;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.REQUEST_INVALID_FORMAT;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.RESOURCE_NOT_FOUND;
 
+import com.hiit.api.domain.exception.CreateCountPolicyException;
 import com.hiit.api.domain.exception.DataNotFoundException;
+import com.hiit.api.domain.exception.MemberAccessDeniedException;
+import com.hiit.api.domain.exception.TimePolicyException;
 import com.hiit.api.web.exception.MemberNotFoundException;
 import com.hiit.api.web.exception.ResourceNotFoundException;
 import com.hiit.api.web.support.ApiResponse;
@@ -126,6 +129,14 @@ public class ApiControllerExceptionHandler {
 				FAIL_REQUEST.getCode(), FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler({TimePolicyException.class, CreateCountPolicyException.class})
+	public ApiResponse<ApiResponse.FailureBody> handViolatePolicyRequest(
+			final Exception ex, final HttpServletRequest request) {
+		loggingHandler.writeLog(ex, request);
+		return ApiResponseGenerator.fail(
+				FAIL_AUTHENTICATION.getCode(), FAIL_AUTHENTICATION.getMessage(), HttpStatus.UNAUTHORIZED);
+	}
+
 	@ExceptionHandler({AuthenticationException.class, MemberNotFoundException.class})
 	public ApiResponse<ApiResponse.FailureBody> handle(
 			final Exception ex, final HttpServletRequest request) {
@@ -142,7 +153,7 @@ public class ApiControllerExceptionHandler {
 				FAIL_NOT_FOUND.getCode(), FAIL_NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler({AccessDeniedException.class})
+	@ExceptionHandler({AccessDeniedException.class, MemberAccessDeniedException.class})
 	public ApiResponse<ApiResponse.FailureBody> handleForbidden(
 			final AccessDeniedException ex, final HttpServletRequest request) {
 		loggingHandler.writeLog(ex, request);
