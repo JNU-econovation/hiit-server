@@ -1,6 +1,5 @@
 package com.hiit.api.web.controller.v1.end.it;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
 import com.hiit.api.domain.dto.request.end.GetEndItUseCaseRequest;
 import com.hiit.api.domain.dto.request.end.GetEndItsUseCaseRequest;
 import com.hiit.api.domain.dto.request.end.GetEndWithsUseCaseRequest;
@@ -41,7 +40,7 @@ public class EndItQueryController {
 	private final GetEndWithsUseCase getEndWithsUseCase;
 
 	@GetMapping("{id}")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseEndIt(
+	public ApiResponse<ApiResponse.SuccessBody<EndItInfo>> browseEndIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
 		EndItInfo res = null;
 		try {
@@ -72,7 +71,7 @@ public class EndItQueryController {
 	}
 
 	@GetMapping()
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readEndIts(
+	public ApiResponse<ApiResponse.SuccessBody<EndItInfos>> readEndIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
 		EndItInfos res = null;
 		try {
@@ -117,7 +116,7 @@ public class EndItQueryController {
 	}
 
 	@GetMapping("/withs")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseEndWith(
+	public ApiResponse<ApiResponse.SuccessBody<EndWithInfos>> browseEndWith(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @RequestParam @DataId Long id) {
 		EndWithInfos res = null;
 		try {

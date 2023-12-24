@@ -14,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class ItTimeInfo {
+public class EndItTimeInfo {
 	LocalTime startTime;
 	LocalTime endTime;
 }

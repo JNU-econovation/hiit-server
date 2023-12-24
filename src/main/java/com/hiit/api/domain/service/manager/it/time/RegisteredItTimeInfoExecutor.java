@@ -1,4 +1,4 @@
-package com.hiit.api.domain.service.end.it;
+package com.hiit.api.domain.service.manager.it.time;
 
 import com.hiit.api.domain.dao.it.registerd.RegisteredItDao;
 import com.hiit.api.domain.dao.it.registerd.RegisteredItData;
@@ -26,6 +26,6 @@ public class RegisteredItTimeInfoExecutor implements ItTimeInfoExecutor {
 	private RegisteredItData getRegisteredIt(Long registeredItId) {
 		return registeredItDao
 				.findById(registeredItId)
-				.orElseThrow(() -> new DataNotFoundException("registeredIt : " + registeredItId));
+				.orElseThrow(() -> new DataNotFoundException("RegisteredIt : " + registeredItId));
 	}
 }

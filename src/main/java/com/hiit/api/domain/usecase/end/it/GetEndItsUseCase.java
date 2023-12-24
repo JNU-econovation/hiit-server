@@ -5,8 +5,8 @@ import com.hiit.api.domain.dao.it.in.InItData;
 import com.hiit.api.domain.dto.request.end.GetEndItsUseCaseRequest;
 import com.hiit.api.domain.dto.response.end.it.EndItInfo;
 import com.hiit.api.domain.dto.response.end.it.EndItInfos;
-import com.hiit.api.domain.service.end.it.ItTimeInfo;
-import com.hiit.api.domain.service.end.it.ItTimeInfoService;
+import com.hiit.api.domain.service.end.it.EndItTimeInfo;
+import com.hiit.api.domain.service.end.it.EndItTimeInfoService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetEndItsUseCase implements AbstractUseCase<GetEndItsUseCaseRequest> {
 
 	private final InItDao inItDao;
-	private final ItTimeInfoService itTimeInfoService;
+	private final EndItTimeInfoService endItTimeInfoService;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -32,7 +32,7 @@ public class GetEndItsUseCase implements AbstractUseCase<GetEndItsUseCaseRequest
 
 		List<EndItInfo> source = new ArrayList<>();
 		for (InItData endInIt : endInIts) {
-			ItTimeInfo timeInfo = readTimeInfo(endInIt.getItRelationId());
+			EndItTimeInfo timeInfo = readTimeInfo(endInIt.getItRelationId());
 			source.add(makeEndItInfo(endInIt, timeInfo));
 		}
 		return buildResponse(source);
@@ -46,11 +46,11 @@ public class GetEndItsUseCase implements AbstractUseCase<GetEndItsUseCaseRequest
 		return new EndItInfos(source);
 	}
 
-	private ItTimeInfo readTimeInfo(Long id) {
-		return itTimeInfoService.read(id);
+	private EndItTimeInfo readTimeInfo(Long id) {
+		return endItTimeInfoService.read(id);
 	}
 
-	private EndItInfo makeEndItInfo(InItData endInItData, ItTimeInfo timeInfo) {
+	private EndItInfo makeEndItInfo(InItData endInItData, EndItTimeInfo timeInfo) {
 		return EndItInfo.builder()
 				.id(endInItData.getId())
 				.title(endInItData.getTitle())
