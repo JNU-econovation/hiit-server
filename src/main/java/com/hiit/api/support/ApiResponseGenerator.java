@@ -1,4 +1,4 @@
-package com.hiit.api.web.support;
+package com.hiit.api.support;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.hiit.api.web.support;
+package com.hiit.api.support;
 
 /** 메시지 코드 */
 public enum MessageCode {
