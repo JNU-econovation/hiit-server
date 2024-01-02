@@ -50,10 +50,10 @@ public class DeleteWithUseCase implements AbstractUseCase<DeleteWithUseCaseReque
 		final Long memberId = request.getMemberId();
 		final Long withId = request.getWithId();
 
-		log.debug("get with : w - {}", withId);
+		log.debug("get with : with - {}", withId);
 		With source = getSource(withId);
 
-		log.debug("get init : m - {}, i - {}", memberId, source.getInItId());
+		log.debug("read init : m - {}, in - {}", memberId, source.getInItId());
 		InIt inIt = readInIt(source, memberId);
 		if (inIt.isOwner(memberId)) {
 			log.debug("{} is not owner of {}", memberId, source.getInItId());

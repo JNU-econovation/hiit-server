@@ -36,7 +36,7 @@ public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 		List<BasicIt> sources = getSources();
 		log.debug("it size : {}", sources.size());
 
-		log.debug("get member in it ids : m - {}", memberId);
+		log.debug("browse member in it ids : m - {}", memberId);
 		List<Long> memberInItIds = browseMemberInItIds(memberId);
 
 		List<ItInfo> its = new ArrayList<>();

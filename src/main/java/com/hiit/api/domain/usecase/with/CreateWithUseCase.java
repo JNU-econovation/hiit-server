@@ -48,7 +48,7 @@ public class CreateWithUseCase implements AbstractUseCase<CreateWithUseCaseReque
 		final Long inItId = request.getInItId();
 		final String content = request.getContent();
 
-		log.debug("get init : m - {}, i - {}", memberId, inItId);
+		log.debug("read init : m - {}, in - {}", memberId, inItId);
 		InIt inIt = readInIt(inItId, memberId);
 		if (inIt.isOwner(memberId)) {
 			log.debug("{} is not owner of {}", memberId, inItId);
@@ -63,6 +63,7 @@ public class CreateWithUseCase implements AbstractUseCase<CreateWithUseCaseReque
 			throw new TimePolicyException();
 		}
 
+		log.debug("get with : m - {}, in - {}", memberId, inItId);
 		Optional<With> source = getSource(inIt, memberId, period);
 
 		if (source.isPresent()) {

@@ -32,10 +32,10 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 		final Long memberId = request.getMemberId();
 		final Long endInItId = request.getEndInItId();
 
-		log.debug("get end init : m - {}, ei - {}", memberId, endInItId);
+		log.debug("get end init : m - {}, end - {}", memberId, endInItId);
 		InIt source = getSource(memberId, endInItId);
 
-		ItTimeInfo timeInfo = readTimeInfo(source);
+		ItTimeInfo timeInfo = extractTimeInfo(source);
 
 		return buildResponse(source, timeInfo);
 	}
@@ -43,7 +43,7 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 	private InIt getSource(Long memberId, Long endInItId) {
 		InItEntity source = inItDao.findEndStatusByIdAndMember(memberId, endInItId);
 		String info = source.getInfo();
-		log.debug("convert init info to time info : m - {}, ei - {}", memberId, endInItId);
+		log.debug("convert init info to time info : m - {}, end - {}", memberId, endInItId);
 		ItTimeInfo timeInfo = itTimeInfoMapper.read(info, InItTimeInfo.class);
 		return entityConverter.from(source, timeInfo);
 	}
@@ -57,7 +57,7 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 				.build();
 	}
 
-	private ItTimeInfo readTimeInfo(InIt inIt) {
+	private ItTimeInfo extractTimeInfo(InIt inIt) {
 		ItTimeInfo source = inIt.getTimeInfo();
 		return EndItTimeInfo.builder()
 				.startTime(source.getStartTime())

@@ -56,13 +56,13 @@ public class GetEndWithsUseCase implements AbstractUseCase<GetEndWithsUseCaseReq
 		final Long memberId = request.getMemberId();
 		final Long endInItId = request.getEndInItId();
 
-		log.debug("get end withs : m - {}, ei - {}", memberId, endInItId);
+		log.debug("get end withs : m - {}, end - {}", memberId, endInItId);
 		List<With> sources = getSources(endInItId, memberId);
 		log.debug("end with size : {}", sources.size());
 
-		log.debug("get member : m - {}", memberId);
+		log.debug("read member : m - {}", memberId);
 		Member member = readMember(memberId);
-		log.debug("get end init : m - {}, ei - {}", memberId, endInItId);
+		log.debug("read end init : m - {}, end - {}", memberId, endInItId);
 		InIt endInIt = readEndInIt(endInItId, memberId);
 
 		EndWithMemberInfo memberInfo = makeMemberInfo(member, endInIt);

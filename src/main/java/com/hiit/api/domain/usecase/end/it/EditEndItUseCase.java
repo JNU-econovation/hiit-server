@@ -31,7 +31,7 @@ public class EditEndItUseCase implements AbstractUseCase<EditEndItUseCaseRequest
 		final Long memberId = request.getMemberId();
 		final Long endInItId = request.getEndInItId();
 
-		log.debug("get end init : m - {}, ei - {}", memberId, endInItId);
+		log.debug("get end init : m - {}, end - {}", memberId, endInItId);
 		InIt source = getSource(memberId, endInItId);
 		log.debug("origin end init : {}", source);
 

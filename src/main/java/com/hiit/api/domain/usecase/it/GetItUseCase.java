@@ -30,12 +30,12 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 		final Long registeredItId = request.getItId();
 		final Long memberId = request.getMemberId();
 
-		log.debug("get it : m - {}, i - {}", memberId, registeredItId);
+		log.debug("get it : m - {}, rIt - {}", memberId, registeredItId);
 		BasicIt source = getSource(registeredItId);
 
-		log.debug("get member in it count : i - {}", registeredItId);
+		log.debug("calculate member in it count : rIt - {}", registeredItId);
 		Long inMemberCount = calcInMemberCount(registeredItId);
-		log.debug("get member in it ids : m - {}", memberId);
+		log.debug("browse member in it ids : m - {}", memberId);
 		List<ItRelation> memberRegisteredIts = browseMemberInRegisteredIts(memberId);
 
 		for (ItRelation memberRegisteredIt : memberRegisteredIts) {

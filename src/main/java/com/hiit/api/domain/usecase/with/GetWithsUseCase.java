@@ -71,9 +71,9 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 		final Boolean isMemberFilter = request.getIsMember();
 		final PageRequest pageable = request.getPageable();
 
-		log.debug("get member : m - {}", memberId);
+		log.debug("read member : m - {}", memberId);
 		Member member = readMember(memberId);
-		log.debug("get init : m - {}, i - {}", memberId, inItId);
+		log.debug("read init : m - {}, in - {}", memberId, inItId);
 		InIt inIt = readInIt(inItId, member);
 		if (inIt.isOwner(member.getId())) {
 			log.debug("{} is not owner of {}", memberId, inItId);
@@ -81,7 +81,7 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 		}
 		GetWithElements getWithElements = makeGetWithElements(isMemberFilter, inIt, pageable, memberId);
 
-		log.debug("get withs : m filter - {}, m - {}, i - {}", isMemberFilter, memberId, inItId);
+		log.debug("get withs : m filter - {}, m - {}, in - {}", isMemberFilter, memberId, inItId);
 		PageElements<With> sources = getSources(getWithElements);
 
 		WithMemberInfo memberInfo = makeMemberInfo(member, inIt);

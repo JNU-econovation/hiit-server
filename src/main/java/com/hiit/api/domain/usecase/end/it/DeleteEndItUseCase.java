@@ -25,7 +25,7 @@ public class DeleteEndItUseCase implements AbstractUseCase<DeleteEndItUseCaseReq
 		final Long memberId = request.getMemberId();
 		final Long endInItId = request.getEndInItId();
 
-		log.debug("get end init : m - {}, ei - {}", memberId, endInItId);
+		log.debug("get end init : m - {}, end - {}", memberId, endInItId);
 		InIt source = getSource(memberId, endInItId);
 
 		log.debug("delete end init : {}", source);

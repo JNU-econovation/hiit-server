@@ -52,7 +52,7 @@ public class HitUseCase implements AbstractUseCase<HitUseCaseRequest> {
 		final Long withId = request.getWithId();
 
 		HitterInfo hitter = HitterInfo.of(memberId);
-		log.debug("get with : w - {}", withId);
+		log.debug("read with : with - {}", withId);
 		With with = readWith(withId);
 		// todo fix: with에 상태(ON, OFF)를 추가하여 상태가 OFF인 경우 hit 요청을 받지 않도록 개선
 		HitItTimeInfo timeSource = extractTimeSource(with);
@@ -60,17 +60,17 @@ public class HitUseCase implements AbstractUseCase<HitUseCaseRequest> {
 		Period period = PeriodUtils.make(timeSource, LocalDateTime.now());
 		log.debug("with time : start - {}, end - {}", period.getStart(), period.getEnd());
 
-		log.debug("get hit : w - {}, h(m) - {}", withId, hitter.getId());
+		log.debug("get hit : with - {}, hit(m) - {}", withId, hitter.getId());
 		List<Hit> sources = getSources(withId, hitter, period);
 
 		// todo saveAndFlush 동작 확인하기
 		if (sources.isEmpty()) {
-			log.debug("not hit yet to HIT");
+			log.debug("not hit yet save HIT");
 			hitDao.saveAndFlush(entityConverter.to(Hit.hit(with.getId(), hitter)));
 			Long count = calcHitCount(with, period);
 			return buildResponse(count);
 		}
-		log.debug("hit already to MISS");
+		log.debug("hit already convert to MISS");
 		Hit hit = sources.get(TOP_INDEX);
 		hitDao.saveAndFlush(entityConverter.to(hit.miss()));
 		Long count = calcHitCount(with, period);
