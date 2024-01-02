@@ -1,21 +1,24 @@
 package com.hiit.api.domain.usecase.with;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.common.marker.dto.AbstractResponse;
 import com.hiit.api.domain.dao.it.in.InItDao;
-import com.hiit.api.domain.dao.it.in.InItData;
-import com.hiit.api.domain.dao.it.relation.ItRelationDao;
-import com.hiit.api.domain.dao.it.relation.ItRelationData;
-import com.hiit.api.domain.dao.support.Period;
-import com.hiit.api.domain.dao.support.PeriodUtils;
 import com.hiit.api.domain.dao.with.WithDao;
-import com.hiit.api.domain.dao.with.WithData;
 import com.hiit.api.domain.dto.request.with.CreateWithUseCaseRequest;
 import com.hiit.api.domain.exception.CreateCountPolicyException;
 import com.hiit.api.domain.exception.MemberAccessDeniedException;
 import com.hiit.api.domain.exception.TimePolicyException;
-import com.hiit.api.domain.service.with.WithItTimeInfo;
-import com.hiit.api.domain.service.with.WithItTimeInfoService;
+import com.hiit.api.domain.model.it.in.InIt;
+import com.hiit.api.domain.model.it.in.InItTimeInfo;
+import com.hiit.api.domain.model.with.With;
+import com.hiit.api.domain.model.with.WithItTimeInfo;
+import com.hiit.api.domain.service.ItTimeInfoMapper;
+import com.hiit.api.domain.support.entity.Period;
+import com.hiit.api.domain.support.entity.PeriodUtils;
+import com.hiit.api.domain.support.entity.converter.in.it.InItEntityConverterImpl;
+import com.hiit.api.domain.support.entity.converter.with.WithEntityConverterImpl;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.with.WithEntity;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -31,59 +34,70 @@ public class CreateWithUseCase implements AbstractUseCase<CreateWithUseCaseReque
 	private static final int MAX_CREATE_COUNT = 1;
 
 	private final WithDao withDao;
-	private final InItDao inItDao;
-	private final ItRelationDao itRelationDao;
+	private final WithEntityConverterImpl entityConverter;
 
-	private final WithItTimeInfoService withItTimeInfoService;
+	private final InItDao inItDao;
+	private final InItEntityConverterImpl inItEntityConverter;
+
+	private final ItTimeInfoMapper itTimeInfoMapper;
 
 	@Override
 	@Transactional
-	public ServiceResponse execute(CreateWithUseCaseRequest request) {
-		Long memberId = request.getMemberId();
-		Long inItId = request.getInItId();
-		String content = request.getContent();
+	public AbstractResponse execute(final CreateWithUseCaseRequest request) {
+		final Long memberId = request.getMemberId();
+		final Long inItId = request.getInItId();
+		final String content = request.getContent();
 
-		InItData inIt = readInIt(inItId, memberId);
-		Long targetMemberId = inIt.getMemberId();
-		if (!memberId.equals(targetMemberId)) {
-			throw new MemberAccessDeniedException("not match memberId");
+		log.debug("get init : m - {}, i - {}", memberId, inItId);
+		InIt inIt = readInIt(inItId, memberId);
+		if (inIt.isOwner(memberId)) {
+			log.debug("{} is not owner of {}", memberId, inItId);
+			throw new MemberAccessDeniedException(memberId, inItId);
 		}
 
-		ItRelationData itRelation = readItRelation(inIt.getId());
-		WithItTimeInfo timeInfoSource = readTimeSource(itRelation);
+		WithItTimeInfo timeSource = extractTimeSource(inIt);
 		LocalDateTime now = LocalDateTime.now();
-		Period period = PeriodUtils.make(timeInfoSource, now);
+		Period period = PeriodUtils.make(timeSource, now);
 		if (!period.isValid(now)) {
-			throw new TimePolicyException(period, now);
+			log.debug("now invalid period : s - {}, e - {}", period.getStart(), period.getEnd());
+			throw new TimePolicyException();
 		}
 
-		Optional<WithData> with = getWith(itRelation, memberId, period);
+		Optional<With> source = getSource(inIt, memberId, period);
 
-		if (with.isPresent()) {
+		if (source.isPresent()) {
 			throw new CreateCountPolicyException(MAX_CREATE_COUNT);
 		}
-		WithData source = buildSaveSource(content, itRelation);
-		withDao.save(source);
-		return ServiceResponse.VOID;
+		With with = makeWith(content, inIt);
+		withDao.save(entityConverter.to(with));
+		return AbstractResponse.VOID;
 	}
 
-	private Optional<WithData> getWith(ItRelationData itRelation, Long memberId, Period period) {
-		return withDao.findByInItEntityAndMemberAndPeriod(itRelation.getInItId(), memberId, period);
+	private Optional<With> getSource(InIt inIt, Long memberId, Period period) {
+		Optional<WithEntity> entity =
+				withDao.findByInItEntityAndMemberAndPeriod(inIt.getId(), memberId, period);
+		if (entity.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(entityConverter.from(entity.get()));
 	}
 
-	private WithData buildSaveSource(String content, ItRelationData itRelation) {
-		return WithData.builder().content(content).inItId(itRelation.getInItId()).build();
+	private InIt readInIt(Long inItId, Long memberId) {
+		InItEntity source = inItDao.findActiveStatusByIdAndMember(inItId, memberId);
+		String info = source.getInfo();
+		WithItTimeInfo timeInfo = itTimeInfoMapper.read(info, WithItTimeInfo.class);
+		return inItEntityConverter.from(source, timeInfo);
 	}
 
-	private InItData readInIt(Long inItId, Long memberId) {
-		return inItDao.findActiveStatusByIdAndMember(inItId, memberId);
+	private WithItTimeInfo extractTimeSource(InIt inIt) {
+		InItTimeInfo source = inIt.getTimeInfo();
+		return WithItTimeInfo.builder()
+				.startTime(source.getStartTime())
+				.endTime(source.getEndTime())
+				.build();
 	}
 
-	private ItRelationData readItRelation(Long inItId) {
-		return itRelationDao.findByInItId(inItId);
-	}
-
-	private WithItTimeInfo readTimeSource(ItRelationData itRelation) {
-		return withItTimeInfoService.read(itRelation.getId());
+	private With makeWith(String content, InIt inIt) {
+		return With.builder().content(content).inItId(inIt.getId()).build();
 	}
 }

@@ -1,12 +1,16 @@
 package com.hiit.api.domain.usecase.end.it;
 
 import com.hiit.api.domain.dao.it.in.InItDao;
-import com.hiit.api.domain.dao.it.in.InItData;
 import com.hiit.api.domain.dto.request.end.GetEndItUseCaseRequest;
 import com.hiit.api.domain.dto.response.end.it.EndItInfo;
-import com.hiit.api.domain.service.end.it.EndItTimeInfo;
-import com.hiit.api.domain.service.end.it.EndItTimeInfoService;
+import com.hiit.api.domain.model.ItTimeInfo;
+import com.hiit.api.domain.model.it.end.EndItTimeInfo;
+import com.hiit.api.domain.model.it.in.InIt;
+import com.hiit.api.domain.model.it.in.InItTimeInfo;
+import com.hiit.api.domain.service.ItTimeInfoMapper;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.domain.usecase.it.InItEntityConverter;
+import com.hiit.api.repository.entity.business.it.InItEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,35 +22,46 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> {
 
 	private final InItDao inItDao;
-	private final EndItTimeInfoService endItTimeInfoService;
+	private final InItEntityConverter entityConverter;
+
+	private final ItTimeInfoMapper itTimeInfoMapper;
 
 	@Override
 	@Transactional(readOnly = true)
-	public EndItInfo execute(GetEndItUseCaseRequest request) {
-		Long memberId = request.getMemberId();
-		Long endInItId = request.getEndInItId();
+	public EndItInfo execute(final GetEndItUseCaseRequest request) {
+		final Long memberId = request.getMemberId();
+		final Long endInItId = request.getEndInItId();
 
-		InItData endInIt = getEndInIt(memberId, endInItId);
+		log.debug("get end init : m - {}, ei - {}", memberId, endInItId);
+		InIt source = getSource(memberId, endInItId);
 
-		EndItTimeInfo timeInfo = readTimeInfo(endInIt.getItRelationId());
+		ItTimeInfo timeInfo = readTimeInfo(source);
 
-		return buildResponse(endInIt, timeInfo);
+		return buildResponse(source, timeInfo);
 	}
 
-	private InItData getEndInIt(Long memberId, Long endInIt) {
-		return inItDao.findEndStatusByIdAndMember(memberId, endInIt);
+	private InIt getSource(Long memberId, Long endInItId) {
+		InItEntity source = inItDao.findEndStatusByIdAndMember(memberId, endInItId);
+		String info = source.getInfo();
+		log.debug("convert init info to time info : m - {}, ei - {}", memberId, endInItId);
+		ItTimeInfo timeInfo = itTimeInfoMapper.read(info, InItTimeInfo.class);
+		return entityConverter.from(source, timeInfo);
 	}
 
-	private EndItInfo buildResponse(InItData endInItData, EndItTimeInfo timeInfo) {
+	private EndItInfo buildResponse(InIt source, ItTimeInfo timeInfo) {
 		return EndItInfo.builder()
-				.id(endInItData.getId())
-				.title(endInItData.getTitle())
+				.id(source.getId())
+				.title(source.getTitle())
 				.startTime(timeInfo.getStartTime())
 				.endTime(timeInfo.getEndTime())
 				.build();
 	}
 
-	private EndItTimeInfo readTimeInfo(Long id) {
-		return endItTimeInfoService.read(id);
+	private ItTimeInfo readTimeInfo(InIt inIt) {
+		ItTimeInfo source = inIt.getTimeInfo();
+		return EndItTimeInfo.builder()
+				.startTime(source.getStartTime())
+				.endTime(source.getEndTime())
+				.build();
 	}
 }

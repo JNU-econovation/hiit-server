@@ -1,21 +1,38 @@
 package com.hiit.api.domain.usecase.with;
 
 import com.hiit.api.domain.dao.it.in.InItDao;
-import com.hiit.api.domain.dao.it.in.InItData;
 import com.hiit.api.domain.dao.member.MemberDao;
-import com.hiit.api.domain.dao.member.MemberData;
-import com.hiit.api.domain.dao.support.PageData;
-import com.hiit.api.domain.dao.support.PageableInfo;
 import com.hiit.api.domain.dao.with.WithDao;
-import com.hiit.api.domain.dao.with.WithData;
+import com.hiit.api.domain.dto.PageRequest;
 import com.hiit.api.domain.dto.request.with.GetWithsUseCaseRequest;
 import com.hiit.api.domain.dto.response.with.WithInfo;
 import com.hiit.api.domain.dto.response.with.WithMemberInfo;
 import com.hiit.api.domain.dto.response.with.WithPage;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.exception.MemberAccessDeniedException;
+import com.hiit.api.domain.model.ItTimeInfo;
+import com.hiit.api.domain.model.it.in.InIt;
+import com.hiit.api.domain.model.it.in.InItTimeInfo;
+import com.hiit.api.domain.model.member.Member;
+import com.hiit.api.domain.model.with.With;
+import com.hiit.api.domain.model.with.WithItTimeInfo;
 import com.hiit.api.domain.service.with.WithInfoAssembleService;
+import com.hiit.api.domain.support.entity.PageElements;
+import com.hiit.api.domain.support.entity.Period;
+import com.hiit.api.domain.support.entity.PeriodUtils;
+import com.hiit.api.domain.support.entity.converter.in.it.InItEntityConverterImpl;
+import com.hiit.api.domain.support.entity.converter.member.MemberEntityConverterImpl;
+import com.hiit.api.domain.support.entity.converter.with.WithEntityConverterImpl;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.domain.util.JsonConverter;
+import com.hiit.api.domain.util.LogSourceGenerator;
+import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
+import com.hiit.api.repository.entity.business.with.WithEntity;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,77 +51,116 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> {
 
 	private final WithDao withDao;
-	private final InItDao inItDao;
+	private final WithEntityConverterImpl entityConverter;
+
 	private final MemberDao memberDao;
+	private final MemberEntityConverterImpl memberEntityConverter;
+
+	private final InItDao inItDao;
+	private final InItEntityConverterImpl inItEntityConverter;
 
 	private final WithInfoAssembleService withInfoAssembleService;
+	private final JsonConverter jsonConverter;
+	private final LogSourceGenerator logSourceGenerator;
 
 	@Override
 	@Transactional(readOnly = true)
-	public WithPage execute(GetWithsUseCaseRequest request) {
-		Long memberId = request.getMemberId();
-		Long inItId = request.getInItId();
-		Boolean isMember = request.getIsMember();
-		PageableInfo pageable = request.getPageable();
+	public WithPage execute(final GetWithsUseCaseRequest request) {
+		final Long memberId = request.getMemberId();
+		final Long inItId = request.getInItId();
+		final Boolean isMemberFilter = request.getIsMember();
+		final PageRequest pageable = request.getPageable();
 
-		MemberData member = readMember(memberId);
-		InItData inIt = browseInIt(inItId, memberId);
-		if (inIt.isOwner(memberId)) {
-			throw new MemberAccessDeniedException("not match memberId");
+		log.debug("get member : m - {}", memberId);
+		Member member = readMember(memberId);
+		log.debug("get init : m - {}, i - {}", memberId, inItId);
+		InIt inIt = readInIt(inItId, member);
+		if (inIt.isOwner(member.getId())) {
+			log.debug("{} is not owner of {}", memberId, inItId);
+			throw new MemberAccessDeniedException(memberId, inItId);
 		}
+		GetWithElements getWithElements = makeGetWithElements(isMemberFilter, inIt, pageable, memberId);
+
+		log.debug("get withs : m filter - {}, m - {}, i - {}", isMemberFilter, memberId, inItId);
+		PageElements<With> sources = getSources(getWithElements);
+
 		WithMemberInfo memberInfo = makeMemberInfo(member, inIt);
-		GetWithElements getWithElements = makeGetWithElements(isMember, inIt, pageable, memberId);
+		PageImpl<WithInfo> withInfos =
+				withInfoAssembleService.execute(sources, inIt, memberInfo, pageable);
 
-		PageData<WithData> source = getWiths(getWithElements);
-
-		PageImpl<WithInfo> withInfoPage =
-				withInfoAssembleService.execute(source, inIt, memberInfo, pageable);
-		return buildResponse(withInfoPage);
+		return buildResponse(withInfos);
 	}
 
-	private PageData<WithData> getWiths(GetWithElements elements) {
+	private PageElements<With> getSources(GetWithElements elements) {
+		ItTimeInfo timeInfo = elements.getTimeInfo();
+		LocalDateTime now = LocalDateTime.now();
+		Period period = PeriodUtils.make(timeInfo, now);
 		if (elements.isMember()) {
-			return getWiths(elements.getInIt(), elements.getPageableInfo(), elements.getMemberId());
+			return getSources(
+					elements.getInIt(), elements.getPageRequest(), elements.getMemberId(), period);
 		}
-		return getWiths(elements.getInIt(), elements.getPageableInfo());
+		return getSources(elements.getInIt(), elements.getPageRequest(), period);
 	}
 
-	private PageData<WithData> getWiths(InItData inIt, PageableInfo pageable) {
-		return withDao.findAllByInIt(inIt.getId(), pageable);
+	private PageElements<With> getSources(InIt inIt, PageRequest pageable, Period period) {
+		PageElements<WithEntity> source = withDao.findAllByInIt(inIt.getId(), pageable, period);
+		List<With> data =
+				source.getData().stream().map(entityConverter::from).collect(Collectors.toList());
+		return new PageElements<>(source, data);
 	}
 
-	private PageData<WithData> getWiths(InItData inIt, PageableInfo pageable, Long memberId) {
-		return withDao.findAllByInItAndMember(inIt.getId(), pageable, memberId);
+	private PageElements<With> getSources(
+			InIt inIt, PageRequest pageable, Long memberId, Period period) {
+		PageElements<WithEntity> source =
+				withDao.findAllByInItAndMember(inIt.getId(), pageable, memberId, period);
+		List<With> data =
+				source.getData().stream().map(entityConverter::from).collect(Collectors.toList());
+		return new PageElements<>(source, data);
 	}
 
 	private WithPage buildResponse(PageImpl<WithInfo> withInfoPage) {
 		return new WithPage(withInfoPage);
 	}
 
-	private MemberData readMember(Long memberId) {
-		return memberDao
-				.findById(memberId)
-				.orElseThrow(() -> new DataNotFoundException("Member id : " + memberId));
+	private Member readMember(Long memberId) {
+		Optional<HiitMemberEntity> source = memberDao.findById(memberId);
+		if (source.isEmpty()) {
+			Map<String, Long> exceptionSource = logSourceGenerator.generate("memberId", memberId);
+			String exceptionData = jsonConverter.toJson(exceptionSource);
+			throw new DataNotFoundException(exceptionData);
+		}
+		return memberEntityConverter.from(source.get());
 	}
 
-	private InItData browseInIt(Long inItId, Long memberId) {
-		return inItDao.findActiveStatusByIdAndMember(inItId, memberId);
+	private InIt readInIt(Long inItId, Member member) {
+		return inItEntityConverter.from(inItDao.findActiveStatusByIdAndMember(inItId, member.getId()));
 	}
 
-	private WithMemberInfo makeMemberInfo(MemberData member, InItData inIt) {
+	private GetWithElements makeGetWithElements(
+			Boolean isMember, InIt inIt, PageRequest pageable, Long memberId) {
+		InItTimeInfo source = inIt.getTimeInfo();
+		ItTimeInfo timeInfo =
+				WithItTimeInfo.builder()
+						.startTime(source.getStartTime())
+						.endTime(source.getEndTime())
+						.build();
+		if (isMember) {
+			return GetWithElements.builder()
+					.inIt(inIt)
+					.timeInfo(timeInfo)
+					.pageRequest(pageable)
+					.memberId(memberId)
+					.build();
+		}
+		return GetWithElements.builder().inIt(inIt).pageRequest(pageable).timeInfo(timeInfo).build();
+	}
+
+	private WithMemberInfo makeMemberInfo(Member member, InIt inIt) {
 		return WithMemberInfo.builder()
 				.name(member.getNickName())
 				.profile(member.getProfile())
 				.resolution(inIt.getResolution())
 				.build();
-	}
-
-	private GetWithElements makeGetWithElements(
-			Boolean isMember, InItData inIt, PageableInfo pageable, Long memberId) {
-		if (isMember) {
-			return GetWithElements.builder().inIt(inIt).pageableInfo(pageable).memberId(memberId).build();
-		}
-		return GetWithElements.builder().inIt(inIt).pageableInfo(pageable).build();
 	}
 
 	@Getter
@@ -115,9 +171,10 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 	@SuperBuilder(toBuilder = true)
 	private static class GetWithElements {
 
-		private InItData inIt;
-		private PageableInfo pageableInfo;
 		private Long memberId;
+		private InIt inIt;
+		private PageRequest pageRequest;
+		private ItTimeInfo timeInfo;
 
 		public boolean isMember() {
 			return memberId != null;
