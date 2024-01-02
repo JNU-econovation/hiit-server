@@ -1,6 +1,6 @@
-package com.hiit.api.common.exception;
+package com.hiit.api.exception;
 
-import com.hiit.api.web.support.MessageSourceAccessor;
+import com.hiit.api.support.MessageSourceAccessor;
 import javax.validation.constraints.NotEmpty;
 import lombok.Getter;
 
