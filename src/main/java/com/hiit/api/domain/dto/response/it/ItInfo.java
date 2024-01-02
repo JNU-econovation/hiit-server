@@ -1,6 +1,6 @@
 package com.hiit.api.domain.dto.response.it;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.common.marker.dto.AbstractResponse;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class ItInfo implements ServiceResponse {
+public class ItInfo implements AbstractResponse {
 
 	private Long id;
 	private String topic;
