@@ -24,12 +24,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-/**
- * JPA Datasource 설정 클래스<br>
- * RepositoryConfig에서 자동구성 설정을 제외한 경우에 사용한다.
- *
- * @see RepositoryConfig
- */
 @Configuration
 @EnableJpaAuditing
 @EnableTransactionManagement
@@ -59,57 +53,29 @@ public class EntityJpaDataSourceConfig {
 	private static final String ENTITY_MANAGER_FACTORY_BUILDER_NAME =
 			ENTITY_BEAN_NAME_PREFIX + "ManagerFactoryBuilder";
 
-	/**
-	 * DataSource Bean을 생성한다.
-	 *
-	 * @return DataSource 설정 요소를 읽어오는 DataSource 객체
-	 */
 	@Bean(name = DATASOURCE_NAME)
 	@ConfigurationProperties(prefix = BASE_PROPERTY_PREFIX + ".datasource")
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();
 	}
 
-	/**
-	 * JpaProperties Bean을 생성한다.
-	 *
-	 * @return Jpa 설정 요소를 읽어오는 JpaProperties 객체
-	 */
 	@Bean(name = JPA_PROPERTIES_NAME)
 	@ConfigurationProperties(prefix = BASE_PROPERTY_PREFIX + ".jpa")
 	public JpaProperties jpaProperties() {
 		return new JpaProperties();
 	}
 
-	/**
-	 * HibernateProperties Bean을 생성한다.
-	 *
-	 * @return Hibernate 설정 요소를 읽어오는 HibernateProperties 객체
-	 */
 	@Bean(name = HIBERNATE_PROPERTIES_NAME)
 	@ConfigurationProperties(prefix = BASE_PROPERTY_PREFIX + ".jpa.hibernate")
 	public HibernateProperties hibernateProperties() {
 		return new HibernateProperties();
 	}
 
-	/**
-	 * JpaVendorAdapter Bean을 생성한다.
-	 *
-	 * @return JpaVendorAdapter 객체
-	 */
 	@Bean(name = JPA_VENDOR_ADAPTER_NAME)
 	public JpaVendorAdapter jpaVendorAdapter() {
 		return new HibernateJpaVendorAdapter();
 	}
 
-	/**
-	 * EntityManagerFactoryBuilder Bean을 생성한다.
-	 *
-	 * @param jpaVendorAdapter JpaVendorAdapter 객체
-	 * @param jpaProperties JpaProperties 객체
-	 * @param persistenceUnitManager PersistenceUnitManager 객체
-	 * @return EntityManagerFactoryBuilder 객체
-	 */
 	@Bean(name = ENTITY_MANAGER_FACTORY_BUILDER_NAME)
 	public EntityManagerFactoryBuilder entityManagerFactoryBuilder(
 			@Qualifier(value = JPA_VENDOR_ADAPTER_NAME) JpaVendorAdapter jpaVendorAdapter,
@@ -121,13 +87,6 @@ public class EntityJpaDataSourceConfig {
 				jpaVendorAdapter, jpaPropertyMap, persistenceUnitManager.getIfAvailable());
 	}
 
-	/**
-	 * LocalContainerEntityManagerFactory Bean을 생성한다.
-	 *
-	 * @param dataSource Datasource 객체
-	 * @param builder EntityManagerFactoryBuilder 객체
-	 * @return EntityManagerFactory 객체
-	 */
 	@Bean(name = ENTITY_MANAGER_FACTORY_NAME)
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
 			@Qualifier(value = DATASOURCE_NAME) DataSource dataSource,
@@ -143,12 +102,6 @@ public class EntityJpaDataSourceConfig {
 				.build();
 	}
 
-	/**
-	 * PlatformTransactionManager Bean을 생성한다.
-	 *
-	 * @param emf EntityManagerFactory 객체
-	 * @return PlatformTransactionManager 객체
-	 */
 	@Bean(name = TRANSACTION_MANAGER_NAME)
 	public PlatformTransactionManager transactionManager(
 			@Qualifier(ENTITY_MANAGER_FACTORY_NAME) EntityManagerFactory emf) {

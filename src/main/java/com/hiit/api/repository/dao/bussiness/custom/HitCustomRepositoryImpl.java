@@ -9,7 +9,7 @@ import com.hiit.api.repository.entity.business.it.QInItEntity;
 import com.hiit.api.repository.entity.business.with.WithEntity;
 import com.hiit.api.repository.exception.InvalidParamException;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 public class HitCustomRepositoryImpl extends QuerydslRepositorySupport
@@ -20,7 +20,7 @@ public class HitCustomRepositoryImpl extends QuerydslRepositorySupport
 	}
 
 	@Override
-	public Optional<HitEntity> findByWithEntityAndHitterAndStatusAndCreateAtBetween(
+	public List<HitEntity> findAllByWithEntityAndHitterAndStatusAndCreateAtBetween(
 			WithEntity with,
 			Hitter hitter,
 			HitStatus status,
@@ -28,7 +28,7 @@ public class HitCustomRepositoryImpl extends QuerydslRepositorySupport
 			LocalDateTime endTime) {
 
 		if (hitter.equals(Hitter.anonymous())) {
-			throw new InvalidParamException("Hitter");
+			throw new InvalidParamException("익명 사용자는 조회할 수 없습니다.");
 		}
 
 		QHitEntity hitEntity = QHitEntity.hitEntity;
@@ -42,8 +42,8 @@ public class HitCustomRepositoryImpl extends QuerydslRepositorySupport
 								.and(hitEntity.hitter.eq(hitter))
 								.and(hitEntity.status.eq(status))
 								.and(hitEntity.createAt.between(startTime, endTime)))
-				.stream()
-				.findFirst();
+				.orderBy(hitEntity.id.desc())
+				.fetch();
 	}
 
 	@Override
