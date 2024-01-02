@@ -12,10 +12,10 @@ import com.hiit.api.domain.usecase.end.it.GetEndItUseCase;
 import com.hiit.api.domain.usecase.end.it.GetEndItsUseCase;
 import com.hiit.api.domain.usecase.end.it.GetEndWithsUseCase;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
+import com.hiit.api.support.ApiResponse;
+import com.hiit.api.support.ApiResponseGenerator;
+import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
-import com.hiit.api.web.support.ApiResponse;
-import com.hiit.api.web.support.ApiResponseGenerator;
-import com.hiit.api.web.support.MessageCode;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
@@ -79,7 +79,7 @@ public class EndItQueryController {
 			GetEndItsUseCaseRequest request =
 					GetEndItsUseCaseRequest.builder().memberId(memberId).build();
 			res = getEndItsUseCase.execute(request);
-			if (res == null) {
+			if (res.getEndIts().isEmpty()) {
 				res = getEndItInfosMockResponse();
 			}
 		} catch (Exception e) {
@@ -124,7 +124,7 @@ public class EndItQueryController {
 			GetEndWithsUseCaseRequest request =
 					GetEndWithsUseCaseRequest.builder().memberId(memberId).endInItId(id).build();
 			res = getEndWithsUseCase.execute(request);
-			if (res == null) {
+			if (res.getEndWithInfos().isEmpty()) {
 				res = getEndWithInfosMockResponse();
 			}
 		} catch (Exception e) {

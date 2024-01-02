@@ -1,17 +1,17 @@
 package com.hiit.api.web.controller.v1.with;
 
-import com.hiit.api.domain.dao.support.PageableInfo;
+import com.hiit.api.domain.dto.PageRequest;
 import com.hiit.api.domain.dto.request.with.GetWithsUseCaseRequest;
 import com.hiit.api.domain.dto.response.with.WithInfo;
 import com.hiit.api.domain.dto.response.with.WithMemberInfo;
 import com.hiit.api.domain.dto.response.with.WithPage;
 import com.hiit.api.domain.usecase.with.GetWithsUseCase;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
-import com.hiit.api.web.dto.request.PageableInfoRequest;
+import com.hiit.api.support.ApiResponse;
+import com.hiit.api.support.ApiResponseGenerator;
+import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
-import com.hiit.api.web.support.ApiResponse;
-import com.hiit.api.web.support.ApiResponseGenerator;
-import com.hiit.api.web.support.MessageCode;
+import com.hiit.api.web.support.usecase.PageRequestGenerator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
@@ -43,16 +43,16 @@ public class WithQueryController {
 		WithPage withPage = null;
 		try {
 			Long memberId = Long.valueOf(userDetails.getUsername());
-			PageableInfo pageableInfo = new PageableInfoRequest(pageable);
+			PageRequest pageRequest = PageRequestGenerator.generate(pageable);
 			GetWithsUseCaseRequest request =
 					GetWithsUseCaseRequest.builder()
 							.memberId(memberId)
 							.inItId(id)
 							.isMember(my)
-							.pageable(pageableInfo)
+							.pageable(pageRequest)
 							.build();
 			withPage = getWithsUseCase.execute(request);
-			if (withPage == null) {
+			if (withPage.getData().isEmpty()) {
 				withPage = getWithPageMockResponse(pageable);
 				return ApiResponseGenerator.success(withPage, HttpStatus.OK, MessageCode.SUCCESS);
 			}
