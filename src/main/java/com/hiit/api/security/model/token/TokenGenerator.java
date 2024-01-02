@@ -1,4 +1,4 @@
-package com.hiit.api.common.support.token;
+package com.hiit.api.security.model.token;
 
 import com.hiit.api.security.authentication.authority.Roles;
 import io.jsonwebtoken.Header;
@@ -29,13 +29,6 @@ public class TokenGenerator {
 	private static final String MEMBER_ID_CLAIM_KEY = "memberId";
 	private static final String MEMBER_ROLE_CLAIM_KEY = "memberRole";
 
-	/**
-	 * id와 role을 이용하여 AuthToken을 생성한다.
-	 *
-	 * @param memberId id 정보
-	 * @param memberRoles role 정보
-	 * @return AuthToken
-	 */
 	public AuthToken generateAuthToken(Long memberId, List<Roles> memberRoles) {
 		return AuthToken.builder()
 				.accessToken(generateAccessToken(memberId, memberRoles))
@@ -43,13 +36,6 @@ public class TokenGenerator {
 				.build();
 	}
 
-	/**
-	 * id와 role을 이용하여 AccessToken을 생성한다.
-	 *
-	 * @param memberId id 정보
-	 * @param memberRoles role 정보
-	 * @return AccessToken
-	 */
 	public String generateAccessToken(Long memberId, List<Roles> memberRoles) {
 		Date now = new Date();
 		List<String> roles = convertToStringList(memberRoles);
@@ -64,13 +50,6 @@ public class TokenGenerator {
 				.compact();
 	}
 
-	/**
-	 * id와 role을 이용하여 RefreshToken을 생성한다.
-	 *
-	 * @param memberId id 정보
-	 * @param memberRoles role 정보
-	 * @return RefreshToken
-	 */
 	String generateRefreshToken(Long memberId, List<Roles> memberRoles) {
 		Date now = new Date();
 		List<String> roles = convertToStringList(memberRoles);

@@ -8,32 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
-/**
- * 토큰 인증을 위한 필터<br>
- * 토큰은 인증된 정보이기에 AbstractPreAuthenticatedProcessingFilter를 상속받아 구현합니다.
- */
+/** 토큰 인증 필터 */
 @Slf4j
 public class TokenAuthenticationFilter extends AbstractPreAuthenticatedProcessingFilter {
 
 	private static final Pattern PATTERN_AUTHORIZATION_HEADER = Pattern.compile("^[Bb]earer (.*)$");
 
-	/**
-	 * Principal에 저장할 정보를 토큰으로부터 추출하여 반환합니다.
-	 *
-	 * @param request http 요청
-	 * @return 토큰
-	 */
 	@Override
 	protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
 		return resolveAccessToken(request);
 	}
 
-	/**
-	 * Credential에 저장할 정보를 토큰으로부터 추출하여 반환합니다.
-	 *
-	 * @param request http 요청
-	 * @return 토큰
-	 */
 	@Override
 	protected Object getPreAuthenticatedCredentials(HttpServletRequest request) {
 		return resolveAccessToken(request);

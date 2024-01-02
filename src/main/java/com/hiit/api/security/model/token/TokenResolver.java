@@ -1,4 +1,4 @@
-package com.hiit.api.common.support.token;
+package com.hiit.api.security.model.token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,12 +17,6 @@ public class TokenResolver {
 	@Value("${security.jwt.token.secretkey}")
 	private String secretKey;
 
-	/**
-	 * 토큰의 클레임 정보를 추출 합니다.
-	 *
-	 * @param token token 정보
-	 * @return 클레임 정보
-	 */
 	public Optional<Claims> resolve(String token) {
 		try {
 			return Optional.ofNullable(
@@ -37,12 +31,6 @@ public class TokenResolver {
 		}
 	}
 
-	/**
-	 * 토큰의 memberId 정보를 추출 합니다.
-	 *
-	 * @param token token 정보
-	 * @return memberId 정보
-	 */
 	public Optional<Long> resolveId(String token) {
 		try {
 			return Optional.ofNullable(
@@ -58,12 +46,6 @@ public class TokenResolver {
 		}
 	}
 
-	/**
-	 * 토큰의 memberRole 정보를 추출 합니다.
-	 *
-	 * @param token token 정보
-	 * @return memberRole 정보
-	 */
 	public Optional<String> resolveRole(String token) {
 		try {
 			return Optional.ofNullable(

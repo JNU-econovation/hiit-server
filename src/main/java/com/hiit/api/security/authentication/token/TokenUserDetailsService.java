@@ -1,8 +1,8 @@
 package com.hiit.api.security.authentication.token;
 
-import com.hiit.api.common.support.token.TokenResolver;
 import com.hiit.api.security.authentication.authority.Roles;
 import com.hiit.api.security.exception.AccessTokenInvalidException;
+import com.hiit.api.security.model.token.TokenResolver;
 import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +27,6 @@ public class TokenUserDetailsService implements UserDetailsService {
 
 	private final TokenResolver tokenResolver;
 
-	/**
-	 * 토큰을 통해 유저의 정보를 조회합니다.
-	 *
-	 * @param token 토큰
-	 * @return 유저의 정보
-	 * @throws UsernameNotFoundException
-	 */
 	@Override
 	public UserDetails loadUserByUsername(String token) throws UsernameNotFoundException {
 
@@ -62,7 +55,6 @@ public class TokenUserDetailsService implements UserDetailsService {
 					rtn.add(Roles.valueOf(role).getAuthority());
 				} catch (IllegalArgumentException exception) {
 					log.error("Invalid role. role: {}", role);
-					// todo 알림 기능 추가
 				}
 			}
 		}
