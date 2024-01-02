@@ -7,3 +7,7 @@ spring:
       - swagger-ui
       - mysql-local
       - security-local
+
+logging:
+  level:
+    com.hiit.api.domain: DEBUG
