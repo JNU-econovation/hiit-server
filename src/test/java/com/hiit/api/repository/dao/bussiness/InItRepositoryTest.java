@@ -118,7 +118,7 @@ class InItRepositoryTest extends AbstractRepositoryTest {
 
 		// when
 		Optional<InItEntity> result =
-				repository.findByTargetIdAndStatusAndHiitMember(targetId, ItStatus.ACTIVE, member);
+				repository.findByHiitMemberAndTargetIdAndStatus(member, targetId, ItStatus.ACTIVE);
 
 		// then
 		assertThat(result).contains(source);

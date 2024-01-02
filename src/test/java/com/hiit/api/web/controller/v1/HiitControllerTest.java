@@ -36,7 +36,7 @@ class HiitControllerTest {
 	private static final String BASE_URL = "/api/v1";
 
 	@Test
-	@DisplayName(BASE_URL + "/banners")
+	@DisplayName("[GET] " + BASE_URL + "/banners")
 	void banners() throws Exception {
 		// set service mock
 
@@ -57,7 +57,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/notice")
+	@DisplayName("[GET] " + BASE_URL + "/notice")
 	void notice() throws Exception {
 		// set service mock
 
@@ -78,7 +78,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/suggest/its")
+	@DisplayName("[POST] " + BASE_URL + "/suggest/its")
 	void suggestIts() throws Exception {
 		// set service mock
 
@@ -112,7 +112,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/suggest/its")
+	@DisplayName("[POST/notDividedBy30Minutes] " + BASE_URL + "/suggest/its")
 	void suggestIts_notDividedBy30Minutes() throws Exception {
 		// set service mock
 
@@ -146,7 +146,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/suggest/its")
+	@DisplayName("[POST/nullTitle] " + BASE_URL + "/suggest/its")
 	void suggestIts_nullTitle() throws Exception {
 		// set service mock
 
@@ -179,7 +179,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/suggest/its")
+	@DisplayName("[POST/emptyTitle] " + BASE_URL + "/suggest/its")
 	void suggestIts_emptyTitle() throws Exception {
 		// set service mock
 
@@ -213,7 +213,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/suggest/its")
+	@DisplayName("[POST/nullReason] " + BASE_URL + "/suggest/its")
 	void suggestIts_nullReason() throws Exception {
 		// set service mock
 
@@ -246,7 +246,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/suggest/its")
+	@DisplayName("[POST/emptyReason] " + BASE_URL + "/suggest/its")
 	void suggestIts_emptyReason() throws Exception {
 		// set service mock
 
@@ -280,7 +280,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/suggest/its")
+	@DisplayName("[POST/overMaxLengthReason] " + BASE_URL + "/suggest/its")
 	void suggestIts_overMaxLengthReason() throws Exception {
 		// set service mock
 		String overMaxLengthReason =
@@ -315,7 +315,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/errors")
+	@DisplayName("[INFO] " + BASE_URL + "/errors")
 	void errors() throws Exception {
 		// set service mock
 
@@ -336,7 +336,7 @@ class HiitControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/dayCode")
+	@DisplayName("[INFO] " + BASE_URL + "/dayCode")
 	void dayCode() throws Exception {
 		// set service mock
 

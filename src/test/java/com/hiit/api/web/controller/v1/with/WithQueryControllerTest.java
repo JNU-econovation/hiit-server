@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(classes = AppMain.class)
-class WithGetControllerTest {
+class WithQueryControllerTest {
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
 	private static final String TAG = "With-Controller";
@@ -35,7 +35,7 @@ class WithGetControllerTest {
 	private static final String WITH_BASE_ID = "WithInfo";
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[GET] " + BASE_URL)
 	void readWiths() throws Exception {
 		// set service mock
 
@@ -69,7 +69,7 @@ class WithGetControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[GET/invalidId] " + BASE_URL)
 	void readWiths_invalidId() throws Exception {
 		// set service mock
 

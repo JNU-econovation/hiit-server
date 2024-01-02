@@ -35,7 +35,7 @@ class EndItCommandControllerTest {
 	private static final String BASE_URL = "/api/v1/end/its";
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[PUT] " + BASE_URL)
 	void editEndIt() throws Exception {
 		// set service mock
 
@@ -62,7 +62,7 @@ class EndItCommandControllerTest {
 	private static final String EDIT_ENDIT_BASE_ID = "EndItInfo";
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[PUT/InvalidId] " + BASE_URL)
 	void editEndIt_invalidId() throws Exception {
 		// set service mock
 
@@ -87,7 +87,7 @@ class EndItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[PUT/nullTitle] " + BASE_URL)
 	void editEndIt_nullTitle() throws Exception {
 		// set service mock
 
@@ -112,7 +112,7 @@ class EndItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[PUT/emptyTitle] " + BASE_URL)
 	void editEndIt_emptyTitle() throws Exception {
 		// set service mock
 
@@ -137,7 +137,7 @@ class EndItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[PUT/overMaxLength] " + BASE_URL)
 	void editEndIt_overMaxLength() throws Exception {
 		// set service mock
 		String overMaxLength = "1234567890123456"; // max : 15
@@ -164,7 +164,7 @@ class EndItCommandControllerTest {
 	private static final String DELETE_ENDIT_BASE_ID = "DeleteEndItInfo";
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[DELETE] " + BASE_URL)
 	void deleteEndIt() throws Exception {
 		// set service mock
 
@@ -189,7 +189,7 @@ class EndItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[DELETE/invalidId] " + BASE_URL)
 	void deleteEndIt_invalidId() throws Exception {
 		// set service mock
 
@@ -198,7 +198,7 @@ class EndItCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		mockMvc
-				.perform(put(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
+				.perform(delete(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
 						document(

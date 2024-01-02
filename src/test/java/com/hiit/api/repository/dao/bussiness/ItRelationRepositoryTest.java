@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.hiit.api.repository.AbstractRepositoryTest;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.init.it.InItInitializer;
@@ -13,6 +14,7 @@ import com.hiit.api.repository.init.member.HiitMembersInitializer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,6 +72,23 @@ class ItRelationRepositoryTest extends AbstractRepositoryTest {
 
 		// then
 		assertThat(result).isZero();
+	}
+
+	@Test
+	@DisplayName("잇에 참여한 멤버를 조회한다.")
+	void findByInItId() {
+		// given
+		hiitMembersInitializer.initialize(1);
+		inItInitializer.initialize(
+				registeredItInitializer.getData(), hiitMembersInitializer.getData().get(0));
+		InItEntity inIt = inItInitializer.getData();
+
+		// when
+		Optional<ItRelationEntity> itRelation = repository.findByInItId(inIt.getId());
+
+		// then
+		assertThat(itRelation).isPresent();
+		assertThat(itRelation.get().getInIt()).isEqualTo(inIt);
 	}
 
 	private List<HiitMemberEntity> setUpMembers(int count) {

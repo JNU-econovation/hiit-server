@@ -38,7 +38,7 @@ class HitCommandControllerTest {
 	private static final String HIT_BASE_ID = "HitInfo";
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[POST] " + BASE_URL)
 	void hit() throws Exception {
 
 		HitRequest request = HitRequest.builder().id(1L).build();
@@ -70,7 +70,7 @@ class HitCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[POST/invalidId] " + BASE_URL)
 	void hit_invalidId() throws Exception {
 
 		HitRequest request = HitRequest.builder().id(-1L).build();

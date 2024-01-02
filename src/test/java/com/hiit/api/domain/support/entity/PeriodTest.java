@@ -1,4 +1,4 @@
-package com.hiit.api.domain.dao.support;
+package com.hiit.api.domain.support.entity;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-// todo
 class PeriodTest {
 
 	@Test

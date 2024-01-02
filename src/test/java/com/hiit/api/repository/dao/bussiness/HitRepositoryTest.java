@@ -16,7 +16,7 @@ import com.hiit.api.repository.init.it.RegisteredItInitializer;
 import com.hiit.api.repository.init.member.HiitMemberInitializer;
 import com.hiit.api.repository.init.with.WithInitializer;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ class HitRepositoryTest extends AbstractRepositoryTest {
 		hiitMemberInitializer.initialize();
 		registeredItInitializer.initialize();
 		inItInitializer.initialize(registeredItInitializer.getData(), hiitMemberInitializer.getData());
-		withInitializer.initialize(inItInitializer.getData());
+		withInitializer.initialize(inItInitializer.getData(), hiitMemberInitializer.getData());
 	}
 
 	@Test
@@ -131,15 +131,15 @@ class HitRepositoryTest extends AbstractRepositoryTest {
 				HitEntity.builder().status(HitStatus.HIT).withEntity(with).hitter(hitter).build();
 		repository.save(hit);
 		int size = 5;
-		setAdditionalData(size, hiitMember, with);
+		setAdditionalData(hitter.getId().get().intValue() + 1, size, hiitMember, with);
 
 		// when
-		Optional<HitEntity> result =
-				repository.findByWithEntityAndHitterAndStatusAndCreateAtBetween(
+		List<HitEntity> result =
+				repository.findAllByWithEntityAndHitterAndStatusAndCreateAtBetween(
 						with, hitter, HitStatus.HIT, start, end);
 
 		// then
-		assertThat(result).contains(hit);
+		assertThat(result).isEqualTo(List.of(hit));
 	}
 
 	@Test
@@ -157,7 +157,7 @@ class HitRepositoryTest extends AbstractRepositoryTest {
 		assertThrows(
 				InvalidParamException.class,
 				() ->
-						repository.findByWithEntityAndHitterAndStatusAndCreateAtBetween(
+						repository.findAllByWithEntityAndHitterAndStatusAndCreateAtBetween(
 								with, hitter, HitStatus.HIT, start, end));
 	}
 
@@ -173,7 +173,8 @@ class HitRepositoryTest extends AbstractRepositoryTest {
 		repository.save(hit);
 		InItEntity otherInIt =
 				inItInitializer.addData(hiitMemberInitializer.getData(), registeredItInitializer.getData());
-		WithEntity otherWith = withInitializer.addData(otherInIt);
+		WithEntity otherWith =
+				withInitializer.addData(otherInIt, HiitMemberEntity.builder().id(0L).build());
 		int size = 5;
 		setAdditionalData(size, otherWith);
 
@@ -198,8 +199,9 @@ class HitRepositoryTest extends AbstractRepositoryTest {
 		}
 	}
 
-	private void setAdditionalData(int size, HiitMemberEntity hiitMember, WithEntity with) {
-		for (int i = hiitMember.getId().intValue(); i < hiitMember.getId() + size; i++) {
+	private void setAdditionalData(
+			int startIndex, int size, HiitMemberEntity hiitMember, WithEntity with) {
+		for (int i = startIndex; i < hiitMember.getId() + size; i++) {
 			Hitter otherHitter = Hitter.of((long) i);
 			HitEntity otherHit =
 					HitEntity.builder().status(HitStatus.HIT).withEntity(with).hitter(otherHitter).build();
