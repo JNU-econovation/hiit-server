@@ -23,7 +23,7 @@ public class InItsInitializer {
 	private List<ItRelationEntity> relations = new ArrayList<>();
 
 	public void initialize(Map<Integer, Map<RegisteredItEntity, HiitMemberEntity>> sources) {
-		repository.deleteAll();
+		//		repository.deleteAll();
 		for (Map.Entry<Integer, Map<RegisteredItEntity, HiitMemberEntity>> source :
 				sources.entrySet()) {
 			for (Map.Entry<RegisteredItEntity, HiitMemberEntity> entry : source.getValue().entrySet()) {

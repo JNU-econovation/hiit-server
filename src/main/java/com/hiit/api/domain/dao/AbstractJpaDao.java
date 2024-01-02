@@ -1,10 +1,6 @@
 package com.hiit.api.domain.dao;
 
-import static java.util.stream.Collectors.toList;
-
-import com.hiit.api.common.marker.dto.AbstractData;
 import com.hiit.api.common.marker.entity.EntityMarker;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -21,37 +17,30 @@ import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuer
  *
  * @param <E> JPA 엔티티 타입
  * @param <ID> ID 타입
- * @param <D> 반환할 데이터 타입
  */
 @RequiredArgsConstructor
-public abstract class AbstractJpaDao<E extends EntityMarker, ID, D extends AbstractData>
-		implements JpaDao<D, ID> {
+public abstract class AbstractJpaDao<E extends EntityMarker, ID> implements JpaDao<E, ID> {
 
 	protected final JpaRepository<E, ID> jpaRepository;
-	protected final AbstractDataConverter<E, D> converter;
 
 	@Override
-	public List<D> findAll() {
-		return jpaRepository.findAll().stream().map(converter::from).collect(toList());
+	public List<E> findAll() {
+		return jpaRepository.findAll();
 	}
 
 	@Override
-	public List<D> findAll(Sort sort) {
-		return jpaRepository.findAll(sort).stream().map(converter::from).collect(toList());
+	public List<E> findAll(Sort sort) {
+		return jpaRepository.findAll(sort);
 	}
 
 	@Override
-	public List<D> findAllById(Iterable<ID> longs) {
-		return jpaRepository.findAllById(longs).stream().map(converter::from).collect(toList());
+	public List<E> findAllById(Iterable<ID> longs) {
+		return jpaRepository.findAllById(longs);
 	}
 
 	@Override
-	public <S extends D> List<S> saveAll(Iterable<S> entities) {
-		List<E> sources = new ArrayList<>();
-		for (D entity : entities) {
-			sources.add(converter.to(entity));
-		}
-		return (List<S>) jpaRepository.saveAll(sources).stream().map(converter::from).collect(toList());
+	public <S extends E> List<S> saveAll(Iterable<S> entities) {
+		return jpaRepository.saveAll(entities);
 	}
 
 	@Override
@@ -60,28 +49,18 @@ public abstract class AbstractJpaDao<E extends EntityMarker, ID, D extends Abstr
 	}
 
 	@Override
-	public <S extends D> S saveAndFlush(S entity) {
-		E source = converter.to(entity);
-		return (S) converter.from(jpaRepository.saveAndFlush(source));
+	public <S extends E> S saveAndFlush(S entity) {
+		return jpaRepository.saveAndFlush(entity);
 	}
 
 	@Override
-	public <S extends D> List<S> saveAllAndFlush(Iterable<S> entities) {
-		List<E> sources = new ArrayList<>();
-		for (D entity : entities) {
-			sources.add(converter.to(entity));
-		}
-		return (List<S>)
-				jpaRepository.saveAllAndFlush(sources).stream().map(converter::from).collect(toList());
+	public <S extends E> List<S> saveAllAndFlush(Iterable<S> entities) {
+		return jpaRepository.saveAllAndFlush(entities);
 	}
 
 	@Override
-	public void deleteAllInBatch(Iterable<D> entities) {
-		List<E> sources = new ArrayList<>();
-		for (D entity : entities) {
-			sources.add(converter.to(entity));
-		}
-		jpaRepository.deleteAllInBatch(sources);
+	public void deleteAllInBatch(Iterable<E> entities) {
+		jpaRepository.deleteAllInBatch(entities);
 	}
 
 	@Override
@@ -95,45 +74,38 @@ public abstract class AbstractJpaDao<E extends EntityMarker, ID, D extends Abstr
 	}
 
 	@Override
-	public D getReferenceById(ID aLong) {
-		E source = jpaRepository.getReferenceById(aLong);
-		return converter.from(source);
+	public E getReferenceById(ID aLong) {
+		return jpaRepository.getReferenceById(aLong);
 	}
 
 	@Override
-	public <S extends D> List<S> findAll(Example<S> example) {
-		D data = example.getProbe();
-		Example<E> source = Example.of(converter.to(data), example.getMatcher());
-		return (List<S>) jpaRepository.findAll(source).stream().map(converter::from).collect(toList());
+	public <S extends E> List<S> findAll(Example<S> example) {
+		return jpaRepository.findAll(example);
 	}
 
 	@Override
-	public <S extends D> List<S> findAll(Example<S> example, Sort sort) {
-		D data = example.getProbe();
-		Example<E> source = Example.of(converter.to(data), example.getMatcher());
-		return (List<S>)
-				jpaRepository.findAll(source, sort).stream().map(converter::from).collect(toList());
+	public <S extends E> List<S> findAll(Example<S> example, Sort sort) {
+		return jpaRepository.findAll(example, sort);
 	}
 
 	@Override
-	public Page<D> findAll(Pageable pageable) {
-		return jpaRepository.findAll(pageable).map(converter::from);
+	public Page<E> findAll(Pageable pageable) {
+		return jpaRepository.findAll(pageable);
 	}
 
 	@Override
-	public <S extends D> S save(S entity) {
-		E source = converter.to(entity);
-		return (S) converter.from(jpaRepository.save(source));
+	public <S extends E> S save(S entity) {
+		return jpaRepository.save(entity);
 	}
 
 	@Override
-	public Optional<D> findById(ID aLong) {
-		return jpaRepository.findById(aLong).map(converter::from);
+	public Optional<E> findById(ID aLong) {
+		return jpaRepository.findById(aLong);
 	}
 
 	@Override
-	public boolean existsById(ID aLong) {
-		return jpaRepository.existsById(aLong);
+	public boolean existsById(ID withId) {
+		return jpaRepository.existsById(withId);
 	}
 
 	@Override
@@ -147,9 +119,8 @@ public abstract class AbstractJpaDao<E extends EntityMarker, ID, D extends Abstr
 	}
 
 	@Override
-	public void delete(D entity) {
-		E source = converter.to(entity);
-		jpaRepository.delete(source);
+	public void delete(E entity) {
+		jpaRepository.delete(entity);
 	}
 
 	@Override
@@ -158,12 +129,8 @@ public abstract class AbstractJpaDao<E extends EntityMarker, ID, D extends Abstr
 	}
 
 	@Override
-	public void deleteAll(Iterable<? extends D> entities) {
-		List<E> sources = new ArrayList<>();
-		for (D entity : entities) {
-			sources.add(converter.to(entity));
-		}
-		jpaRepository.deleteAll(sources);
+	public void deleteAll(Iterable<? extends E> entities) {
+		jpaRepository.deleteAll(entities);
 	}
 
 	@Override
@@ -172,36 +139,28 @@ public abstract class AbstractJpaDao<E extends EntityMarker, ID, D extends Abstr
 	}
 
 	@Override
-	public <S extends D> Optional<S> findOne(Example<S> example) {
-		D data = example.getProbe();
-		Example<E> source = Example.of(converter.to(data), example.getMatcher());
-		return (Optional<S>) jpaRepository.findOne(source).map(converter::from);
+	public <S extends E> Optional<S> findOne(Example<S> example) {
+		return jpaRepository.findOne(example);
 	}
 
 	@Override
-	public <S extends D> Page<S> findAll(Example<S> example, Pageable pageable) {
-		D data = example.getProbe();
-		Example<E> source = Example.of(converter.to(data), example.getMatcher());
-		return (Page<S>) jpaRepository.findAll(source, pageable).map(converter::from);
+	public <S extends E> Page<S> findAll(Example<S> example, Pageable pageable) {
+		return jpaRepository.findAll(example, pageable);
 	}
 
 	@Override
-	public <S extends D> long count(Example<S> example) {
-		D data = example.getProbe();
-		Example<E> source = Example.of(converter.to(data), example.getMatcher());
-		return jpaRepository.count(source);
+	public <S extends E> long count(Example<S> example) {
+		return jpaRepository.count(example);
 	}
 
 	@Override
-	public <S extends D> boolean exists(Example<S> example) {
-		D data = example.getProbe();
-		Example<E> source = Example.of(converter.to(data), example.getMatcher());
-		return jpaRepository.exists(source);
+	public <S extends E> boolean exists(Example<S> example) {
+		return jpaRepository.exists(example);
 	}
 
 	@Override
-	public <S extends D, R> R findBy(
+	public <S extends E, R> R findBy(
 			Example<S> example, Function<FetchableFluentQuery<S>, R> queryFunction) {
-		throw new UnsupportedOperationException();
+		return jpaRepository.findBy(example, queryFunction);
 	}
 }

@@ -1,7 +1,7 @@
 package com.hiit.api.domain.dto.request.with;
 
-import com.hiit.api.common.marker.dto.request.AbstractRequestDto;
-import com.hiit.api.domain.dao.support.PageableInfo;
+import com.hiit.api.common.marker.dto.AbstractRequest;
+import com.hiit.api.domain.dto.PageRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -15,10 +15,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class GetWithsUseCaseRequest implements AbstractRequestDto {
+public class GetWithsUseCaseRequest implements AbstractRequest {
 
 	private Long memberId;
 	private Long inItId;
 	private Boolean isMember;
-	private PageableInfo pageable;
+	private PageRequest pageable;
 }

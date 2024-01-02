@@ -16,11 +16,6 @@ public class TokenAuditHolder {
 	private static final String NOT_USE_ID_VALUE = "0";
 	private static final GrantedAuthority NOT_USE_AUTHORITY = new SimpleGrantedAuthority("NOT_USE");
 
-	/**
-	 * 토큰 인증 후 인증된 유저 정보를 반환합니다.
-	 *
-	 * @return 토큰 인증 후 인증된 유저 정보
-	 */
 	public static UserDetails get() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

@@ -10,7 +10,7 @@ public class InvalidParamException extends InvalidDataAccessApiUsageException {
 		super(MESSAGE);
 	}
 
-	public InvalidParamException(String param) {
-		super(MESSAGE + " : " + param);
+	public InvalidParamException(String reason) {
+		super(MESSAGE + " : " + reason);
 	}
 }

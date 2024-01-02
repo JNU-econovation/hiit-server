@@ -45,8 +45,8 @@ public class InItCustomRepositoryImpl extends QuerydslRepositorySupport
 	}
 
 	@Override
-	public Optional<InItEntity> findByTargetIdAndStatusAndHiitMember(
-			Long targetId, ItStatus status, HiitMemberEntity hiitMember) {
+	public Optional<InItEntity> findByHiitMemberAndTargetIdAndStatus(
+			HiitMemberEntity hiitMember, Long targetId, ItStatus status) {
 		QInItEntity inIt = QInItEntity.inItEntity;
 		QItRelationEntity relation = QItRelationEntity.itRelationEntity;
 

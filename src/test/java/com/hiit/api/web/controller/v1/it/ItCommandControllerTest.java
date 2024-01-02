@@ -38,7 +38,7 @@ class ItCommandControllerTest {
 	private static final String ADD_INIT_BASE_ID = "AddInIt";
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[POST] " + BASE_URL + "/ins")
 	void addInIt() throws Exception {
 
 		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
@@ -67,7 +67,7 @@ class ItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[POST/invalidId] " + BASE_URL + "/ins")
 	void addInIt_invalidId() throws Exception {
 
 		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
@@ -96,7 +96,7 @@ class ItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[POST/invalidDaycode] " + BASE_URL + "/ins")
 	void addInIt_invalidDayCode() throws Exception {
 
 		String dayCode = Long.toBinaryString(0000001L);
@@ -125,7 +125,7 @@ class ItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[POST/nullResolution] " + BASE_URL + "/ins")
 	void addInIt_nullResolution() throws Exception {
 
 		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
@@ -153,7 +153,7 @@ class ItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[POST/emptyResolution] " + BASE_URL + "/ins")
 	void addInIt_emptyResolution() throws Exception {
 
 		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
@@ -182,7 +182,7 @@ class ItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[POST/overMaxLength] " + BASE_URL + "/ins")
 	void addInIt_overMaxLength() throws Exception {
 
 		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
@@ -214,7 +214,7 @@ class ItCommandControllerTest {
 	private static final String EDIT_INIT_BASE_ID = "EditInIt";
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[PUT] " + BASE_URL + "/ins")
 	void editInIt() throws Exception {
 
 		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
@@ -244,7 +244,7 @@ class ItCommandControllerTest {
 	private static final String DELETE_INIT_BASE_ID = "DeleteInIt";
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[DELETE] " + BASE_URL + "/ins")
 	void deleteInIt() throws Exception {
 
 		DeleteInItRequest request = DeleteInItRequest.builder().id(1L).endTitle("종료 잇 제목").build();
@@ -271,7 +271,7 @@ class ItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[DELETE/invalidId] " + BASE_URL + "/ins")
 	void deleteInIt_invalidId() throws Exception {
 
 		DeleteInItRequest request = DeleteInItRequest.builder().id(-1L).endTitle("종료 잇 제목").build();
@@ -298,7 +298,7 @@ class ItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[DELETE/nullTitle] " + BASE_URL)
 	void deleteInIt_nullTitle() throws Exception {
 		// set service mock
 		DeleteInItRequest request = DeleteInItRequest.builder().id(1L).build();
@@ -323,7 +323,7 @@ class ItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[DELETE/emptyTitle] " + BASE_URL)
 	void deleteInIt_emptyTitle() throws Exception {
 		// set service mock
 		DeleteInItRequest request = DeleteInItRequest.builder().id(1L).endTitle("").build();
@@ -348,7 +348,7 @@ class ItCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[DELETE/overMaxLength] " + BASE_URL)
 	void deleteInIt_overMaxLength() throws Exception {
 		// set service mock
 		String overMaxLength = "1234567890123456"; // max : 15

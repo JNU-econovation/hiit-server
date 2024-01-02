@@ -1,19 +1,19 @@
 package com.hiit.api.web.controller.v1;
 
 import com.hiit.api.common.exception.ExceptionSpec;
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.common.marker.dto.AbstractResponse;
 import com.hiit.api.common.support.DayCodeSpec;
-import com.hiit.api.common.support.token.AuthToken;
-import com.hiit.api.common.support.token.TokenGenerator;
 import com.hiit.api.domain.dto.response.Banners;
 import com.hiit.api.domain.dto.response.NotiInfos;
 import com.hiit.api.domain.dto.response.NoticeInfo;
 import com.hiit.api.security.authentication.authority.Roles;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
+import com.hiit.api.security.model.token.AuthToken;
+import com.hiit.api.security.model.token.TokenGenerator;
+import com.hiit.api.support.ApiResponse;
+import com.hiit.api.support.ApiResponseGenerator;
+import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.SuggestItRequest;
-import com.hiit.api.web.support.ApiResponse;
-import com.hiit.api.web.support.ApiResponseGenerator;
-import com.hiit.api.web.support.MessageCode;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -41,13 +41,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class HiitController {
 
 	@GetMapping("/banners")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> banners() {
+	public ApiResponse<ApiResponse.SuccessBody<AbstractResponse>> banners() {
 		Banners res = Banners.builder().size(1L).urls(List.of("배너 이미지 주소1", "배너 이미지 주소2")).build();
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 
 	@GetMapping("/notice")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> notice() {
+	public ApiResponse<ApiResponse.SuccessBody<AbstractResponse>> notice() {
 		NoticeInfo notice1 =
 				NoticeInfo.builder()
 						.id(1L)

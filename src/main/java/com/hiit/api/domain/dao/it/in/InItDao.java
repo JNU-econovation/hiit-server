@@ -1,19 +1,20 @@
 package com.hiit.api.domain.dao.it.in;
 
 import com.hiit.api.domain.dao.JpaDao;
+import com.hiit.api.repository.entity.business.it.InItEntity;
 import java.util.List;
 
-public interface InItDao extends JpaDao<InItData, Long> {
+public interface InItDao extends JpaDao<InItEntity, Long> {
 
-	List<InItData> findAllActiveStatusByMember(Long memberId);
+	List<InItEntity> findAllActiveStatusByMember(Long memberId);
 
-	List<InItData> findAllEndStatusByMember(Long memberId);
+	List<InItEntity> findAllEndStatusByMember(Long memberId);
 
-	InItData findActiveStatusByIdAndMember(Long inItId, Long memberId);
+	InItEntity findActiveStatusByIdAndMember(Long inItId, Long memberId);
 
-	InItData findEndStatusByIdAndMember(Long inItId, Long memberId);
+	InItEntity findEndStatusByIdAndMember(Long inItId, Long memberId);
 
-	InItData findActiveStatusByTargetIdAndMember(Long targetId, Long memberId);
+	InItEntity findActiveStatusByTargetIdAndMember(Long targetId, Long memberId);
 
-	InItData findEndStatusByTargetIdAndMember(Long targetId, Long memberId);
+	InItEntity findEndStatusByTargetIdAndMember(Long targetId, Long memberId);
 }

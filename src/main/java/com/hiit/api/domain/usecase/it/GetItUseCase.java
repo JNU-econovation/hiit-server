@@ -1,13 +1,12 @@
 package com.hiit.api.domain.usecase.it;
 
-import com.hiit.api.domain.dao.it.registerd.RegisteredItDao;
-import com.hiit.api.domain.dao.it.registerd.RegisteredItData;
 import com.hiit.api.domain.dao.it.relation.ItRelationDao;
-import com.hiit.api.domain.dao.it.relation.ItRelationData;
 import com.hiit.api.domain.dto.request.it.GetItUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.ItInfo;
-import com.hiit.api.domain.exception.DataNotFoundException;
-import com.hiit.api.domain.service.it.MemberRegisteredItRelationService;
+import com.hiit.api.domain.model.it.registered.BasicIt;
+import com.hiit.api.domain.model.it.relation.ItRelation;
+import com.hiit.api.domain.service.it.BrowseItsService;
+import com.hiit.api.domain.service.it.BrowseMemberInItRelationService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,43 +19,43 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 
-	private final RegisteredItDao registeredItDao;
+	private final BrowseItsService browseItsService;
+	private final BrowseMemberInItRelationService browseMemberInItRelationService;
 
 	private final ItRelationDao itRelationDao;
-	private final MemberRegisteredItRelationService memberRegisteredItRelationService;
 
 	@Override
 	@Transactional(readOnly = true)
-	public ItInfo execute(GetItUseCaseRequest request) {
-		Long registeredItId = request.getItId();
-		Long memberId = request.getMemberId();
+	public ItInfo execute(final GetItUseCaseRequest request) {
+		final Long registeredItId = request.getItId();
+		final Long memberId = request.getMemberId();
 
-		RegisteredItData registeredIt = getRegisteredIt(registeredItId);
+		log.debug("get it : m - {}, i - {}", memberId, registeredItId);
+		BasicIt source = getSource(registeredItId);
 
+		log.debug("get member in it count : i - {}", registeredItId);
 		Long inMemberCount = calcInMemberCount(registeredItId);
-		List<ItRelationData> memberRegisteredIts = browseMemberInRegisteredIts(memberId);
+		log.debug("get member in it ids : m - {}", memberId);
+		List<ItRelation> memberRegisteredIts = browseMemberInRegisteredIts(memberId);
 
-		for (ItRelationData memberRegisteredIt : memberRegisteredIts) {
+		for (ItRelation memberRegisteredIt : memberRegisteredIts) {
 			if (memberRegisteredIt.isTarget(registeredItId)) {
-				return buildResponse(registeredIt, inMemberCount, true);
+				return buildResponse(source, inMemberCount, true);
 			}
 		}
-		return buildResponse(registeredIt, inMemberCount, false);
+		return buildResponse(source, inMemberCount, false);
 	}
 
-	private RegisteredItData getRegisteredIt(Long itId) {
-		return registeredItDao
-				.findById(itId)
-				.orElseThrow(() -> new DataNotFoundException("RegisteredIt id : " + itId));
+	private BasicIt getSource(Long itId) {
+		return browseItsService.browse(itId);
 	}
 
-	private ItInfo buildResponse(
-			RegisteredItData registeredIt, Long inMemberCount, boolean memberIn) {
+	private ItInfo buildResponse(BasicIt it, Long inMemberCount, boolean memberIn) {
 		return ItInfo.builder()
-				.id(registeredIt.getId())
-				.topic(registeredIt.getTopic())
-				.startTime(registeredIt.getStartTime())
-				.endTime(registeredIt.getEndTime())
+				.id(it.getId())
+				.topic(it.getTopic())
+				.startTime(it.getStartTime())
+				.endTime(it.getEndTime())
 				.inMemberCount(inMemberCount)
 				.memberIn(memberIn)
 				.build();
@@ -66,7 +65,7 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 		return itRelationDao.countByTargetItId(targetId);
 	}
 
-	private List<ItRelationData> browseMemberInRegisteredIts(Long memberId) {
-		return memberRegisteredItRelationService.browse(memberId);
+	private List<ItRelation> browseMemberInRegisteredIts(Long memberId) {
+		return browseMemberInItRelationService.browse(memberId);
 	}
 }

@@ -43,4 +43,8 @@ public class WithEntity extends BaseEntity {
 			nullable = false,
 			foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	private InItEntity inIt;
+
+	private Long memberId;
+
+	// todo with 상태(ON, OFF) 추가, 상태 갱신을 위한 배치 작업 필요
 }

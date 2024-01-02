@@ -1,6 +1,6 @@
 package com.hiit.api.web.controller.v1.it;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.common.marker.dto.AbstractResponse;
 import com.hiit.api.domain.dto.request.it.GetItUseCaseRequest;
 import com.hiit.api.domain.dto.request.it.GetItsUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.InItInfo;
@@ -11,10 +11,10 @@ import com.hiit.api.domain.dto.response.it.ItMotivations;
 import com.hiit.api.domain.usecase.it.GetItUseCase;
 import com.hiit.api.domain.usecase.it.GetItsUseCase;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
+import com.hiit.api.support.ApiResponse;
+import com.hiit.api.support.ApiResponseGenerator;
+import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
-import com.hiit.api.web.support.ApiResponse;
-import com.hiit.api.web.support.ApiResponseGenerator;
-import com.hiit.api.web.support.MessageCode;
 import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -104,7 +104,7 @@ public class ItQueryController {
 	}
 
 	@GetMapping("/ins")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readInIts(
+	public ApiResponse<ApiResponse.SuccessBody<AbstractResponse>> readInIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
 		InItInfo inIt1 =
 				InItInfo.builder()
@@ -126,12 +126,12 @@ public class ItQueryController {
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
 						.build();
-		ServiceResponse res = new InItInfos(List.of(inIt1, inIt2));
+		AbstractResponse res = new InItInfos(List.of(inIt1, inIt2));
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
 	@GetMapping("/ins/{id}")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> browseInIt(
+	public ApiResponse<ApiResponse.SuccessBody<AbstractResponse>> browseInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
 		InItInfo inIt =
 				InItInfo.builder()
@@ -143,15 +143,15 @@ public class ItQueryController {
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
 						.build();
-		ServiceResponse res = inIt;
+		AbstractResponse res = inIt;
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
 	@GetMapping("/ins/{id}/motivations")
-	public ApiResponse<ApiResponse.SuccessBody<ServiceResponse>> readItMotivations(
+	public ApiResponse<ApiResponse.SuccessBody<AbstractResponse>> readItMotivations(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
 		List<String> motivations = List.of("motivation1", "motivation2");
-		ServiceResponse res = new ItMotivations(motivations);
+		AbstractResponse res = new ItMotivations(motivations);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 }

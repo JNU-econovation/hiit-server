@@ -36,8 +36,8 @@ class WithCommandControllerTest {
 	private static final String ADD_WITH_BASE_ID = "AddWithInfo";
 
 	@Test
-	@DisplayName(BASE_URL)
-	void readWiths() throws Exception {
+	@DisplayName("[POST] " + BASE_URL)
+	void createWith() throws Exception {
 		// set service mock
 		AddWithRequest request = AddWithRequest.builder().id(1L).content("윗 내용").build();
 
@@ -60,8 +60,8 @@ class WithCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
-	void readWiths_invalidId() throws Exception {
+	@DisplayName("[POST/invalidId] " + BASE_URL)
+	void createWith_invalidId() throws Exception {
 		// set service mock
 		AddWithRequest request = AddWithRequest.builder().id(-1L).content("윗 내용").build();
 
@@ -84,8 +84,8 @@ class WithCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
-	void readWiths_nullWith() throws Exception {
+	@DisplayName("[POST/nullWith] " + BASE_URL)
+	void createWith_nullWith() throws Exception {
 		// set service mock
 		AddWithRequest request = AddWithRequest.builder().id(1L).build();
 
@@ -108,8 +108,8 @@ class WithCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
-	void readWiths_emptyWith() throws Exception {
+	@DisplayName("[POST/emptyWith] " + BASE_URL)
+	void createWith_emptyWith() throws Exception {
 		// set service mock
 		AddWithRequest request = AddWithRequest.builder().id(1L).content("").build();
 
@@ -132,8 +132,8 @@ class WithCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
-	void readWiths_overMaxLength() throws Exception {
+	@DisplayName("[POST/overMaxLength] " + BASE_URL)
+	void createWith_overMaxLength() throws Exception {
 		// set service mock
 		String overMaxLength = "123456789012345678901";
 		AddWithRequest request = AddWithRequest.builder().id(1L).content(overMaxLength).build();
@@ -159,7 +159,7 @@ class WithCommandControllerTest {
 	private static final String DELETE_WITH_BASE_ID = "DeleteWithInfo";
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[DELETE] " + BASE_URL)
 	void deleteWith() throws Exception {
 		// set service mock
 		DeleteWithRequest request = DeleteWithRequest.builder().id(1L).build();
@@ -183,7 +183,7 @@ class WithCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[DELETE/invalidId] " + BASE_URL)
 	void deleteWith_invalidId() throws Exception {
 		// set service mock
 		DeleteWithRequest request = DeleteWithRequest.builder().id(-1L).build();

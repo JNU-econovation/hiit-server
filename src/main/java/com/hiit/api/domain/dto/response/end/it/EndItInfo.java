@@ -1,6 +1,6 @@
 package com.hiit.api.domain.dto.response.end.it;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.common.marker.dto.AbstractResponse;
 import java.time.LocalTime;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class EndItInfo implements ServiceResponse {
+public class EndItInfo implements AbstractResponse {
 
 	private Long id;
 	private String title;

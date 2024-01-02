@@ -36,7 +36,7 @@ class ItQueryControllerTest {
 	private static final String IT_BASE_ID = "ItInfo";
 
 	@Test
-	@DisplayName(BASE_URL + "/{id}")
+	@DisplayName("[GET] " + BASE_URL + "/{id}")
 	void browseIt() throws Exception {
 		// set service mock
 
@@ -58,7 +58,7 @@ class ItQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/{id}")
+	@DisplayName("[GET/invalidId] " + BASE_URL + "/{id}")
 	void browseIt_invalidId() throws Exception {
 		// set service mock
 
@@ -80,7 +80,7 @@ class ItQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[GET] " + BASE_URL)
 	void readIts() throws Exception {
 		// set service mock
 
@@ -103,7 +103,7 @@ class ItQueryControllerTest {
 	private static final String INIT_BASE_ID = "InItInfo";
 
 	@Test
-	@DisplayName(BASE_URL + "/ins")
+	@DisplayName("[GET] " + BASE_URL + "/ins")
 	void readInIts() throws Exception {
 		// set service mock
 
@@ -124,7 +124,7 @@ class ItQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/ins/{id}")
+	@DisplayName("[GET] " + BASE_URL + "/ins/{id}")
 	void browseInIt() throws Exception {
 		// set service mock
 
@@ -146,7 +146,7 @@ class ItQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/ins/{id}")
+	@DisplayName("[GET/invalidId] " + BASE_URL + "/ins/{id}")
 	void browseInIt_invalidId() throws Exception {
 		// set service mock
 
@@ -170,7 +170,7 @@ class ItQueryControllerTest {
 	private static final String IT_MOTIVATIONS_BASE_ID = "ItMotivations";
 
 	@Test
-	@DisplayName(BASE_URL + "/ins/{id}/motivations")
+	@DisplayName("[GET] " + BASE_URL + "/ins/{id}/motivations")
 	void readItMotivations() throws Exception {
 		// set service mock
 
@@ -192,7 +192,7 @@ class ItQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/ins/{id}/motivations")
+	@DisplayName("[GET/invalidId] " + BASE_URL + "/ins/{id}/motivations")
 	void readItMotivations_invalidId() throws Exception {
 		// set service mock
 

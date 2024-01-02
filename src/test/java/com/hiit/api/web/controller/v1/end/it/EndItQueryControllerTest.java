@@ -36,7 +36,7 @@ class EndItQueryControllerTest {
 	private static final String ENDIT_BASE_ID = "EndItInfo";
 
 	@Test
-	@DisplayName(BASE_URL + "/{id}")
+	@DisplayName("[GET] " + BASE_URL + "/{id}")
 	void browseEndIt() throws Exception {
 		// set service mock
 
@@ -58,7 +58,7 @@ class EndItQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/{id}")
+	@DisplayName("[GET/invalidId] " + BASE_URL + "/{id}")
 	void browseEndIt_invalidId() throws Exception {
 		// set service mock
 
@@ -80,7 +80,7 @@ class EndItQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[GET] " + BASE_URL)
 	void readEndIts() throws Exception {
 		// set service mock
 
@@ -102,7 +102,7 @@ class EndItQueryControllerTest {
 	private static final String END_WITHIN_BASE_ID = "EndWithinInfo";
 
 	@Test
-	@DisplayName(BASE_URL + "/withs")
+	@DisplayName("[GET] " + BASE_URL + "/withs")
 	void browseEndWith() throws Exception {
 		// set service mock
 
@@ -127,7 +127,7 @@ class EndItQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/withs")
+	@DisplayName("[GET/invalidId] " + BASE_URL + "/withs")
 	void browseEndWith_invalidId() throws Exception {
 		// set service mock
 

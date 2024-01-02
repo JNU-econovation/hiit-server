@@ -1,8 +1,8 @@
 package com.hiit.api.domain.dao.hit;
 
-import com.hiit.api.domain.dao.AbstractDataConverter;
 import com.hiit.api.domain.dao.AbstractJpaDao;
-import com.hiit.api.domain.dao.support.Period;
+import com.hiit.api.domain.model.hit.HitterInfo;
+import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.repository.dao.bussiness.HitRepository;
 import com.hiit.api.repository.entity.business.hit.HitEntity;
 import com.hiit.api.repository.entity.business.hit.HitStatus;
@@ -10,31 +10,28 @@ import com.hiit.api.repository.entity.business.hit.Hitter;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.with.WithEntity;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class HitDaoImpl extends AbstractJpaDao<HitEntity, Long, HitData> implements HitDao {
+public class HitDaoImpl extends AbstractJpaDao<HitEntity, Long> implements HitDao {
 
 	private final HitRepository repository;
 
-	public HitDaoImpl(
-			JpaRepository<HitEntity, Long> jpaRepository,
-			AbstractDataConverter<HitEntity, HitData> converter,
-			HitRepository repository) {
-		super(jpaRepository, converter);
+	public HitDaoImpl(JpaRepository<HitEntity, Long> jpaRepository, HitRepository repository) {
+		super(jpaRepository);
 		this.repository = repository;
 	}
 
 	@Override
-	public Long countHitStatusByWithAndPeriod(Long with, Period period) {
-		return countStatusByWithAndStatusAndPeriodExecute(period, with, HitStatus.HIT);
+	public Long countHitStatusByWithAndPeriod(Long withId, Period period) {
+		return countStatusByWithAndStatusAndPeriodExecute(period, withId, HitStatus.HIT);
 	}
 
 	@Override
-	public Long countMissStatusByWithAndPeriod(Long with, Period period) {
-		return countStatusByWithAndStatusAndPeriodExecute(period, with, HitStatus.MISS);
+	public Long countMissStatusByWithAndPeriod(Long withId, Period period) {
+		return countStatusByWithAndStatusAndPeriodExecute(period, withId, HitStatus.MISS);
 	}
 
 	private Long countStatusByWithAndStatusAndPeriodExecute(Period period, Long with, HitStatus hit) {
@@ -45,18 +42,20 @@ public class HitDaoImpl extends AbstractJpaDao<HitEntity, Long, HitData> impleme
 	}
 
 	@Override
-	public Optional<HitData> findHitStatusByWithAndHitterAndPeriod(
-			Long with, HitterInfo hitter, Period period) {
-		return findStatusByWithAndHitterAndStatusAndPeriodExecute(period, with, HitStatus.HIT, hitter);
+	public List<HitEntity> findHitStatusByWithAndHitterAndPeriod(
+			Long withId, HitterInfo hitter, Period period) {
+		return findStatusByWithAndHitterAndStatusAndPeriodExecute(
+				period, withId, HitStatus.HIT, hitter);
 	}
 
 	@Override
-	public Optional<HitData> findMissStatusByWithAndHitterAndPeriod(
-			Long with, HitterInfo hitter, Period period) {
-		return findStatusByWithAndHitterAndStatusAndPeriodExecute(period, with, HitStatus.MISS, hitter);
+	public List<HitEntity> findMissStatusByWithAndHitterAndPeriod(
+			Long withId, HitterInfo hitter, Period period) {
+		return findStatusByWithAndHitterAndStatusAndPeriodExecute(
+				period, withId, HitStatus.MISS, hitter);
 	}
 
-	private Optional<HitData> findStatusByWithAndHitterAndStatusAndPeriodExecute(
+	private List<HitEntity> findStatusByWithAndHitterAndStatusAndPeriodExecute(
 			Period period, Long with, HitStatus hit, HitterInfo hitter) {
 		LocalDateTime start = period.getStart();
 		LocalDateTime end = period.getEnd();
@@ -68,20 +67,18 @@ public class HitDaoImpl extends AbstractJpaDao<HitEntity, Long, HitData> impleme
 			hitHitter = Hitter.builder().id(hitter.getId().get()).build();
 		}
 		assert hitHitter != null;
-		return repository
-				.findByWithEntityAndHitterAndStatusAndCreateAtBetween(
-						withEntity, hitHitter, hit, start, end)
-				.map(converter::from);
+		return repository.findAllByWithEntityAndHitterAndStatusAndCreateAtBetween(
+				withEntity, hitHitter, hit, start, end);
 	}
 
 	@Override
-	public Long countHitByInItAndPeriod(Long inIt, Period period) {
-		return countStatusByInItAndStatusAndPeriodExecute(period, HitStatus.HIT, inIt);
+	public Long countHitByInItAndPeriod(Long inItId, Period period) {
+		return countStatusByInItAndStatusAndPeriodExecute(period, HitStatus.HIT, inItId);
 	}
 
 	@Override
-	public Long countMissByInItAndPeriod(Long inIt, Period period) {
-		return countStatusByInItAndStatusAndPeriodExecute(period, HitStatus.MISS, inIt);
+	public Long countMissByInItAndPeriod(Long inItId, Period period) {
+		return countStatusByInItAndStatusAndPeriodExecute(period, HitStatus.MISS, inItId);
 	}
 
 	private Long countStatusByInItAndStatusAndPeriodExecute(Period period, HitStatus hit, Long inIt) {

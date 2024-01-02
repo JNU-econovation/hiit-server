@@ -1,6 +1,6 @@
 package com.hiit.api.domain.dto.request.end;
 
-import com.hiit.api.common.marker.dto.request.AbstractRequestDto;
+import com.hiit.api.common.marker.dto.AbstractRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class GetEndItUseCaseRequest implements AbstractRequestDto {
+public class GetEndItUseCaseRequest implements AbstractRequest {
 
 	private Long memberId;
 	private Long endInItId;

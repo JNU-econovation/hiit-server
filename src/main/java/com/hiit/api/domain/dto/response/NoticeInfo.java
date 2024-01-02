@@ -1,6 +1,6 @@
 package com.hiit.api.domain.dto.response;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.common.marker.dto.AbstractResponse;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class NoticeInfo implements ServiceResponse {
+public class NoticeInfo implements AbstractResponse {
 
 	private Long id;
 	private Date date;

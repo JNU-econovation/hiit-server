@@ -647,12 +647,6 @@ public class LoggingHandler {
 							"/zz/address.php?gid=651",
 							"/zz2/address.php?gid=651"));
 
-	/**
-	 * 로그를 작성한다.
-	 *
-	 * @param ex 예외
-	 * @param request 요청
-	 */
 	public void writeLog(final Exception ex, final HttpServletRequest request) {
 		if (needsIgnoreLogging(ex, request)) {
 			return;
@@ -665,13 +659,6 @@ public class LoggingHandler {
 		}
 	}
 
-	/**
-	 * 무시할 로그인지 여부를 반환한다.
-	 *
-	 * @param exception 예외
-	 * @param request 요청
-	 * @return 무시할 로그인지 여부
-	 */
 	private boolean needsIgnoreLogging(Exception exception, HttpServletRequest request) {
 		return exception instanceof InsufficientAuthenticationException
 				&& IGNORE_REQUEST_URI_LIST.contains(request.getRequestURI());

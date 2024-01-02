@@ -52,6 +52,9 @@ public class InItEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "status", nullable = false)
 	private ItStatus status;
 
+	@Column(name = ENTITY_PREFIX + "info", columnDefinition = "json")
+	private String info;
+
 	@Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(

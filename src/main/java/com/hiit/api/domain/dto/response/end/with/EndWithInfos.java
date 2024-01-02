@@ -1,6 +1,6 @@
 package com.hiit.api.domain.dto.response.end.with;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.common.marker.dto.AbstractResponse;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class EndWithInfos implements ServiceResponse {
+public class EndWithInfos implements AbstractResponse {
 
 	private final List<EndWithInfo> endWithInfos;
 }

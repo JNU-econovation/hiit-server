@@ -1,22 +1,24 @@
 package com.hiit.api.domain.dao.hit;
 
 import com.hiit.api.domain.dao.JpaDao;
-import com.hiit.api.domain.dao.support.Period;
-import java.util.Optional;
+import com.hiit.api.domain.model.hit.HitterInfo;
+import com.hiit.api.domain.support.entity.Period;
+import com.hiit.api.repository.entity.business.hit.HitEntity;
+import java.util.List;
 
-public interface HitDao extends JpaDao<HitData, Long> {
+public interface HitDao extends JpaDao<HitEntity, Long> {
 
-	Long countHitStatusByWithAndPeriod(Long with, Period period);
+	Long countHitStatusByWithAndPeriod(Long withId, Period period);
 
-	Long countMissStatusByWithAndPeriod(Long with, Period period);
+	Long countMissStatusByWithAndPeriod(Long withId, Period period);
 
-	Optional<HitData> findHitStatusByWithAndHitterAndPeriod(
-			Long with, HitterInfo hitter, Period period);
+	List<HitEntity> findHitStatusByWithAndHitterAndPeriod(
+			Long withId, HitterInfo hitter, Period period);
 
-	Optional<HitData> findMissStatusByWithAndHitterAndPeriod(
-			Long with, HitterInfo hitter, Period period);
+	List<HitEntity> findMissStatusByWithAndHitterAndPeriod(
+			Long withId, HitterInfo hitter, Period period);
 
-	Long countHitByInItAndPeriod(Long inIt, Period period);
+	Long countHitByInItAndPeriod(Long inItId, Period period);
 
-	Long countMissByInItAndPeriod(Long inIt, Period period);
+	Long countMissByInItAndPeriod(Long inItId, Period period);
 }

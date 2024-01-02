@@ -11,6 +11,7 @@ import com.hiit.api.repository.init.it.RegisteredItInitializer;
 import com.hiit.api.repository.init.member.HiitMembersInitializer;
 import com.hiit.api.repository.init.with.WithInitializer;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 		registeredItInitializer.initialize();
 		inItInitializer.initialize(
 				registeredItInitializer.getData(), hiitMembersInitializer.getData().get(0));
-		withInitializer.initialize(inItInitializer.getData());
+		withInitializer.initialize(inItInitializer.getData(), hiitMembersInitializer.getData().get(0));
 	}
 
 	@Test
@@ -54,8 +55,12 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 	void findAllByInIt() {
 		// given
 		InItEntity init = inItInitializer.getData();
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime start = now.minusMinutes(1);
+		LocalDateTime end = now.plusMinutes(1);
+
 		// when
-		Page<WithEntity> page = repository.findAllByInIt(init, PageRequest.of(0, 10), null);
+		Page<WithEntity> page = repository.findAllByInIt(init, PageRequest.of(0, 10), null, start, end);
 
 		// then
 		WithEntity content = page.getContent().get(0);
@@ -69,8 +74,13 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 		// given
 		InItEntity init = inItInitializer.getData();
 		HiitMemberEntity hiitMember = hiitMembersInitializer.getData().get(0);
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime start = now.minusMinutes(1);
+		LocalDateTime end = now.plusMinutes(1);
+
 		// when
-		Page<WithEntity> page = repository.findAllByInIt(init, PageRequest.of(0, 10), hiitMember);
+		Page<WithEntity> page =
+				repository.findAllByInIt(init, PageRequest.of(0, 10), hiitMember, start, end);
 
 		// then
 		WithEntity content = page.getContent().get(0);
@@ -78,6 +88,21 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 		assertThat(page.getTotalElements()).isEqualTo(1);
 		assertThat(content.getInIt()).isEqualTo(init);
 		assertThat(member).isEqualTo(hiitMember);
+	}
+
+	@Test
+	@DisplayName("특정 잇과 특정 멤버를 가진 with 목록을 반환한다.")
+	void findAllByInIt_list() {
+		// given
+		InItEntity init = inItInitializer.getData();
+		HiitMemberEntity hiitMember = hiitMembersInitializer.getData().get(0);
+
+		// when
+		List<WithEntity> withs = repository.findAllByInIt(init, hiitMember);
+
+		// then
+		assertThat(withs.size()).isEqualTo(1);
+		assertThat(withs.get(0).getInIt()).isEqualTo(init);
 	}
 
 	@Test
@@ -90,11 +115,10 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 
 		// when
 		LocalDateTime end = LocalDateTime.now();
-		WithEntity with =
-				repository
-						.findByInItEntityAndHiitMemberAndCreateAtBetween(
-								init, hiitMember, now.minusMinutes(1), end)
-						.orElseThrow();
+		List<WithEntity> withs =
+				repository.findAllByInItEntityAndHiitMemberAndCreateAtBetween(
+						init, hiitMember, now.minusMinutes(1), end);
+		WithEntity with = withs.get(0);
 
 		// then
 		assertThat(with.getInIt()).isEqualTo(init);

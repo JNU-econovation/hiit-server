@@ -36,7 +36,7 @@ class MemberQueryControllerTest {
 	private static final String MEMBER_BASE_ID = "MemberInfo";
 
 	@Test
-	@DisplayName(BASE_URL)
+	@DisplayName("[GET] " + BASE_URL)
 	void browseMember() throws Exception {
 		// set service mock
 
@@ -59,7 +59,7 @@ class MemberQueryControllerTest {
 	private static final String MEMBER_IT_BASE_ID = "MemberItInfo";
 
 	@Test
-	@DisplayName(BASE_URL + "/stats/it")
+	@DisplayName("[GET] " + BASE_URL + "/stats/it")
 	void browseItStat() throws Exception {
 		// set service mock
 
@@ -87,7 +87,7 @@ class MemberQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/stats/it")
+	@DisplayName("[GET/invalidId] " + BASE_URL + "/stats/it")
 	void browseItStat_invalidId() throws Exception {
 		// set service mock
 
@@ -115,7 +115,7 @@ class MemberQueryControllerTest {
 	}
 
 	@Test
-	@DisplayName(BASE_URL + "/stats/it")
+	@DisplayName("[GET/invalidId] " + BASE_URL + "/stats/it")
 	void browseItStat_invalidIId() throws Exception {
 		// set service mock
 

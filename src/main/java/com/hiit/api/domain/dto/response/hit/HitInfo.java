@@ -1,6 +1,6 @@
 package com.hiit.api.domain.dto.response.hit;
 
-import com.hiit.api.common.marker.dto.response.ServiceResponse;
+import com.hiit.api.common.marker.dto.AbstractResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class HitInfo implements ServiceResponse {
+public class HitInfo implements AbstractResponse {
 
 	private Long count;
 }

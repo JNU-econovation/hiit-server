@@ -49,6 +49,7 @@ public class HitEntity extends BaseEntity {
 			foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	private WithEntity withEntity;
 
+	/** memberId와 동일한 역활을 한다. */
 	@Builder.Default
 	@Convert(converter = HitterConverter.class)
 	@Column(name = ENTITY_PREFIX + "hitter", nullable = false)
