@@ -1,0 +1,11 @@
+kakao:
+  host: https://kauth.kakao.com
+  uri:
+    token: https://kauth.kakao.com/oauth/token
+    token_info: https://kapi.kakao.com/v1/user/access_token_info
+    me_info: https://kapi.kakao.com/v2/user/me
+  redirect_uri: http://localhost:8080/api/v1/social/kakao
+  client_id: thisIsKaKaoClientId
+  retry:
+    maxAttempts: 3
+    backOffPeriod: 2000
