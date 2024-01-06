@@ -4,8 +4,10 @@ import com.hiit.api.repository.RepositoryConfig;
 import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
@@ -16,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.hibernate5.SpringBeanContainer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -87,19 +90,27 @@ public class EntityJpaDataSourceConfig {
 				jpaVendorAdapter, jpaPropertyMap, persistenceUnitManager.getIfAvailable());
 	}
 
+	// todo: converter를 bean으로 등록하기 위해 변경하였는데 자세한 동작 원리를 알아보자.
 	@Bean(name = ENTITY_MANAGER_FACTORY_NAME)
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
 			@Qualifier(value = DATASOURCE_NAME) DataSource dataSource,
-			@Qualifier(value = ENTITY_MANAGER_FACTORY_BUILDER_NAME) EntityManagerFactoryBuilder builder) {
+			@Qualifier(value = ENTITY_MANAGER_FACTORY_BUILDER_NAME) EntityManagerFactoryBuilder builder,
+			ConfigurableListableBeanFactory beanFactory) {
 		Map<String, String> jpaPropertyMap = jpaProperties().getProperties();
 		Map<String, Object> hibernatePropertyMap =
 				hibernateProperties().determineHibernateProperties(jpaPropertyMap, new HibernateSettings());
-		return builder
-				.dataSource(dataSource)
-				.properties(hibernatePropertyMap)
-				.persistenceUnit(PERSIST_UNIT)
-				.packages(RepositoryConfig.BASE_PACKAGE)
-				.build();
+		LocalContainerEntityManagerFactoryBean build =
+				builder
+						.dataSource(dataSource)
+						.properties(hibernatePropertyMap)
+						.persistenceUnit(PERSIST_UNIT)
+						.packages(RepositoryConfig.BASE_PACKAGE)
+						.build();
+		build
+				.getJpaPropertyMap()
+				.put(AvailableSettings.BEAN_CONTAINER, new SpringBeanContainer(beanFactory));
+
+		return build;
 	}
 
 	@Bean(name = TRANSACTION_MANAGER_NAME)
