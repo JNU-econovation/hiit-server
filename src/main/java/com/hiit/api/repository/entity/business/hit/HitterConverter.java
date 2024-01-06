@@ -1,7 +1,11 @@
 package com.hiit.api.repository.entity.business.hit;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
+@Converter
 public class HitterConverter implements AttributeConverter<Hitter, String> {
 
 	private static final String EMPTY_VALUE = "ANONYMOUS";
