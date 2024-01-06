@@ -17,6 +17,8 @@ buildscript {
         jsonwebtokenVersion = '0.11.5'
         flywayVersion = '9.16.0'
         jsr305Version = '3.0.1'
+        gsonVersion = '2.8.9'
+        httpclientVersion = '4.5.13'
     }
 }
 
@@ -96,6 +98,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305Version}"
 
+    // gson
+    implementation "com.google.code.gson:gson:${gsonVersion}"
+
     //jwt
     implementation "io.jsonwebtoken:jjwt-api:${jsonwebtokenVersion}"
     implementation "io.jsonwebtoken:jjwt-impl:${jsonwebtokenVersion}"
@@ -103,6 +108,10 @@ dependencies {
 
     // apache commons
     implementation 'org.apache.commons:commons-lang3:3.0'
+
+    // retry
+    implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+    implementation 'org.springframework.retry:spring-retry:1.2.5.RELEASE'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

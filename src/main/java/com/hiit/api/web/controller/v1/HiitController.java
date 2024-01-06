@@ -6,10 +6,10 @@ import com.hiit.api.common.support.DayCodeSpec;
 import com.hiit.api.domain.dto.response.Banners;
 import com.hiit.api.domain.dto.response.NotiInfos;
 import com.hiit.api.domain.dto.response.NoticeInfo;
+import com.hiit.api.domain.dto.response.member.UserAuthToken;
+import com.hiit.api.domain.service.token.UserTokenGenerator;
 import com.hiit.api.security.authentication.authority.Roles;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
-import com.hiit.api.security.model.token.AuthToken;
-import com.hiit.api.security.model.token.TokenGenerator;
 import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
@@ -137,11 +137,11 @@ public class HiitController {
 	}
 
 	// todo for mock server & delete after development
-	private final TokenGenerator tokenGenerator;
+	private final UserTokenGenerator userTokenGenerator;
 
 	@GetMapping("/token")
-	public ApiResponse<ApiResponse.SuccessBody<AuthToken>> token() {
-		AuthToken res = tokenGenerator.generateAuthToken(1L, List.of(Roles.ROLE_USER));
+	public ApiResponse<ApiResponse.SuccessBody<UserAuthToken>> token() {
+		UserAuthToken res = userTokenGenerator.generateAuthToken(1L, List.of(Roles.ROLE_USER));
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 }

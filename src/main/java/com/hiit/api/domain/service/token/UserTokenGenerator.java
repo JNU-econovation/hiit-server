@@ -1,5 +1,6 @@
-package com.hiit.api.security.model.token;
+package com.hiit.api.domain.service.token;
 
+import com.hiit.api.domain.dto.response.member.UserAuthToken;
 import com.hiit.api.security.authentication.authority.Roles;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class TokenGenerator {
+public class UserTokenGenerator {
 
 	@Value("${security.jwt.token.secretkey}")
 	private String secretKey;
@@ -29,11 +30,16 @@ public class TokenGenerator {
 	private static final String MEMBER_ID_CLAIM_KEY = "memberId";
 	private static final String MEMBER_ROLE_CLAIM_KEY = "memberRole";
 
-	public AuthToken generateAuthToken(Long memberId, List<Roles> memberRoles) {
-		return AuthToken.builder()
+	public UserAuthToken generateAuthToken(Long memberId, List<Roles> memberRoles) {
+		return UserAuthToken.builder()
 				.accessToken(generateAccessToken(memberId, memberRoles))
 				.refreshToken(generateRefreshToken(memberId, memberRoles))
 				.build();
+	}
+
+	public UserAuthToken generateAuthToken(Long memberId) {
+		List<Roles> memberRoles = List.of(Roles.ROLE_USER);
+		return generateAuthToken(memberId, memberRoles);
 	}
 
 	public String generateAccessToken(Long memberId, List<Roles> memberRoles) {

@@ -3,7 +3,9 @@ spring:
     use-legacy-processing: true
   profiles:
     include:
+      - client-dev
       - flyway
       - swagger-ui
       - mysql-dev
       - security-dev
+      - social-dev

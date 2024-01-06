@@ -1,0 +1,8 @@
+client:
+  max-attempts: ${CLIENT_MAX_ATTEMPTS:3}
+  pool:
+    max-connect: ${CLIENT_MAX_CONNECT:100}
+    max-connect-per-route: ${CLIENT_MAX_CONNECT_PER_ROUTE:5}
+  timeout:
+    connect: ${CLIENT_CONNECT_TIMEOUT:5000}
+    read: ${CLIENT_READ_TIMEOUT:5000}

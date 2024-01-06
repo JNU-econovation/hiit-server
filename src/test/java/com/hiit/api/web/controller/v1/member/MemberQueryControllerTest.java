@@ -41,7 +41,7 @@ class MemberQueryControllerTest {
 		// set service mock
 
 		mockMvc
-				.perform(get(BASE_URL, 0).contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/{id}", 1).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -51,6 +51,7 @@ class MemberQueryControllerTest {
 												.description("회원 정보를 조회한다.")
 												.tag(TAG)
 												.requestSchema(Schema.schema("MemberInfoRequest"))
+												.pathParameters(parameterWithName("id").description("멤버 id"))
 												.responseSchema(Schema.schema("MemberInfoResponse"))
 												.responseFields(Description.success(MemberDescription.browseMember()))
 												.build())));

@@ -2,7 +2,7 @@ package com.hiit.api.security.authentication.token;
 
 import com.hiit.api.security.authentication.authority.Roles;
 import com.hiit.api.security.exception.AccessTokenInvalidException;
-import com.hiit.api.security.model.token.TokenResolver;
+import com.hiit.api.support.token.TokenResolver;
 import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
