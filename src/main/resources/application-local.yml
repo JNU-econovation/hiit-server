@@ -3,10 +3,12 @@ spring:
     use-legacy-processing: true
   profiles:
     include:
+      - client-local
       - flyway
       - swagger-ui
       - mysql-local
       - security-local
+      - social-local
 
 logging:
   level:
