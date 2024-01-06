@@ -1,0 +1,8 @@
+client:
+  max-attempts: 3
+  pool:
+    max-connect: 100
+    max-connect-per-route: 5
+  timeout:
+    connect: 5000
+    read: 5000
