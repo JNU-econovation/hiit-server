@@ -32,8 +32,9 @@ public class HiitMemberEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "nick_name", nullable = false)
 	private String nickName;
 
+	@Builder.Default
 	@Column(name = ENTITY_PREFIX + "profile", nullable = false)
-	private String profile;
+	private String profile = "";
 
 	@Column(name = ENTITY_PREFIX + "certification_id", nullable = false)
 	private String certificationId;
@@ -47,7 +48,7 @@ public class HiitMemberEntity extends BaseEntity {
 	@Builder.Default
 	private MemberStatus status = MemberStatus.REGULAR;
 
-	@Column private Boolean notificationConsent;
+	@Column @Builder.Default private Boolean notificationConsent = false;
 
 	@Column(name = ENTITY_PREFIX + "resource", columnDefinition = "json")
 	private String resource;
