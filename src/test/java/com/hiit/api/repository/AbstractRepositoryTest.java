@@ -1,5 +1,6 @@
 package com.hiit.api.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.infra.InfraConfig;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
@@ -20,5 +21,5 @@ import org.springframework.test.context.TestPropertySource;
 		})
 @TestPropertySource(locations = "classpath:application-test.yml")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@ContextConfiguration(classes = {RepositoryConfig.class, InfraConfig.class})
+@ContextConfiguration(classes = {RepositoryConfig.class, InfraConfig.class, ObjectMapper.class})
 public abstract class AbstractRepositoryTest {}
