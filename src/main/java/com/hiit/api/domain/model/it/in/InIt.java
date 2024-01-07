@@ -34,4 +34,20 @@ public class InIt implements AbstractDomain {
 	public boolean isOwner(Long memberId) {
 		return this.memberId.equals(memberId);
 	}
+
+	public void updateTitle(String title) {
+		this.title = title;
+	}
+
+	public void updateResolution(String resolution) {
+		this.resolution = resolution;
+	}
+
+	public void updateDayCode(DayCodeInfo dayCode) {
+		this.dayCode = dayCode;
+	}
+
+	public void end() {
+		this.status = ItStatusInfo.END;
+	}
 }
