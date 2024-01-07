@@ -14,6 +14,7 @@ import com.hiit.api.AppMain;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.dto.request.it.AddInItRequest;
 import com.hiit.api.web.dto.request.it.DeleteInItRequest;
+import com.hiit.api.web.dto.request.it.RequestItType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,16 @@ class ItCommandControllerTest {
 
 		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
 		AddInItRequest request =
-				AddInItRequest.builder().id(1L).dayCode(dayCode).resolution("다짐").build();
+				AddInItRequest.builder()
+						.id(1L)
+						.dayCode(dayCode)
+						.resolution("다짐")
+						.type(RequestItType.REGISTERED_IT)
+						.build();
 
 		String content = objectMapper.writeValueAsString(request);
+		content =
+				content.replace(RequestItType.REGISTERED_IT.name(), RequestItType.REGISTERED_IT.getValue());
 
 		// set service mock
 
