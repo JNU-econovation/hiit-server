@@ -22,4 +22,5 @@ public class AddInItRequest {
 	@DataId private Long id;
 	@DayCode @NotNull private String dayCode;
 	@ItResolution @NotNull private String resolution;
+	@NotNull private RequestItType type;
 }
