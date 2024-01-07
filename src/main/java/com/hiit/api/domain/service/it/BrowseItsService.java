@@ -2,7 +2,7 @@ package com.hiit.api.domain.service.it;
 
 import com.hiit.api.domain.dao.it.registerd.RegisteredItDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
-import com.hiit.api.domain.model.it.registered.BasicIt;
+import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.usecase.it.RegisteredItEntityConverter;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
