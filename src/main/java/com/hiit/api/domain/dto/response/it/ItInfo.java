@@ -21,6 +21,7 @@ public class ItInfo implements AbstractResponse {
 	private String topic;
 	private LocalTime startTime;
 	private LocalTime endTime;
+	private String type;
 	private Long inMemberCount;
 	private Boolean memberIn;
 }
