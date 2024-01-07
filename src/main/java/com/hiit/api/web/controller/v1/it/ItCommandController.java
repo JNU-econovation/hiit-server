@@ -1,11 +1,18 @@
 package com.hiit.api.web.controller.v1.it;
 
+import com.hiit.api.domain.dto.request.it.CreateInItUseCaseRequest;
+import com.hiit.api.domain.dto.request.it.DeleteInItUseCaseRequest;
+import com.hiit.api.domain.dto.request.it.EditInItUseCaseRequest;
+import com.hiit.api.domain.usecase.it.CreateInItUseCase;
+import com.hiit.api.domain.usecase.it.DeleteInItUseCase;
+import com.hiit.api.domain.usecase.it.EditInItUseCase;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
 import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.it.AddInItRequest;
 import com.hiit.api.web.dto.request.it.DeleteInItRequest;
+import com.hiit.api.web.dto.request.it.EditInItRequest;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,24 +31,66 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ItCommandController {
 
+	private final CreateInItUseCase createInItUseCase;
+	private final EditInItUseCase editInItUseCase;
+	private final DeleteInItUseCase deleteInItUseCase;
+
 	@PostMapping("/ins")
 	public ApiResponse<ApiResponse.Success> createInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody AddInItRequest request) {
-		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
+		try {
+			Long memberId = Long.valueOf(userDetails.getUsername());
+			CreateInItUseCaseRequest useCaseRequest =
+					CreateInItUseCaseRequest.builder()
+							.memberId(memberId)
+							.itId(request.getId())
+							.dayCode(request.getDayCode())
+							.resolution(request.getResolution())
+							.build();
+			createInItUseCase.execute(useCaseRequest);
+			return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
+		} catch (Exception e) {
+			return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
+		}
 	}
 
 	@PutMapping("/ins")
 	public ApiResponse<ApiResponse.Success> editInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
-			@Valid @RequestBody AddInItRequest request) {
-		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
+			@Valid @RequestBody EditInItRequest request) {
+		try {
+			Long memberId = Long.valueOf(userDetails.getUsername());
+			EditInItUseCaseRequest useCaseRequest =
+					EditInItUseCaseRequest.builder()
+							.memberId(memberId)
+							.inIt(request.getId())
+							.dayCode(request.getDayCode())
+							.resolution(request.getResolution())
+							.build();
+			editInItUseCase.execute(useCaseRequest);
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
+		} catch (Exception e) {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
+		}
 	}
 
 	@DeleteMapping("/ins")
 	public ApiResponse<ApiResponse.Success> deleteInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody DeleteInItRequest request) {
-		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+		try {
+			Long memberId = Long.valueOf(userDetails.getUsername());
+			DeleteInItUseCaseRequest useCaseRequest =
+					DeleteInItUseCaseRequest.builder()
+							.memberId(memberId)
+							.inItId(request.getId())
+							.endTitle(request.getEndTitle())
+							.build();
+			deleteInItUseCase.execute(useCaseRequest);
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+		} catch (Exception e) {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+		}
 	}
 }

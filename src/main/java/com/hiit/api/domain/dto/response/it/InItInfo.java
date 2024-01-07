@@ -24,4 +24,5 @@ public class InItInfo implements AbstractResponse {
 	private LocalTime endTime;
 	private String days; // todo fix to dayCode
 	private Long inMemberCount;
+	private String type;
 }

@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -48,9 +49,10 @@ public class InItEntity extends BaseEntity {
 	@Column(name = ENTITY_PREFIX + "day_code", nullable = false)
 	private DayCodeList dayCode;
 
+	@Builder.Default
 	@Enumerated(EnumType.STRING)
 	@Column(name = ENTITY_PREFIX + "status", nullable = false)
-	private ItStatus status;
+	private ItStatus status = ItStatus.ACTIVE;
 
 	@Column(name = ENTITY_PREFIX + "info", columnDefinition = "json")
 	private String info;

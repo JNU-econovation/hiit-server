@@ -3,11 +3,11 @@ package com.hiit.api.domain.dao.it.in;
 import com.hiit.api.domain.dao.AbstractJpaDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.util.JsonConverter;
+import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.dao.bussiness.InItRepository;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,14 +20,17 @@ public class InitDaoImpl extends AbstractJpaDao<InItEntity, Long> implements InI
 	private final InItRepository repository;
 
 	private final JsonConverter jsonConverter;
+	private final LogSourceGenerator logSourceGenerator;
 
 	public InitDaoImpl(
 			JpaRepository<InItEntity, Long> jpaRepository,
 			InItRepository repository,
-			JsonConverter jsonConverter) {
+			JsonConverter jsonConverter,
+			LogSourceGenerator logSourceGenerator) {
 		super(jpaRepository);
 		this.repository = repository;
 		this.jsonConverter = jsonConverter;
+		this.logSourceGenerator = logSourceGenerator;
 	}
 
 	@Override
@@ -59,17 +62,12 @@ public class InitDaoImpl extends AbstractJpaDao<InItEntity, Long> implements InI
 		HiitMemberEntity member = HiitMemberEntity.builder().id(memberId).build();
 		Optional<InItEntity> source = repository.findByIdAndHiitMemberAndStatus(inItId, member, active);
 		if (source.isEmpty()) {
-			String exceptionData = getExceptionData_M_IN(memberId, inItId);
+			Map<String, Long> exceptionSource = logSourceGenerator.generate("memberId", memberId);
+			exceptionSource = logSourceGenerator.add(exceptionSource, "inItId", inItId);
+			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
 		return source.get();
-	}
-
-	private String getExceptionData_M_IN(Long memberId, Long inItId) {
-		Map<String, Long> dataSource = new HashMap<>();
-		dataSource.put("memberId", memberId);
-		dataSource.put("inItId", inItId);
-		return jsonConverter.toJson(dataSource);
 	}
 
 	@Override
@@ -87,16 +85,11 @@ public class InitDaoImpl extends AbstractJpaDao<InItEntity, Long> implements InI
 		Optional<InItEntity> source =
 				repository.findByHiitMemberAndTargetIdAndStatus(member, targetId, status);
 		if (source.isEmpty()) {
-			String exceptionData = getExceptionData_T_M(targetId, memberId);
+			Map<String, Long> exceptionSource = logSourceGenerator.generate("memberId", memberId);
+			exceptionSource = logSourceGenerator.add(exceptionSource, "targetId", targetId);
+			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
 		return source.get();
-	}
-
-	private String getExceptionData_T_M(Long targetId, Long memberId) {
-		Map<String, Long> dataSource = new HashMap<>();
-		dataSource.put("memberId", memberId);
-		dataSource.put("targetId", targetId);
-		return jsonConverter.toJson(dataSource);
 	}
 }

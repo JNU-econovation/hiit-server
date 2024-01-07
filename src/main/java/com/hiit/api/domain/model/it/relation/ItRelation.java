@@ -33,4 +33,8 @@ public class ItRelation implements AbstractDomain {
 	public boolean isTarget(Long targetId) {
 		return targetId.equals(this.targetItId);
 	}
+
+	public boolean isInIt(Long inItId) {
+		return inItId.equals(this.inItId);
+	}
 }

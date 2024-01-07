@@ -3,6 +3,7 @@ package com.hiit.api.domain.dao.it.relation;
 import com.hiit.api.domain.dao.AbstractJpaDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.util.JsonConverter;
+import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.dao.bussiness.jpa.ItRelationJpaRepository;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import java.util.Map;
@@ -17,14 +18,17 @@ public class ItRelationDaoImpl extends AbstractJpaDao<ItRelationEntity, Long>
 	private final ItRelationJpaRepository repository;
 
 	private final JsonConverter jsonConverter;
+	private final LogSourceGenerator logSourceGenerator;
 
 	public ItRelationDaoImpl(
 			JpaRepository<ItRelationEntity, Long> jpaRepository,
 			ItRelationJpaRepository repository,
-			JsonConverter jsonConverter) {
+			JsonConverter jsonConverter,
+			LogSourceGenerator logSourceGenerator) {
 		super(jpaRepository);
 		this.repository = repository;
 		this.jsonConverter = jsonConverter;
+		this.logSourceGenerator = logSourceGenerator;
 	}
 
 	@Override
@@ -36,13 +40,10 @@ public class ItRelationDaoImpl extends AbstractJpaDao<ItRelationEntity, Long>
 	public ItRelationEntity findByInItId(Long inItId) {
 		Optional<ItRelationEntity> source = repository.findByInItId(inItId);
 		if (source.isEmpty()) {
-			String exceptionData = getExceptionData_IN(inItId);
+			Map<String, Long> exceptionSource = logSourceGenerator.generate("inItId", inItId);
+			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
 		return source.get();
-	}
-
-	private String getExceptionData_IN(Long inItId) {
-		return jsonConverter.toJson(Map.of("inItId", inItId));
 	}
 }
