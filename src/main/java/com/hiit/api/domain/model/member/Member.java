@@ -30,4 +30,8 @@ public class Member implements AbstractDomain {
 
 	private LocalDateTime createAt;
 	private LocalDateTime updateAt;
+
+	public boolean isSameId(Long id) {
+		return this.id.equals(id);
+	}
 }
