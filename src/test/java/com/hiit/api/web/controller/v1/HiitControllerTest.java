@@ -355,4 +355,25 @@ class HiitControllerTest {
 												.responseFields(Description.success(SupportDescription.dayCode()))
 												.build())));
 	}
+
+	@Test
+	@DisplayName("[INFO] " + BASE_URL + "/type")
+	void type() throws Exception {
+		// set service mock
+
+		mockMvc
+				.perform(get(BASE_URL + "/type", 0).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"Type",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("요청 타입")
+												.tag(TAG)
+												.requestSchema(Schema.schema("TypeRequest"))
+												.responseSchema(Schema.schema("TypeResponse"))
+												.responseFields(Description.success(SupportDescription.type()))
+												.build())));
+	}
 }
