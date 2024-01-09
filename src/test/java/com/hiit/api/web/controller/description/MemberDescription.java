@@ -26,4 +26,12 @@ public class MemberDescription {
 			fieldWithPath("data.withCount").type(JsonFieldType.NUMBER).description("멤버 윗 수"),
 		};
 	}
+
+	public static FieldDescriptor[] authToken() {
+		return new FieldDescriptor[] {
+			fieldWithPath("data").type(JsonFieldType.OBJECT).description("토큰"),
+			fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("리프레시 토큰"),
+			fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("어세스 토큰"),
+		};
+	}
 }
