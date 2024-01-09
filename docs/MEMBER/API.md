@@ -90,3 +90,63 @@
 |------------|------|------|----|
 | id         | Long | 잇 Id | O  |
 | with_count | Long | 윗 수  | O  |
+
+## 로그인, 회원가입을 수행합니다.
+
+### 기본 정보
+
+| Method | URL             | 인증방식 |
+|--------|-----------------|------|
+| POST   | /api/v1/members | X    |
+
+### 요청
+
+#### 본문
+
+| 이름            | 타입     | 설명       | 필수 |
+|---------------|--------|----------|----|
+| code          | String | 소셜 인증 코드 | O  |
+| socialSubject | String | 소셜 종류    | O  |
+
+### 응답
+
+#### 본문
+
+| 이름            | 타입            | 설명      | 필수 |
+|---------------|---------------|---------|----|
+| code          | String        | success | O  |
+| message       | String        | 성공      | O  |
+| userAuthToken | userAuthToken | 토큰 정보   | O  |
+
+#### userAuthToken
+
+| 이름           | 타입     | 설명         | 필수 |
+|--------------|--------|------------|----|
+| accessToken  | String | access 토큰  | O  |
+| refreshToken | String | refresh 토큰 | O  |
+
+## 토큰을 갱신합니다.
+
+### 기본 정보
+
+| Method | URL                   | 인증방식 |
+|--------|-----------------------|------|
+| POST   | /api/v1/members/token | X    |
+
+### 요청
+
+#### 본문
+
+| 이름           | 타입     | 설명         | 필수 |
+|--------------|--------|------------|----|
+| refreshToken | String | refresh 토큰 | O  |
+
+### 응답
+
+#### 본문
+
+| 이름            | 타입            | 설명      | 필수 |
+|---------------|---------------|---------|----|
+| code          | String        | success | O  |
+| message       | String        | 성공      | O  |
+| userAuthToken | userAuthToken | 토큰 정보   | O  |
