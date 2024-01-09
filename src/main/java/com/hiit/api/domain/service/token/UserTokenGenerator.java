@@ -1,5 +1,6 @@
 package com.hiit.api.domain.service.token;
 
+import com.hiit.api.common.token.AuthToken;
 import com.hiit.api.domain.dto.response.member.UserAuthToken;
 import com.hiit.api.security.authentication.authority.Roles;
 import io.jsonwebtoken.Header;
@@ -30,14 +31,14 @@ public class UserTokenGenerator {
 	private static final String MEMBER_ID_CLAIM_KEY = "memberId";
 	private static final String MEMBER_ROLE_CLAIM_KEY = "memberRole";
 
-	public UserAuthToken generateAuthToken(Long memberId, List<Roles> memberRoles) {
+	public AuthToken generateAuthToken(Long memberId, List<Roles> memberRoles) {
 		return UserAuthToken.builder()
 				.accessToken(generateAccessToken(memberId, memberRoles))
 				.refreshToken(generateRefreshToken(memberId, memberRoles))
 				.build();
 	}
 
-	public UserAuthToken generateAuthToken(Long memberId) {
+	public AuthToken generateAuthToken(Long memberId) {
 		List<Roles> memberRoles = List.of(Roles.ROLE_USER);
 		return generateAuthToken(memberId, memberRoles);
 	}
