@@ -1,4 +1,4 @@
-package com.hiit.api.support.token;
+package com.hiit.api.common.token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
