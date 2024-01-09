@@ -2,9 +2,11 @@ package com.hiit.api.web.controller.v1.member;
 
 import com.hiit.api.common.token.AuthToken;
 import com.hiit.api.domain.dto.request.member.CreateSocialMemberUseCaseRequest;
+import com.hiit.api.domain.dto.request.member.GetTokenUseCaseRequest;
 import com.hiit.api.domain.dto.response.member.UserAuthToken;
 import com.hiit.api.domain.model.member.CertificationSubjectInfo;
 import com.hiit.api.domain.usecase.member.FacadeCreateMemberUseCase;
+import com.hiit.api.domain.usecase.member.GetTokenUseCase;
 import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberCommandController {
 
 	private final FacadeCreateMemberUseCase facadeCreateMemberUseCase;
+	private final GetTokenUseCase getTokenUseCase;
 
 	@PostMapping()
 	public ApiResponse<ApiResponse.SuccessBody<AuthToken>> save(
@@ -48,7 +51,15 @@ public class MemberCommandController {
 	@PostMapping("/token")
 	public ApiResponse<ApiResponse.SuccessBody<AuthToken>> token(
 			@RequestBody TokenRefreshRequest request) {
-		AuthToken res = getUserAuthTokenMockResponse();
+		GetTokenUseCaseRequest getTokenUseCaseRequest =
+				GetTokenUseCaseRequest.builder().token(request.getToken()).build();
+		AuthToken res = null;
+		try {
+			res = getTokenUseCase.execute(getTokenUseCaseRequest);
+		} catch (Exception e) {
+			res = getUserAuthTokenMockResponse();
+			return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
+		}
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
