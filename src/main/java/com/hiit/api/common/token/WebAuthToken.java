@@ -1,4 +1,4 @@
-package com.hiit.api.support.token;
+package com.hiit.api.common.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
