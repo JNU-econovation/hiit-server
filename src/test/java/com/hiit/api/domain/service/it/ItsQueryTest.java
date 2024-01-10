@@ -26,9 +26,9 @@ import org.springframework.test.context.ContextConfiguration;
 @ActiveProfiles(value = "test")
 @SpringBootTest
 @ContextConfiguration(classes = {AppMain.class})
-class BrowseItsServiceTest {
+class ItsQueryTest {
 
-	@InjectMocks @Autowired private BrowseItsService browseItsService;
+	@InjectMocks @Autowired private ItsQuery itsQuery;
 
 	@MockBean private RegisteredItDao registeredItDao;
 
@@ -44,7 +44,7 @@ class BrowseItsServiceTest {
 		when(registeredItDao.findAll()).thenReturn(setRegisteredIt(testDataSize));
 
 		// when
-		List<BasicIt> its = browseItsService.browse();
+		List<BasicIt> its = itsQuery.query();
 
 		// then
 		assertThat(its).hasSize(testDataSize);
@@ -60,7 +60,7 @@ class BrowseItsServiceTest {
 		when(registeredItDao.findById(anyLong())).thenReturn(Optional.of(setRegisteredIt(1).get(0)));
 
 		// when
-		BasicIt it = browseItsService.browse(1L);
+		BasicIt it = itsQuery.query(() -> 1L);
 
 		// then
 		assertThat(it.getTopic()).contains("registered");

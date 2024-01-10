@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
 import com.hiit.api.domain.dao.it.in.InItDao;
 import com.hiit.api.domain.dao.it.relation.ItRelationDao;
-import com.hiit.api.domain.model.it.relation.ItRelation;
+import com.hiit.api.domain.model.it.relation.It_Relation;
 import com.hiit.api.domain.support.entity.converter.in.it.InItEntityConverterImpl;
 import com.hiit.api.domain.support.entity.converter.in.relation.ItRelationEntityConverterImpl;
 import com.hiit.api.domain.util.JsonConverter;
@@ -34,9 +34,9 @@ import org.springframework.test.context.ContextConfiguration;
 @ActiveProfiles(value = "test")
 @SpringBootTest
 @ContextConfiguration(classes = {AppMain.class})
-class BrowseMemberInItRelationServiceTest {
+class InItRelationBrowseServiceTest {
 
-	@InjectMocks @Autowired private BrowseMemberInItRelationService browseRegisteredItRelationService;
+	@InjectMocks @Autowired private InItRelationBrowseService browseRegisteredItRelationService;
 
 	@MockBean private InItDao initDao;
 
@@ -68,7 +68,7 @@ class BrowseMemberInItRelationServiceTest {
 							return setItRelationTestData(TargetItType.FOR_TEST);
 						});
 		// when
-		List<ItRelation> res = browseRegisteredItRelationService.browse(memberId);
+		List<It_Relation> res = browseRegisteredItRelationService.execute(() -> memberId);
 
 		// then
 		int registeredItRelationSize = testDataSize - (testDataSize / 2);
