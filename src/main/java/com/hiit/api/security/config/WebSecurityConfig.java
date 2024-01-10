@@ -100,7 +100,8 @@ public class WebSecurityConfig {
 								"/v3/api-docs/**",
 								"/openapi3.yaml",
 								"/reports/**",
-								"/api/v1/token");
+								"/api/v1/token")
+						.antMatchers(HttpMethod.POST, "/api/v1/members");
 	}
 
 	@Bean
@@ -117,7 +118,8 @@ public class WebSecurityConfig {
 								"/v3/api-docs/**",
 								"/openapi3.yaml",
 								"/reports/**",
-								"/api/v1/token");
+								"/api/v1/token")
+						.antMatchers(HttpMethod.POST, "/api/v1/members");
 	}
 
 	@Bean

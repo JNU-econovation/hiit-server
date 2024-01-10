@@ -1,4 +1,4 @@
-package com.hiit.api.security.model.token;
+package com.hiit.api.support.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class AuthToken {
+public class WebAuthToken implements AuthToken {
 
 	private String accessToken;
 	private String refreshToken;
