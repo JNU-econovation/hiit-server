@@ -1,7 +1,9 @@
 package com.hiit.api.domain.model.it.relation;
 
 import com.hiit.api.common.marker.model.AbstractDomain;
+import com.hiit.api.domain.model.it.GetItId;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,26 +17,26 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class ItRelation implements AbstractDomain {
+public class It_Relation implements GetItId, AbstractDomain {
 
 	private Long id;
-	private Long targetItId;
+	private Long itId;
 	private Long inItId;
 
-	private TargetItTypeInfo targetItType;
+	private ItTypeDetails type;
 
 	private LocalDateTime createAt;
 	private LocalDateTime updateAt;
 
-	public boolean isType(TargetItTypeInfo targetType) {
-		return targetType.equals(this.targetItType);
+	public boolean isType(ItTypeDetails itType) {
+		return Objects.equals(this.type, itType);
 	}
 
-	public boolean isTarget(Long targetId) {
-		return targetId.equals(this.targetItId);
+	public boolean isIt(GetItId itId) {
+		return Objects.equals(this.itId, itId.getId());
 	}
 
 	public boolean isInIt(Long inItId) {
-		return inItId.equals(this.inItId);
+		return Objects.equals(this.inItId, inItId);
 	}
 }

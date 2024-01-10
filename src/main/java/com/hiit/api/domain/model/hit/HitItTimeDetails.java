@@ -1,6 +1,6 @@
-package com.hiit.api.domain.model.with;
+package com.hiit.api.domain.model.hit;
 
-import com.hiit.api.domain.model.ItTimeInfo;
+import com.hiit.api.domain.model.ItTimeDetails;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class WithItTimeInfo implements ItTimeInfo {
+public class HitItTimeDetails implements ItTimeDetails {
+
 	LocalTime startTime;
 	LocalTime endTime;
 }

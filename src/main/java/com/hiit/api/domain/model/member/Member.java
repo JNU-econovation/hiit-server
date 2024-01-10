@@ -16,15 +16,15 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class Member implements AbstractDomain {
+public class Member implements GetMemberId, AbstractDomain {
 
 	private Long id;
 
 	private String nickName;
 	private String profile;
 	private String certificationId;
-	private CertificationSubjectInfo certificationSubject;
-	@Builder.Default private MemberStatusInfo status = MemberStatusInfo.REGULAR;
+	private CertificationSubjectDetails certificationSubject;
+	@Builder.Default private MemberStatusDetails status = MemberStatusDetails.REGULAR;
 	private Boolean notificationConsent;
 	private String resource;
 

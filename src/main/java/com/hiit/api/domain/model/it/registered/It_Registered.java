@@ -10,4 +10,4 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder(toBuilder = true)
-public class RegisteredIt extends BasicIt {}
+public class It_Registered extends BasicIt implements GetItRegisteredId {}

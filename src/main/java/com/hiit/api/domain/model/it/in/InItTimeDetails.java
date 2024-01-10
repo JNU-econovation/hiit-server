@@ -1,6 +1,6 @@
 package com.hiit.api.domain.model.it.in;
 
-import com.hiit.api.domain.model.ItTimeInfo;
+import com.hiit.api.domain.model.ItTimeDetails;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class InItTimeInfo implements ItTimeInfo {
+public class InItTimeDetails implements ItTimeDetails {
 
 	private LocalTime startTime;
 	private LocalTime endTime;

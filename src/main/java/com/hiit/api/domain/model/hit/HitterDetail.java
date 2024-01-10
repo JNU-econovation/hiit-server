@@ -12,16 +12,16 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @Builder(toBuilder = true)
-public class HitterInfo {
+public class HitterDetail {
 
 	private final Long id;
 
-	public static HitterInfo anonymous() {
-		return HitterInfo.builder().build();
+	public static HitterDetail anonymous() {
+		return HitterDetail.builder().build();
 	}
 
-	public static HitterInfo of(Long id) {
-		return HitterInfo.builder().id(id).build();
+	public static HitterDetail of(final Long id) {
+		return HitterDetail.builder().id(id).build();
 	}
 
 	public Optional<Long> getId() {

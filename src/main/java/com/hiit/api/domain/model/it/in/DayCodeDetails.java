@@ -4,7 +4,7 @@ import lombok.Getter;
 
 /** 요일 코드 정보 */
 @Getter
-public enum DayCodeInfo {
+public enum DayCodeDetails {
 	MON("0000001", "월"),
 	TUE("0000010", "화"),
 	MON_TUE("0000011", "월,화"),
@@ -133,17 +133,17 @@ public enum DayCodeInfo {
 	TUE_WED_THU_FRI_SAT_SUN("1111110", "화,수,목,금,토,일"),
 	MON_TUE_WED_THU_FRI_SAT_SUN("1111111", "월,화,수,목,금,토,일");
 
-	private final String code;
+	private final String value;
 	private final String days;
 
-	DayCodeInfo(String code, String days) {
-		this.code = code;
+	DayCodeDetails(String value, String days) {
+		this.value = value;
 		this.days = days;
 	}
 
-	public static DayCodeInfo of(String code) {
-		for (DayCodeInfo dayCode : DayCodeInfo.values()) {
-			if (dayCode.getCode().equals(code)) {
+	public static DayCodeDetails of(String code) {
+		for (DayCodeDetails dayCode : DayCodeDetails.values()) {
+			if (dayCode.getValue().equals(code)) {
 				return dayCode;
 			}
 		}
