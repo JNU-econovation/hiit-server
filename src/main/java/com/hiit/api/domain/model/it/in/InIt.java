@@ -1,7 +1,9 @@
 package com.hiit.api.domain.model.it.in;
 
 import com.hiit.api.common.marker.model.AbstractDomain;
+import com.hiit.api.domain.model.member.GetMemberId;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,31 +25,31 @@ public class InIt implements AbstractDomain {
 
 	private String title;
 	private String resolution;
-	private DayCodeInfo dayCode;
-	private ItStatusInfo status;
+	private DayCodeDetails dayCode;
+	private InItStatusDetails status;
 
-	private InItTimeInfo timeInfo;
+	private InItTimeDetails time;
 
 	private LocalDateTime createAt;
 	private LocalDateTime updateAt;
 
-	public boolean isOwner(Long memberId) {
-		return this.memberId.equals(memberId);
+	public boolean isOwner(final GetMemberId memberId) {
+		return Objects.equals(this.memberId, memberId.getId());
 	}
 
-	public void updateTitle(String title) {
+	public void updateTitle(final String title) {
 		this.title = title;
 	}
 
-	public void updateResolution(String resolution) {
+	public void updateResolution(final String resolution) {
 		this.resolution = resolution;
 	}
 
-	public void updateDayCode(DayCodeInfo dayCode) {
+	public void updateDayCode(final DayCodeDetails dayCode) {
 		this.dayCode = dayCode;
 	}
 
 	public void end() {
-		this.status = ItStatusInfo.END;
+		this.status = InItStatusDetails.END;
 	}
 }

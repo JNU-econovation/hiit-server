@@ -1,8 +1,8 @@
 package com.hiit.api.domain.support.entity.converter.member;
 
-import com.hiit.api.domain.model.member.CertificationSubjectInfo;
+import com.hiit.api.domain.model.member.CertificationSubjectDetails;
 import com.hiit.api.domain.model.member.Member;
-import com.hiit.api.domain.model.member.MemberStatusInfo;
+import com.hiit.api.domain.model.member.MemberStatusDetails;
 import com.hiit.api.domain.usecase.member.MemberEntityConverter;
 import com.hiit.api.repository.entity.business.member.CertificationSubject;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
@@ -20,8 +20,8 @@ public class MemberEntityConverterImpl implements MemberEntityConverter {
 				.profile(entity.getProfile())
 				.certificationId(entity.getCertificationId())
 				.certificationSubject(
-						CertificationSubjectInfo.valueOf(entity.getCertificationSubject().name()))
-				.status(MemberStatusInfo.valueOf(entity.getStatus().name()))
+						CertificationSubjectDetails.valueOf(entity.getCertificationSubject().name()))
+				.status(MemberStatusDetails.valueOf(entity.getStatus().name()))
 				.notificationConsent(entity.getNotificationConsent())
 				.resource(entity.getResource())
 				.createAt(entity.getCreateAt())

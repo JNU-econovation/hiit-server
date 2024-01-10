@@ -15,22 +15,22 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class Hit implements AbstractDomain {
+public class Hit implements HitGetId, AbstractDomain {
 
 	private Long id;
 	private Long withId;
 
-	private HitterInfo hitter;
-	private HitStatusInfo status;
+	private HitterDetail hitter;
+	private HitStatusDetails status;
 
 	private LocalDateTime createAt;
 	private LocalDateTime updateAt;
 
-	public static Hit hit(Long withId, HitterInfo hitter) {
-		return Hit.builder().withId(withId).hitter(hitter).status(HitStatusInfo.HIT).build();
+	public static Hit hit(final Long withId, final HitterDetail hitter) {
+		return Hit.builder().withId(withId).hitter(hitter).status(HitStatusDetails.HIT).build();
 	}
 
 	public Hit miss() {
-		return this.toBuilder().status(HitStatusInfo.MISS).build();
+		return this.toBuilder().status(HitStatusDetails.MISS).build();
 	}
 }

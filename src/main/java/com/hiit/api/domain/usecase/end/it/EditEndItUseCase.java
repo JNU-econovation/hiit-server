@@ -3,9 +3,19 @@ package com.hiit.api.domain.usecase.end.it;
 import com.hiit.api.common.marker.dto.AbstractResponse;
 import com.hiit.api.domain.dao.it.in.InItDao;
 import com.hiit.api.domain.dto.request.end.EditEndItUseCaseRequest;
+import com.hiit.api.domain.exception.DataNotFoundException;
+import com.hiit.api.domain.exception.MemberAccessDeniedException;
+import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
+import com.hiit.api.domain.model.member.GetMemberId;
+import com.hiit.api.domain.service.member.MemberQuery;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.usecase.it.InItEntityConverter;
+import com.hiit.api.domain.util.JsonConverter;
+import com.hiit.api.domain.util.LogSourceGenerator;
+import com.hiit.api.repository.entity.business.it.InItEntity;
+import java.util.Map;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -22,30 +32,44 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class EditEndItUseCase implements AbstractUseCase<EditEndItUseCaseRequest> {
 
-	private final InItDao inItDao;
+	private final InItDao dao;
 	private final InItEntityConverter entityConverter;
+
+	private final MemberQuery memberQuery;
+
+	private final JsonConverter jsonConverter;
+	private final LogSourceGenerator logSourceGenerator;
 
 	@Override
 	@Transactional
 	public AbstractResponse execute(final EditEndItUseCaseRequest request) {
-		final Long memberId = request.getMemberId();
-		final Long endInItId = request.getEndInItId();
+		final GetMemberId memberId = request::getMemberId;
+		final GetInItId endInItId = request::getEndInItId;
 
-		log.debug("get end init : m - {}, end - {}", memberId, endInItId);
-		InIt source = getSource(memberId, endInItId);
-		log.debug("origin end init : {}", source);
+		GetMemberId member = memberQuery.query(memberId);
+		InIt source = getSource(member, endInItId);
+		if (source.isOwner(member)) {
+			throw new MemberAccessDeniedException(member.getId(), endInItId.getId());
+		}
 
 		EditElements editElements = extractEditElements(request);
 		InIt editedSource = editSource(source, editElements);
 
-		log.debug("edit end init : {}", editedSource);
 		edit(editedSource);
-
 		return AbstractResponse.VOID;
 	}
 
-	private InIt getSource(Long memberId, Long endInItId) {
-		return entityConverter.from(inItDao.findEndStatusByIdAndMember(memberId, endInItId));
+	private InIt getSource(GetMemberId memberId, GetInItId endInItId) {
+		Optional<InItEntity> source =
+				dao.findActiveStatusByIdAndMember(endInItId.getId(), memberId.getId());
+		if (source.isEmpty()) {
+			Map<String, Long> exceptionSource =
+					logSourceGenerator.generate(GetInItId.endKey, endInItId.getId());
+			exceptionSource = logSourceGenerator.add(exceptionSource, GetMemberId.key, memberId.getId());
+			String exceptionData = jsonConverter.toJson(exceptionSource);
+			throw new DataNotFoundException(exceptionData);
+		}
+		return entityConverter.from(source.get());
 	}
 
 	private EditElements extractEditElements(EditEndItUseCaseRequest request) {
@@ -58,7 +82,7 @@ public class EditEndItUseCase implements AbstractUseCase<EditEndItUseCaseRequest
 	}
 
 	private void edit(InIt source) {
-		inItDao.save(entityConverter.to(source));
+		dao.save(entityConverter.to(source));
 	}
 
 	@Getter

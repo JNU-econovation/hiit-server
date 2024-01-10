@@ -10,7 +10,7 @@ import com.hiit.api.domain.dto.response.it.InItInfos;
 import com.hiit.api.domain.dto.response.it.ItInfo;
 import com.hiit.api.domain.dto.response.it.ItInfos;
 import com.hiit.api.domain.dto.response.it.ItMotivations;
-import com.hiit.api.domain.model.it.relation.TargetItTypeInfo;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.usecase.it.GetInItUseCase;
 import com.hiit.api.domain.usecase.it.GetInItsUseCase;
 import com.hiit.api.domain.usecase.it.GetItUseCase;
@@ -70,7 +70,7 @@ public class ItQueryController {
 				.endTime(LocalTime.of(2, 0))
 				.inMemberCount(10L)
 				.memberIn(true)
-				.type(TargetItTypeInfo.REGISTERED_IT.getType())
+				.type(ItTypeDetails.IT_REGISTERED.getValue())
 				.build();
 	}
 
@@ -100,7 +100,7 @@ public class ItQueryController {
 						.endTime(LocalTime.of(2, 0))
 						.inMemberCount(10L)
 						.memberIn(true)
-						.type(TargetItTypeInfo.REGISTERED_IT.getType())
+						.type(ItTypeDetails.IT_REGISTERED.getValue())
 						.build();
 		ItInfo it2 =
 				ItInfo.builder()
@@ -110,7 +110,7 @@ public class ItQueryController {
 						.endTime(LocalTime.of(2, 0))
 						.inMemberCount(10L)
 						.memberIn(true)
-						.type(TargetItTypeInfo.REGISTERED_IT.getType())
+						.type(ItTypeDetails.IT_REGISTERED.getValue())
 						.build();
 		return new ItInfos(List.of(it1, it2));
 	}
@@ -142,7 +142,7 @@ public class ItQueryController {
 						.endTime(LocalTime.of(9, 0))
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
-						.type(TargetItTypeInfo.REGISTERED_IT.getType())
+						.type(ItTypeDetails.IT_REGISTERED.getValue())
 						.build();
 		InItInfo inIt2 =
 				InItInfo.builder()
@@ -153,7 +153,7 @@ public class ItQueryController {
 						.endTime(LocalTime.of(9, 0))
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
-						.type(TargetItTypeInfo.REGISTERED_IT.getType())
+						.type(ItTypeDetails.IT_REGISTERED.getValue())
 						.build();
 		return new InItInfos(List.of(inIt1, inIt2));
 	}
@@ -185,7 +185,7 @@ public class ItQueryController {
 				.endTime(LocalTime.of(9, 0))
 				.days(Long.toBinaryString(000001L))
 				.inMemberCount(10L)
-				.type(TargetItTypeInfo.REGISTERED_IT.getType())
+				.type(ItTypeDetails.IT_REGISTERED.getValue())
 				.build();
 	}
 

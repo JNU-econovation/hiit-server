@@ -1,7 +1,7 @@
 package com.hiit.api.domain.support.entity.converter.in.registered;
 
-import com.hiit.api.domain.model.it.registered.RegisteredIt;
-import com.hiit.api.domain.model.it.relation.TargetItTypeInfo;
+import com.hiit.api.domain.model.it.registered.It_Registered;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.usecase.it.RegisteredItEntityConverter;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
 import org.springframework.stereotype.Component;
@@ -10,20 +10,20 @@ import org.springframework.stereotype.Component;
 public class RegisteredItEntityConverterImpl implements RegisteredItEntityConverter {
 
 	@Override
-	public RegisteredIt from(RegisteredItEntity entity) {
-		return RegisteredIt.builder()
+	public It_Registered from(RegisteredItEntity entity) {
+		return It_Registered.builder()
 				.id(entity.getId())
 				.topic(entity.getTopic())
 				.startTime(entity.getStartTime())
 				.endTime(entity.getEndTime())
-				.type(TargetItTypeInfo.REGISTERED_IT)
+				.type(ItTypeDetails.IT_REGISTERED)
 				.createAt(entity.getCreateAt())
 				.updateAt(entity.getUpdateAt())
 				.build();
 	}
 
 	@Override
-	public RegisteredItEntity to(RegisteredIt data) {
+	public RegisteredItEntity to(It_Registered data) {
 		return RegisteredItEntity.builder()
 				.topic(data.getTopic())
 				.startTime(data.getStartTime())
@@ -32,7 +32,7 @@ public class RegisteredItEntityConverterImpl implements RegisteredItEntityConver
 	}
 
 	@Override
-	public RegisteredItEntity to(Long id, RegisteredIt data) {
+	public RegisteredItEntity to(Long id, It_Registered data) {
 		return to(data).toBuilder().id(id).build();
 	}
 }

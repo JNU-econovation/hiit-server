@@ -12,7 +12,7 @@ public interface MemberDao extends JpaDao<HiitMemberEntity, Long> {
 
 	Optional<MemberStatDoc> findMemberStatDocByMemberId(Long memberId);
 
-	Optional<ItWithStat> findItWithStatByMemberIdAndItId(Long memberId, Long itId);
+	Optional<ItWithStat> findItWithStatByMemberIdAndInItId(Long memberId, Long inItId);
 
 	MemberStatDoc saveMemberStatDoc(MemberStatDoc memberStatDoc);
 }

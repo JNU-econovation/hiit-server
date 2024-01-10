@@ -22,7 +22,6 @@ public class CreateKaKaoMemberUseCase {
 	public Member execute(final String code) {
 		Token token = kaKaoTokenClient.execute(code);
 		if (Objects.isNull(token.getToken())) {
-			log.error("token is null");
 			throw new SocialIntegrationException();
 		}
 

@@ -1,8 +1,8 @@
 package com.hiit.api.domain.support.entity.converter.hit;
 
 import com.hiit.api.domain.model.hit.Hit;
-import com.hiit.api.domain.model.hit.HitStatusInfo;
-import com.hiit.api.domain.model.hit.HitterInfo;
+import com.hiit.api.domain.model.hit.HitStatusDetails;
+import com.hiit.api.domain.model.hit.HitterDetail;
 import com.hiit.api.domain.usecase.hit.HitEntityConverter;
 import com.hiit.api.repository.entity.business.hit.HitEntity;
 import com.hiit.api.repository.entity.business.hit.HitStatus;
@@ -18,31 +18,31 @@ public class HitEntityConverterImpl implements HitEntityConverter {
 	public Hit from(HitEntity entity) {
 		Hitter hitter = entity.getHitter();
 		if (hitter.getId().isEmpty()) {
-			return getBaseHitData(entity).toBuilder().hitter(HitterInfo.anonymous()).build();
+			return getBaseHitData(entity).toBuilder().hitter(HitterDetail.anonymous()).build();
 		}
-		return getBaseHitData(entity).toBuilder().hitter(HitterInfo.of(hitter.getId().get())).build();
+		return getBaseHitData(entity).toBuilder().hitter(HitterDetail.of(hitter.getId().get())).build();
 	}
 
 	private Hit getBaseHitData(HitEntity entity) {
 		Optional<Long> hitter = entity.getHitter().getId();
-		HitterInfo hitterInfo = null;
+		HitterDetail hitterDetail = null;
 		if (hitter.isEmpty()) {
-			hitterInfo = HitterInfo.anonymous();
+			hitterDetail = HitterDetail.anonymous();
 		} else {
-			hitterInfo = HitterInfo.of(hitter.get());
+			hitterDetail = HitterDetail.of(hitter.get());
 		}
 		return Hit.builder()
 				.id(entity.getId())
 				.withId(entity.getWithEntity().getId())
-				.hitter(hitterInfo)
-				.status(HitStatusInfo.valueOf(entity.getStatus().name()))
+				.hitter(hitterDetail)
+				.status(HitStatusDetails.valueOf(entity.getStatus().name()))
 				.createAt(entity.getCreateAt())
 				.updateAt(entity.getUpdateAt())
 				.build();
 	}
 
 	public HitEntity to(Hit data) {
-		HitterInfo hitter = data.getHitter();
+		HitterDetail hitter = data.getHitter();
 		if (hitter.getId().isEmpty()) {
 			return getBaseHitterEntity(data).toBuilder().hitter(Hitter.anonymous()).build();
 		}

@@ -1,9 +1,9 @@
 package com.hiit.api.domain.support.entity.converter.with;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hiit.api.domain.model.ItTimeInfo;
+import com.hiit.api.domain.model.ItTimeDetails;
 import com.hiit.api.domain.model.with.With;
-import com.hiit.api.domain.model.with.WithItTimeInfo;
+import com.hiit.api.domain.model.with.WithItTimeDetails;
 import com.hiit.api.domain.usecase.with.WithEntityConverter;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.with.WithEntity;
@@ -31,12 +31,12 @@ public class WithEntityConverterImpl implements WithEntityConverter {
 				.build();
 	}
 
-	public With from(WithEntity entity, ItTimeInfo timeInfo) {
+	public With from(WithEntity entity, ItTimeDetails timeInfo) {
 		LocalTime startTime = timeInfo.getStartTime();
 		LocalTime endTime = timeInfo.getEndTime();
-		WithItTimeInfo withItTimeInfo =
-				WithItTimeInfo.builder().startTime(startTime).endTime(endTime).build();
-		return from(entity).toBuilder().timeInfo(withItTimeInfo).build();
+		WithItTimeDetails withItTimeInfo =
+				WithItTimeDetails.builder().startTime(startTime).endTime(endTime).build();
+		return from(entity).toBuilder().time(withItTimeInfo).build();
 	}
 
 	@Override

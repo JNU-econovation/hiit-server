@@ -1,6 +1,6 @@
 package com.hiit.api.domain.support.entity;
 
-import com.hiit.api.domain.model.ItTimeInfo;
+import com.hiit.api.domain.model.ItTimeDetails;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.experimental.UtilityClass;
@@ -8,11 +8,12 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class PeriodUtils {
 
-	public static Period make(ItTimeInfo timeSource, LocalDateTime date) {
+	public static Period make(ItTimeDetails timeSource, LocalDateTime date) {
 		return PeriodUtils.make(timeSource, date, date);
 	}
 
-	public static Period make(ItTimeInfo timeSource, LocalDateTime startDate, LocalDateTime endDate) {
+	public static Period make(
+			ItTimeDetails timeSource, LocalDateTime startDate, LocalDateTime endDate) {
 		LocalTime startTime = timeSource.getStartTime();
 		LocalTime endTime = timeSource.getEndTime();
 		LocalDateTime startDateTime = LocalDateTime.of(startDate.toLocalDate(), startTime);

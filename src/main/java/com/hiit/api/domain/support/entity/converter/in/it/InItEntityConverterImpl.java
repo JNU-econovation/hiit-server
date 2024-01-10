@@ -2,11 +2,11 @@ package com.hiit.api.domain.support.entity.converter.in.it;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hiit.api.domain.model.ItTimeInfo;
-import com.hiit.api.domain.model.it.in.DayCodeInfo;
+import com.hiit.api.domain.model.ItTimeDetails;
+import com.hiit.api.domain.model.it.in.DayCodeDetails;
 import com.hiit.api.domain.model.it.in.InIt;
-import com.hiit.api.domain.model.it.in.InItTimeInfo;
-import com.hiit.api.domain.model.it.in.ItStatusInfo;
+import com.hiit.api.domain.model.it.in.InItStatusDetails;
+import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.usecase.it.InItEntityConverter;
 import com.hiit.api.repository.entity.business.it.DayCodeList;
 import com.hiit.api.repository.entity.business.it.InItEntity;
@@ -31,25 +31,25 @@ public class InItEntityConverterImpl implements InItEntityConverter {
 				.itRelationId(entity.getItRelationEntity().getId())
 				.title(entity.getTitle())
 				.resolution(entity.getResolution())
-				.dayCode(DayCodeInfo.valueOf(entity.getDayCode().name()))
-				.status(ItStatusInfo.valueOf(entity.getStatus().name()))
+				.dayCode(DayCodeDetails.valueOf(entity.getDayCode().name()))
+				.status(InItStatusDetails.valueOf(entity.getStatus().name()))
 				.createAt(entity.getCreateAt())
 				.updateAt(entity.getUpdateAt())
 				.build();
 	}
 
 	@Override
-	public InIt from(InItEntity entity, ItTimeInfo timeInfo) {
+	public InIt from(InItEntity entity, ItTimeDetails timeInfo) {
 		LocalTime startTime = timeInfo.getStartTime();
 		LocalTime endTime = timeInfo.getEndTime();
-		InItTimeInfo inItTimeInfo =
-				InItTimeInfo.builder().startTime(startTime).endTime(endTime).build();
-		return from(entity).toBuilder().timeInfo(inItTimeInfo).build();
+		InItTimeDetails inItTimeInfo =
+				InItTimeDetails.builder().startTime(startTime).endTime(endTime).build();
+		return from(entity).toBuilder().time(inItTimeInfo).build();
 	}
 
 	@Override
 	public InItEntity to(InIt data) {
-		InItTimeInfo timeInfo = data.getTimeInfo();
+		InItTimeDetails timeInfo = data.getTime();
 		String info = null;
 		try {
 			info = objectMapper.writeValueAsString(timeInfo);
@@ -59,7 +59,7 @@ public class InItEntityConverterImpl implements InItEntityConverter {
 		return InItEntity.builder()
 				.title(data.getTitle())
 				.resolution(data.getResolution())
-				.dayCode(DayCodeList.of(data.getDayCode().getCode()))
+				.dayCode(DayCodeList.of(data.getDayCode().getValue()))
 				.status(ItStatus.valueOf(data.getStatus().name()))
 				.info(info)
 				.build();

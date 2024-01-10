@@ -1,7 +1,7 @@
 package com.hiit.api.domain.model.it;
 
 import com.hiit.api.common.marker.model.AbstractDomain;
-import com.hiit.api.domain.model.it.relation.TargetItTypeInfo;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
@@ -21,11 +21,11 @@ import lombok.experimental.SuperBuilder;
 public abstract class BasicIt implements AbstractDomain {
 
 	private Long id;
+	private ItTypeDetails type;
 
 	private String topic;
 	private LocalTime startTime;
 	private LocalTime endTime;
-	private TargetItTypeInfo type;
 
 	private LocalDateTime createAt;
 	private LocalDateTime updateAt;

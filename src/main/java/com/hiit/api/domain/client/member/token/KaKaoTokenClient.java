@@ -1,6 +1,6 @@
 package com.hiit.api.domain.client.member.token;
 
-import com.hiit.api.domain.client.config.KaKaoProperties;
+import com.hiit.api.domain.client.config.KaKaoApiProperties;
 import com.hiit.api.domain.client.exception.SocialClientException;
 import com.hiit.api.domain.client.response.token.KaKaoIdToken;
 import com.hiit.api.domain.client.response.token.Token;
@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate;
 public class KaKaoTokenClient implements SocialTokenClient {
 
 	private final RestTemplate restTemplate;
-	private final KaKaoProperties properties;
+	private final KaKaoApiProperties properties;
 
 	@Override
 	public Token execute(String code) {

@@ -5,8 +5,11 @@ import com.hiit.api.domain.dao.it.in.InItDao;
 import com.hiit.api.domain.dto.request.it.DeleteInItUseCaseRequest;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.exception.MemberAccessDeniedException;
+import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
-import com.hiit.api.domain.service.it.DeleteItRelationService;
+import com.hiit.api.domain.model.member.GetMemberId;
+import com.hiit.api.domain.service.it.ItRelationCommand;
+import com.hiit.api.domain.service.member.MemberQuery;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
@@ -23,10 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DeleteInItUseCase implements AbstractUseCase<DeleteInItUseCaseRequest> {
 
-	private final InItDao inItDao;
-	private final InItEntityConverter inItEntityConverter;
+	private final InItDao dao;
+	private final InItEntityConverter entityConverter;
 
-	private final DeleteItRelationService itRelationService;
+	private final MemberQuery memberQuery;
+	private final ItRelationCommand itRelationCommand;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
@@ -34,31 +38,32 @@ public class DeleteInItUseCase implements AbstractUseCase<DeleteInItUseCaseReque
 	@Override
 	@Transactional
 	public AbstractResponse execute(DeleteInItUseCaseRequest request) {
-		final Long memberId = request.getMemberId();
-		final Long inItId = request.getInItId();
+		final GetMemberId memberId = request::getMemberId;
+		final GetInItId inItId = request::getInItId;
 		final String endTitle = request.getEndTitle();
 
+		GetMemberId member = memberQuery.query(memberId);
 		InIt source = getSource(inItId);
-		if (!source.isOwner(memberId)) {
-			log.debug("{} is not owner of {}", memberId, inItId);
-			throw new MemberAccessDeniedException(memberId, inItId);
+		if (!source.isOwner(member)) {
+			throw new MemberAccessDeniedException(member.getId(), inItId.getId());
 		}
 
 		source.updateTitle(endTitle);
 		source.end();
-		inItDao.save(inItEntityConverter.to(source));
-		itRelationService.execute(source.getItRelationId());
+		dao.save(entityConverter.to(source));
+		itRelationCommand.delete(source::getItRelationId);
 		return AbstractResponse.VOID;
 	}
 
-	private InIt getSource(Long inItId) {
-		Optional<InItEntity> source = inItDao.findById(inItId);
+	private InIt getSource(GetInItId inItId) {
+		Optional<InItEntity> source = dao.findById(inItId.getId());
 		if (source.isEmpty()) {
-			Map<String, Long> exceptionSource = logSourceGenerator.generate("inItId", inItId);
+			Map<String, Long> exceptionSource =
+					logSourceGenerator.generate(GetInItId.key, inItId.getId());
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
 		InItEntity inIt = source.get();
-		return inItEntityConverter.from(inIt);
+		return entityConverter.from(inIt);
 	}
 }

@@ -6,5 +6,5 @@ kakao:
   redirect_uri: ${KAKO_APP_REDIRECT_URI}
   client_id: ${KAKO_APP_CLIENT_ID}
   retry:
-    period: ${KAKO_RETRY_PERIOD}
-    attempts: ${KAKO_RETRY_ATTEMPTS}
+    maxAttempts: ${KAKO_RETRY_PERIOD}
+    backOffPeriod: ${KAKO_RETRY_ATTEMPTS}

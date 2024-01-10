@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /** WithInfo 생성을 위해 필요한 정보를 조합하는 서비스 */
 @Slf4j
@@ -23,13 +24,9 @@ public class WithInfoAssembleService {
 
 	private final HitDao hitDao;
 
+	@Transactional(readOnly = true)
 	public PageImpl<WithInfo> execute(
 			PageElements<With> withs, InIt inIt, WithMemberInfo memberInfo, PageRequest pageable) {
-		log.debug(
-				"on service assemble with info : w - {}, in - {}, m - {}",
-				withs.getTotalCount(),
-				inIt.getId(),
-				memberInfo.getName());
 		List<WithInfo> sources = new ArrayList<>();
 		for (With with : withs.getData()) {
 			Long hitCount = readHitCount(inIt);

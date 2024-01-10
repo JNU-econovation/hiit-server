@@ -1,6 +1,7 @@
 package com.hiit.api.domain.model.with;
 
 import com.hiit.api.common.marker.model.AbstractDomain;
+import com.hiit.api.domain.model.member.GetMemberId;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -15,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class With implements AbstractDomain {
+public class With implements GetWithId, AbstractDomain {
 
 	private Long id;
 	private Long inItId;
@@ -23,8 +24,12 @@ public class With implements AbstractDomain {
 
 	private String content;
 
-	private WithItTimeInfo timeInfo;
+	private WithItTimeDetails time;
 
 	private LocalDateTime createAt;
 	private LocalDateTime updateAt;
+
+	public boolean isOwner(GetMemberId memberId) {
+		return this.memberId.equals(memberId.getId());
+	}
 }

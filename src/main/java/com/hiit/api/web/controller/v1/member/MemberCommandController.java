@@ -4,7 +4,7 @@ import com.hiit.api.common.token.AuthToken;
 import com.hiit.api.domain.dto.request.member.CreateSocialMemberUseCaseRequest;
 import com.hiit.api.domain.dto.request.member.GetTokenUseCaseRequest;
 import com.hiit.api.domain.dto.response.member.UserAuthToken;
-import com.hiit.api.domain.model.member.CertificationSubjectInfo;
+import com.hiit.api.domain.model.member.CertificationSubjectDetails;
 import com.hiit.api.domain.usecase.member.FacadeCreateMemberUseCase;
 import com.hiit.api.domain.usecase.member.GetTokenUseCase;
 import com.hiit.api.support.ApiResponse;
@@ -35,8 +35,8 @@ public class MemberCommandController {
 		CreateSocialMemberUseCaseRequest useCaseRequest =
 				CreateSocialMemberUseCaseRequest.builder()
 						.code(request.getCode())
-						.certificationSubjectInfo(
-								CertificationSubjectInfo.valueOf(request.getSocialSubject().name()))
+						.certificationSubjectDetails(
+								CertificationSubjectDetails.valueOf(request.getSocialSubject().name()))
 						.build();
 		AuthToken res = null;
 		try {
