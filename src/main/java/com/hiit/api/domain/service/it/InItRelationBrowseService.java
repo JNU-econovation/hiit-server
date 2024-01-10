@@ -1,12 +1,15 @@
 package com.hiit.api.domain.service.it;
 
-import static com.hiit.api.domain.model.it.relation.TargetItTypeInfo.REGISTERED_IT;
+import static com.hiit.api.domain.model.it.relation.ItTypeDetails.IT_REGISTERED;
 
 import com.hiit.api.domain.dao.it.in.InItDao;
 import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
+import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
-import com.hiit.api.domain.model.it.relation.ItRelation;
+import com.hiit.api.domain.model.it.relation.GetItRelationId;
+import com.hiit.api.domain.model.it.relation.It_Relation;
+import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.support.entity.converter.in.it.InItEntityConverterImpl;
 import com.hiit.api.domain.support.entity.converter.in.relation.ItRelationEntityConverterImpl;
 import com.hiit.api.domain.util.JsonConverter;
@@ -26,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BrowseMemberInItRelationService {
+public class InItRelationBrowseService {
 
 	private final InItDao initDao;
 	private final InItEntityConverterImpl inItEntityConverter;
@@ -38,13 +41,12 @@ public class BrowseMemberInItRelationService {
 	private final LogSourceGenerator logSourceGenerator;
 
 	@Transactional(readOnly = true)
-	public List<ItRelation> browse(Long memberId) {
-		log.debug("on service get member it relation : m - {}", memberId);
-		List<ItRelation> source = new ArrayList<>();
-		List<InIt> memberInIts = getInIts(memberId);
+	public List<It_Relation> execute(GetMemberId memberId) {
+		List<It_Relation> source = new ArrayList<>();
+		List<InIt> memberInIts = getInIts(memberId.getId());
 		for (InIt memberInIt : memberInIts) {
-			ItRelation itRelation = getItRelation(memberInIt);
-			if (itRelation.isType(REGISTERED_IT)) {
+			It_Relation itRelation = getItRelation(memberInIt);
+			if (itRelation.isType(IT_REGISTERED)) {
 				source.add(itRelation);
 			}
 		}
@@ -52,18 +54,19 @@ public class BrowseMemberInItRelationService {
 	}
 
 	private List<InIt> getInIts(Long memberId) {
-		log.debug("on service get in its : m - {}", memberId);
 		return initDao.findAllActiveStatusByMember(memberId).stream()
 				.map(inItEntityConverter::from)
 				.collect(Collectors.toList());
 	}
 
-	private ItRelation getItRelation(InIt memberInIt) {
-		log.debug("on service get it relation : ir - {}", memberInIt.getItRelationId());
-		Optional<ItRelationEntity> source = itRelationDao.findById(memberInIt.getItRelationId());
+	private It_Relation getItRelation(InIt inIt) {
+		Optional<ItRelationEntity> source = itRelationDao.findById(inIt.getItRelationId());
 		if (source.isEmpty()) {
 			Map<String, Long> exceptionSource =
-					logSourceGenerator.generate("itRelationId", memberInIt.getItRelationId());
+					logSourceGenerator.generate(GetItRelationId.key, inIt.getItRelationId());
+			exceptionSource =
+					logSourceGenerator.add(exceptionSource, GetMemberId.key, inIt.getMemberId());
+			exceptionSource = logSourceGenerator.add(exceptionSource, GetInItId.key, inIt.getId());
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}

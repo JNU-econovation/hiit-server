@@ -1,6 +1,6 @@
 package com.hiit.api.domain.service.token;
 
-import com.hiit.api.domain.client.config.KaKaoProperties;
+import com.hiit.api.domain.client.config.KaKaoApiProperties;
 import com.hiit.api.domain.client.response.token.KaKaoIdTokenProperties;
 import com.hiit.api.domain.client.util.TokenPropertiesMapper;
 import com.hiit.api.domain.exception.SocialIntegrationException;
@@ -16,7 +16,7 @@ public class KaKaoIdTokenParser {
 
 	public static final int payloadIndex = 1;
 
-	private final KaKaoProperties kaKaoProperties;
+	private final KaKaoApiProperties kaKaoApiProperties;
 	private final TokenPropertiesMapper propertiesMapper;
 
 	public KaKaoIdTokenProperties parse(String idToken) {
@@ -24,12 +24,10 @@ public class KaKaoIdTokenParser {
 		String source = new String(Base64.getDecoder().decode(payload));
 		KaKaoIdTokenProperties idProperties =
 				propertiesMapper.read(source, KaKaoIdTokenProperties.class);
-		if (!idProperties.getIss().equals(kaKaoProperties.getHost())) {
-			log.error("Invalid host(iss). host: {}", idProperties.getIss());
+		if (!idProperties.getIss().equals(kaKaoApiProperties.getHost())) {
 			throw new SocialIntegrationException();
 		}
-		if (!idProperties.getAud().equals(kaKaoProperties.getClientId())) {
-			log.error("Invalid client id(aud). client id: {}", idProperties.getAud());
+		if (!idProperties.getAud().equals(kaKaoApiProperties.getClientId())) {
 			throw new SocialIntegrationException();
 		}
 		return idProperties;

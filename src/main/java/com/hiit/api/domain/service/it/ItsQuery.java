@@ -3,6 +3,8 @@ package com.hiit.api.domain.service.it;
 import com.hiit.api.domain.dao.it.registerd.RegisteredItDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.model.it.BasicIt;
+import com.hiit.api.domain.model.it.GetItId;
+import com.hiit.api.domain.model.it.registered.GetItRegisteredId;
 import com.hiit.api.domain.usecase.it.RegisteredItEntityConverter;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
@@ -20,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BrowseItsService {
+public class ItsQuery {
 
 	private final RegisteredItDao registeredItDao;
 	private final RegisteredItEntityConverter registeredItEntityConverter;
@@ -29,19 +31,18 @@ public class BrowseItsService {
 	private final LogSourceGenerator logSourceGenerator;
 
 	@Transactional(readOnly = true)
-	public List<BasicIt> browse() {
-		log.debug("on service get its");
+	public List<BasicIt> query() {
 		return registeredItDao.findAll().stream()
 				.map(registeredItEntityConverter::from)
 				.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public BasicIt browse(Long itId) {
-		log.debug("on service get it : i - {}", itId);
-		Optional<RegisteredItEntity> source = registeredItDao.findById(itId);
+	public BasicIt query(GetItId itId) {
+		Optional<RegisteredItEntity> source = registeredItDao.findById(itId.getId());
 		if (source.isEmpty()) {
-			Map<String, Long> exceptionSource = logSourceGenerator.generate("itId", itId);
+			Map<String, Long> exceptionSource =
+					logSourceGenerator.generate(GetItRegisteredId.key, itId.getId());
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}

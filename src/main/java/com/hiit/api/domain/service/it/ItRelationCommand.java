@@ -1,6 +1,8 @@
 package com.hiit.api.domain.service.it;
 
 import com.hiit.api.domain.dao.it.relation.ItRelationDao;
+import com.hiit.api.domain.model.it.GetItId;
+import com.hiit.api.domain.model.it.relation.GetItRelationId;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.TargetItType;
@@ -12,15 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SaveItRelationService {
+public class ItRelationCommand {
 
 	private final ItRelationDao itRelationDao;
 
 	@Transactional
-	public ItRelationEntity execute(Long itId, InItEntity inIt) {
+	public void delete(GetItRelationId itRelationId) {
+		itRelationDao.deleteById(itRelationId.getId());
+	}
+
+	@Transactional
+	public ItRelationEntity save(GetItId itId, InItEntity inIt) {
 		ItRelationEntity relation =
 				ItRelationEntity.builder()
-						.targetItId(itId)
+						.targetItId(itId.getId())
 						.targetItType(TargetItType.REGISTERED_IT)
 						.inIt(inIt)
 						.build();

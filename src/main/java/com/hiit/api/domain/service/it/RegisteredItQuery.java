@@ -3,7 +3,8 @@ package com.hiit.api.domain.service.it;
 import com.hiit.api.domain.dao.it.registerd.RegisteredItDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.model.it.BasicIt;
-import com.hiit.api.domain.model.it.relation.TargetItTypeInfo;
+import com.hiit.api.domain.model.it.GetItId;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.usecase.it.RegisteredItEntityConverter;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BrowseRegisteredItService implements BrowseTargetItService {
+public class RegisteredItQuery implements ItQuery {
 
 	private final RegisteredItDao registeredItDao;
 	private final RegisteredItEntityConverter registeredItEntityConverter;
@@ -27,11 +28,13 @@ public class BrowseRegisteredItService implements BrowseTargetItService {
 	private final LogSourceGenerator logSourceGenerator;
 
 	@Override
-	@Transactional
-	public BasicIt browse(TargetItTypeInfo type, Long itId) {
-		Optional<RegisteredItEntity> source = registeredItDao.findById(itId);
+	@Transactional(readOnly = true)
+	public BasicIt query(ItTypeDetails type, GetItId itId) {
+		Optional<RegisteredItEntity> source = registeredItDao.findById(itId.getId());
 		if (source.isEmpty()) {
-			Map<String, Long> exceptionSource = logSourceGenerator.generate("itId", itId);
+			Map<String, String> exceptionSource =
+					logSourceGenerator.generate(GetItId.key, itId.toString());
+			exceptionSource = logSourceGenerator.add(exceptionSource, "it_type", type.getValue());
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
@@ -39,7 +42,7 @@ public class BrowseRegisteredItService implements BrowseTargetItService {
 	}
 
 	@Override
-	public TargetItTypeInfo getType() {
-		return TargetItTypeInfo.REGISTERED_IT;
+	public ItTypeDetails getType() {
+		return ItTypeDetails.IT_REGISTERED;
 	}
 }
