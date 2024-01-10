@@ -2,15 +2,14 @@ package com.hiit.api.domain.support.entity.converter.in.relation;
 
 import com.hiit.api.domain.model.it.relation.ItRelation;
 import com.hiit.api.domain.model.it.relation.TargetItTypeInfo;
-import com.hiit.api.domain.support.AbstractEntityConverter;
+import com.hiit.api.domain.usecase.it.ItRelationEntityConverter;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.TargetItType;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ItRelationEntityConverterImpl
-		implements AbstractEntityConverter<ItRelationEntity, ItRelation> {
+public class ItRelationEntityConverterImpl implements ItRelationEntityConverter {
 
 	@Override
 	public ItRelation from(ItRelationEntity entity) {

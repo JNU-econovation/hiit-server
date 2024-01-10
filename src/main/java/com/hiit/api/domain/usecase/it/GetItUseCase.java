@@ -3,7 +3,7 @@ package com.hiit.api.domain.usecase.it;
 import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dto.request.it.GetItUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.ItInfo;
-import com.hiit.api.domain.model.it.registered.BasicIt;
+import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.relation.ItRelation;
 import com.hiit.api.domain.service.it.BrowseItsService;
 import com.hiit.api.domain.service.it.BrowseMemberInItRelationService;
@@ -56,6 +56,7 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 				.topic(it.getTopic())
 				.startTime(it.getStartTime())
 				.endTime(it.getEndTime())
+				.type(it.getType().getType())
 				.inMemberCount(inMemberCount)
 				.memberIn(memberIn)
 				.build();

@@ -1,15 +1,21 @@
 package com.hiit.api.web.controller.v1.it;
 
-import com.hiit.api.common.marker.dto.AbstractResponse;
+import com.hiit.api.domain.dto.request.it.GetInItUseCaseRequest;
+import com.hiit.api.domain.dto.request.it.GetInItsUseCaseRequest;
 import com.hiit.api.domain.dto.request.it.GetItUseCaseRequest;
 import com.hiit.api.domain.dto.request.it.GetItsUseCaseRequest;
+import com.hiit.api.domain.dto.request.it.InItMotivationUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.InItInfo;
 import com.hiit.api.domain.dto.response.it.InItInfos;
 import com.hiit.api.domain.dto.response.it.ItInfo;
 import com.hiit.api.domain.dto.response.it.ItInfos;
 import com.hiit.api.domain.dto.response.it.ItMotivations;
+import com.hiit.api.domain.model.it.relation.TargetItTypeInfo;
+import com.hiit.api.domain.usecase.it.GetInItUseCase;
+import com.hiit.api.domain.usecase.it.GetInItsUseCase;
 import com.hiit.api.domain.usecase.it.GetItUseCase;
 import com.hiit.api.domain.usecase.it.GetItsUseCase;
+import com.hiit.api.domain.usecase.it.InItMotivationUseCase;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
 import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
@@ -34,6 +40,9 @@ public class ItQueryController {
 
 	private final GetItUseCase getItUseCase;
 	private final GetItsUseCase getItsUseCase;
+	private final GetInItUseCase getInItUseCase;
+	private final GetInItsUseCase getInItsUseCase;
+	private final InItMotivationUseCase inItMotivationUseCase;
 
 	@GetMapping("{id}")
 	public ApiResponse<ApiResponse.SuccessBody<ItInfo>> browseIt(
@@ -61,6 +70,7 @@ public class ItQueryController {
 				.endTime(LocalTime.of(2, 0))
 				.inMemberCount(10L)
 				.memberIn(true)
+				.type(TargetItTypeInfo.REGISTERED_IT.getType())
 				.build();
 	}
 
@@ -90,6 +100,7 @@ public class ItQueryController {
 						.endTime(LocalTime.of(2, 0))
 						.inMemberCount(10L)
 						.memberIn(true)
+						.type(TargetItTypeInfo.REGISTERED_IT.getType())
 						.build();
 		ItInfo it2 =
 				ItInfo.builder()
@@ -99,13 +110,29 @@ public class ItQueryController {
 						.endTime(LocalTime.of(2, 0))
 						.inMemberCount(10L)
 						.memberIn(true)
+						.type(TargetItTypeInfo.REGISTERED_IT.getType())
 						.build();
 		return new ItInfos(List.of(it1, it2));
 	}
 
 	@GetMapping("/ins")
-	public ApiResponse<ApiResponse.SuccessBody<AbstractResponse>> readInIts(
+	public ApiResponse<ApiResponse.SuccessBody<InItInfos>> readInIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
+		InItInfos res = null;
+		try {
+			Long memberId = Long.valueOf(userDetails.getUsername());
+			GetInItsUseCaseRequest request = GetInItsUseCaseRequest.builder().memberId(memberId).build();
+			res = getInItsUseCase.execute(request);
+			if (res.getItInInfos().isEmpty()) {
+				res = getInItInfosMockResponse();
+			}
+		} catch (Exception e) {
+			res = getInItInfosMockResponse();
+		}
+		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	private InItInfos getInItInfosMockResponse() {
 		InItInfo inIt1 =
 				InItInfo.builder()
 						.id(1L)
@@ -115,6 +142,7 @@ public class ItQueryController {
 						.endTime(LocalTime.of(9, 0))
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
+						.type(TargetItTypeInfo.REGISTERED_IT.getType())
 						.build();
 		InItInfo inIt2 =
 				InItInfo.builder()
@@ -125,33 +153,62 @@ public class ItQueryController {
 						.endTime(LocalTime.of(9, 0))
 						.days(Long.toBinaryString(000001L))
 						.inMemberCount(10L)
+						.type(TargetItTypeInfo.REGISTERED_IT.getType())
 						.build();
-		AbstractResponse res = new InItInfos(List.of(inIt1, inIt2));
-		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
+		return new InItInfos(List.of(inIt1, inIt2));
 	}
 
 	@GetMapping("/ins/{id}")
-	public ApiResponse<ApiResponse.SuccessBody<AbstractResponse>> browseInIt(
+	public ApiResponse<ApiResponse.SuccessBody<InItInfo>> browseInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
-		InItInfo inIt =
-				InItInfo.builder()
-						.id(1L)
-						.title("참여 잇 제목")
-						.topic("참여 잇 주제")
-						.startTime(LocalTime.of(7, 0))
-						.endTime(LocalTime.of(9, 0))
-						.days(Long.toBinaryString(000001L))
-						.inMemberCount(10L)
-						.build();
-		AbstractResponse res = inIt;
+		InItInfo res = null;
+		try {
+			Long memberId = Long.valueOf(userDetails.getUsername());
+			GetInItUseCaseRequest request =
+					GetInItUseCaseRequest.builder().inIt(id).memberId(memberId).build();
+			res = getInItUseCase.execute(request);
+			if (res == null) {
+				res = getInItInfoMockResponse();
+			}
+		} catch (Exception e) {
+			res = getInItInfoMockResponse();
+		}
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
+	private InItInfo getInItInfoMockResponse() {
+		return InItInfo.builder()
+				.id(1L)
+				.title("참여 잇 제목")
+				.topic("참여 잇 주제")
+				.startTime(LocalTime.of(7, 0))
+				.endTime(LocalTime.of(9, 0))
+				.days(Long.toBinaryString(000001L))
+				.inMemberCount(10L)
+				.type(TargetItTypeInfo.REGISTERED_IT.getType())
+				.build();
+	}
+
 	@GetMapping("/ins/{id}/motivations")
-	public ApiResponse<ApiResponse.SuccessBody<AbstractResponse>> readItMotivations(
+	public ApiResponse<ApiResponse.SuccessBody<ItMotivations>> readItMotivations(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
-		List<String> motivations = List.of("motivation1", "motivation2");
-		AbstractResponse res = new ItMotivations(motivations);
+		ItMotivations res = null;
+		try {
+			Long memberId = Long.valueOf(userDetails.getUsername());
+			InItMotivationUseCaseRequest request =
+					InItMotivationUseCaseRequest.builder().inItId(id).memberId(memberId).build();
+			res = inItMotivationUseCase.execute(request);
+			if (res == null) {
+				res = getItMotivationsMockResponse();
+			}
+		} catch (Exception e) {
+			res = getItMotivationsMockResponse();
+		}
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	private ItMotivations getItMotivationsMockResponse() {
+		List<String> motivations = List.of("motivation1", "motivation2");
+		return new ItMotivations(motivations);
 	}
 }

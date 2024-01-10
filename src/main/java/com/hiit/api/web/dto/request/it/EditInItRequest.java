@@ -17,10 +17,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddInItRequest {
+public class EditInItRequest {
 
 	@DataId private Long id;
 	@DayCode @NotNull private String dayCode;
 	@ItResolution @NotNull private String resolution;
-	@NotNull private RequestItType type;
 }

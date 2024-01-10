@@ -4,7 +4,7 @@ import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dto.request.it.GetItsUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.ItInfo;
 import com.hiit.api.domain.dto.response.it.ItInfos;
-import com.hiit.api.domain.model.it.registered.BasicIt;
+import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.relation.ItRelation;
 import com.hiit.api.domain.service.it.BrowseItsService;
 import com.hiit.api.domain.service.it.BrowseMemberInItRelationService;
@@ -72,6 +72,7 @@ public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 				.topic(it.getTopic())
 				.startTime(it.getStartTime())
 				.endTime(it.getEndTime())
+				.type(it.getType().getType())
 				.inMemberCount(inMemberCount)
 				.memberIn(memberIn)
 				.build();
