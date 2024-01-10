@@ -1,7 +1,7 @@
 package com.hiit.api.domain.dao.hit;
 
 import com.hiit.api.domain.dao.AbstractJpaDao;
-import com.hiit.api.domain.model.hit.HitterInfo;
+import com.hiit.api.domain.model.hit.HitterDetail;
 import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.repository.dao.bussiness.HitRepository;
 import com.hiit.api.repository.entity.business.hit.HitEntity;
@@ -43,20 +43,20 @@ public class HitDaoImpl extends AbstractJpaDao<HitEntity, Long> implements HitDa
 
 	@Override
 	public List<HitEntity> findHitStatusByWithAndHitterAndPeriod(
-			Long withId, HitterInfo hitter, Period period) {
+			Long withId, HitterDetail hitter, Period period) {
 		return findStatusByWithAndHitterAndStatusAndPeriodExecute(
 				period, withId, HitStatus.HIT, hitter);
 	}
 
 	@Override
 	public List<HitEntity> findMissStatusByWithAndHitterAndPeriod(
-			Long withId, HitterInfo hitter, Period period) {
+			Long withId, HitterDetail hitter, Period period) {
 		return findStatusByWithAndHitterAndStatusAndPeriodExecute(
 				period, withId, HitStatus.MISS, hitter);
 	}
 
 	private List<HitEntity> findStatusByWithAndHitterAndStatusAndPeriodExecute(
-			Period period, Long with, HitStatus hit, HitterInfo hitter) {
+			Period period, Long with, HitStatus hit, HitterDetail hitter) {
 		LocalDateTime start = period.getStart();
 		LocalDateTime end = period.getEnd();
 		WithEntity withEntity = WithEntity.builder().id(with).build();

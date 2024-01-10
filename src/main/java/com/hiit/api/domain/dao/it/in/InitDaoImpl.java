@@ -1,7 +1,6 @@
 package com.hiit.api.domain.dao.it.in;
 
 import com.hiit.api.domain.dao.AbstractJpaDao;
-import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.dao.bussiness.InItRepository;
@@ -9,7 +8,6 @@ import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -49,47 +47,34 @@ public class InitDaoImpl extends AbstractJpaDao<InItEntity, Long> implements InI
 	}
 
 	@Override
-	public InItEntity findActiveStatusByIdAndMember(Long inItId, Long memberId) {
+	public Optional<InItEntity> findActiveStatusByIdAndMember(Long inItId, Long memberId) {
 		return findStatusByIdAndMember(memberId, inItId, ItStatus.ACTIVE);
 	}
 
 	@Override
-	public InItEntity findEndStatusByIdAndMember(Long inItId, Long memberId) {
+	public Optional<InItEntity> findEndStatusByIdAndMember(Long inItId, Long memberId) {
 		return findStatusByIdAndMember(memberId, inItId, ItStatus.END);
 	}
 
-	private InItEntity findStatusByIdAndMember(Long memberId, Long inItId, ItStatus active) {
+	private Optional<InItEntity> findStatusByIdAndMember(
+			Long memberId, Long inItId, ItStatus active) {
 		HiitMemberEntity member = HiitMemberEntity.builder().id(memberId).build();
-		Optional<InItEntity> source = repository.findByIdAndHiitMemberAndStatus(inItId, member, active);
-		if (source.isEmpty()) {
-			Map<String, Long> exceptionSource = logSourceGenerator.generate("memberId", memberId);
-			exceptionSource = logSourceGenerator.add(exceptionSource, "inItId", inItId);
-			String exceptionData = jsonConverter.toJson(exceptionSource);
-			throw new DataNotFoundException(exceptionData);
-		}
-		return source.get();
+		return repository.findByIdAndHiitMemberAndStatus(inItId, member, active);
 	}
 
 	@Override
-	public InItEntity findActiveStatusByTargetIdAndMember(Long targetId, Long memberId) {
-		return findStatusByTargetIdAndMember(targetId, memberId, ItStatus.ACTIVE);
+	public Optional<InItEntity> findActiveStatusByItIdAndMember(Long itItd, Long memberId) {
+		return findStatusByTargetIdAndMember(itItd, memberId, ItStatus.ACTIVE);
 	}
 
 	@Override
-	public InItEntity findEndStatusByTargetIdAndMember(Long targetId, Long memberId) {
-		return findStatusByTargetIdAndMember(targetId, memberId, ItStatus.END);
+	public Optional<InItEntity> findEndStatusByItIdAndMember(Long itId, Long memberId) {
+		return findStatusByTargetIdAndMember(itId, memberId, ItStatus.END);
 	}
 
-	private InItEntity findStatusByTargetIdAndMember(Long targetId, Long memberId, ItStatus status) {
+	private Optional<InItEntity> findStatusByTargetIdAndMember(
+			Long targetId, Long memberId, ItStatus status) {
 		HiitMemberEntity member = HiitMemberEntity.builder().id(memberId).build();
-		Optional<InItEntity> source =
-				repository.findByHiitMemberAndTargetIdAndStatus(member, targetId, status);
-		if (source.isEmpty()) {
-			Map<String, Long> exceptionSource = logSourceGenerator.generate("memberId", memberId);
-			exceptionSource = logSourceGenerator.add(exceptionSource, "targetId", targetId);
-			String exceptionData = jsonConverter.toJson(exceptionSource);
-			throw new DataNotFoundException(exceptionData);
-		}
-		return source.get();
+		return repository.findByHiitMemberAndTargetIdAndStatus(member, targetId, status);
 	}
 }
