@@ -4,6 +4,8 @@ import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.dto.request.member.GetMemberInfoUseCaseRequest;
 import com.hiit.api.domain.dto.response.member.MemberInfo;
 import com.hiit.api.domain.exception.DataNotFoundException;
+import com.hiit.api.domain.model.member.GetMemberId;
+import com.hiit.api.domain.model.member.Member;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
@@ -21,31 +23,47 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GetMemberInfoUseCase implements AbstractUseCase<GetMemberInfoUseCaseRequest> {
 
-	private final MemberDao memberDao;
+	private final MemberDao dao;
+	private final MemberEntityConverter entityConverter;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
 
 	@Override
 	public MemberInfo execute(GetMemberInfoUseCaseRequest request) {
-		final Long memberId = request.getMemberId();
+		final GetMemberId memberId = request::getMemberId;
 
-		Optional<MemberStatDoc> docs = memberDao.findMemberStatDocByMemberId(memberId);
-		if (docs.isEmpty()) {
-			Map<String, Long> exceptionSource = logSourceGenerator.generate("memberId", memberId);
+		Member source = getSource(memberId);
+
+		MemberStat docs = readDocs(memberId);
+
+		return MemberInfo.builder()
+				.id(source.getId())
+				.name(source.getNickName())
+				.profile(source.getProfile())
+				.inItCount(docs.getTotalItCount())
+				.build();
+	}
+
+	private Member getSource(GetMemberId memberId) {
+		Optional<HiitMemberEntity> source = dao.findById(memberId.getId());
+		if (source.isEmpty()) {
+			Map<String, Long> exceptionSource =
+					logSourceGenerator.generate(GetMemberId.key, memberId.getId());
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
-		MemberStat source = docs.get().getResource();
+		return entityConverter.from(source.get());
+	}
 
-		HiitMemberEntity member = memberDao.findById(source.getId()).orElse(null);
-		assert member != null;
-
-		return MemberInfo.builder()
-				.id(member.getId())
-				.name(member.getNickName())
-				.profile(member.getProfile())
-				.inItCount(source.getTotalItCount())
-				.build();
+	private MemberStat readDocs(GetMemberId memberId) {
+		Optional<MemberStatDoc> docs = dao.findMemberStatDocByMemberId(memberId.getId());
+		if (docs.isEmpty()) {
+			Map<String, Long> exceptionSource =
+					logSourceGenerator.generate(GetMemberId.key, memberId.getId());
+			String exceptionData = jsonConverter.toJson(exceptionSource);
+			throw new DataNotFoundException(exceptionData);
+		}
+		return docs.get().getResource();
 	}
 }

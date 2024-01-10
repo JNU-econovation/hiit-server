@@ -1,12 +1,14 @@
 package com.hiit.api.domain.usecase.it;
 
-import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dto.request.it.GetItUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.ItInfo;
 import com.hiit.api.domain.model.it.BasicIt;
-import com.hiit.api.domain.model.it.relation.ItRelation;
-import com.hiit.api.domain.service.it.BrowseItsService;
-import com.hiit.api.domain.service.it.BrowseMemberInItRelationService;
+import com.hiit.api.domain.model.it.GetItId;
+import com.hiit.api.domain.model.it.relation.It_Relation;
+import com.hiit.api.domain.model.member.GetMemberId;
+import com.hiit.api.domain.service.it.InItRelationBrowseService;
+import com.hiit.api.domain.service.it.ItInMemberCountService;
+import com.hiit.api.domain.service.it.ItsQuery;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,35 +21,28 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 
-	private final BrowseItsService browseItsService;
-	private final BrowseMemberInItRelationService browseMemberInItRelationService;
+	private final ItsQuery itsQuery;
+	private final InItRelationBrowseService inItRelationBrowseService;
 
-	private final ItRelationDao itRelationDao;
+	private final ItInMemberCountService itInMemberCountService;
 
 	@Override
 	@Transactional(readOnly = true)
 	public ItInfo execute(final GetItUseCaseRequest request) {
-		final Long registeredItId = request.getItId();
-		final Long memberId = request.getMemberId();
+		final GetMemberId memberId = request::getMemberId;
+		final GetItId registeredItId = request::getItId;
 
-		log.debug("get it : m - {}, rIt - {}", memberId, registeredItId);
-		BasicIt source = getSource(registeredItId);
+		BasicIt source = itsQuery.query(registeredItId);
 
-		log.debug("calculate member in it count : rIt - {}", registeredItId);
-		Long inMemberCount = calcInMemberCount(registeredItId);
-		log.debug("browse member in it ids : m - {}", memberId);
-		List<ItRelation> memberRegisteredIts = browseMemberInRegisteredIts(memberId);
+		Long inMemberCount = itInMemberCountService.execute(source::getId);
+		List<It_Relation> memberRegisteredIts = inItRelationBrowseService.execute(memberId);
 
-		for (ItRelation memberRegisteredIt : memberRegisteredIts) {
-			if (memberRegisteredIt.isTarget(registeredItId)) {
+		for (It_Relation memberRegisteredIt : memberRegisteredIts) {
+			if (memberRegisteredIt.isIt(registeredItId)) {
 				return buildResponse(source, inMemberCount, true);
 			}
 		}
 		return buildResponse(source, inMemberCount, false);
-	}
-
-	private BasicIt getSource(Long itId) {
-		return browseItsService.browse(itId);
 	}
 
 	private ItInfo buildResponse(BasicIt it, Long inMemberCount, boolean memberIn) {
@@ -56,17 +51,9 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 				.topic(it.getTopic())
 				.startTime(it.getStartTime())
 				.endTime(it.getEndTime())
-				.type(it.getType().getType())
+				.type(it.getType().getValue())
 				.inMemberCount(inMemberCount)
 				.memberIn(memberIn)
 				.build();
-	}
-
-	private Long calcInMemberCount(Long targetId) {
-		return itRelationDao.countByTargetItId(targetId);
-	}
-
-	private List<ItRelation> browseMemberInRegisteredIts(Long memberId) {
-		return browseMemberInItRelationService.browse(memberId);
 	}
 }

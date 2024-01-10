@@ -1,9 +1,9 @@
 package com.hiit.api.domain.usecase.member;
 
+import com.hiit.api.common.token.AuthToken;
 import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.dto.request.member.CreateSocialMemberUseCaseRequest;
-import com.hiit.api.domain.dto.response.member.UserAuthToken;
-import com.hiit.api.domain.model.member.CertificationSubjectInfo;
+import com.hiit.api.domain.model.member.CertificationSubjectDetails;
 import com.hiit.api.domain.model.member.Member;
 import com.hiit.api.domain.service.token.UserTokenGenerator;
 import com.hiit.api.domain.usecase.AbstractUseCase;
@@ -24,24 +24,26 @@ public class FacadeCreateMemberUseCase
 
 	private final CreateKaKaoMemberUseCase createKaKaoMemberUseCase;
 
-	private final MemberDao memberDao;
+	private final MemberDao dao;
+
 	private final UserTokenGenerator userTokenGenerator;
 
 	@Override
 	@Transactional
-	public UserAuthToken execute(CreateSocialMemberUseCaseRequest request) {
+	public AuthToken execute(CreateSocialMemberUseCaseRequest request) {
 		final String code = request.getCode();
-		final CertificationSubjectInfo certificationSubjectInfo = request.getCertificationSubjectInfo();
+		final CertificationSubjectDetails certificationSubjectDetails =
+				request.getCertificationSubjectDetails();
 		Member member = null;
-		if (certificationSubjectInfo.equals(CertificationSubjectInfo.KAKAO)) {
+		if (certificationSubjectDetails.equals(CertificationSubjectDetails.KAKAO)) {
 			member = createKaKaoMemberUseCase.execute(code);
 		}
 
-		member = Objects.requireNonNull(member);
+		Objects.requireNonNull(member);
 		final String nickname = member.getNickName();
 		final String certificationId = member.getCertificationId();
 
-		Optional<HiitMemberEntity> isExist = memberDao.findByCertificationId(certificationId);
+		Optional<HiitMemberEntity> isExist = dao.findByCertificationId(certificationId);
 		// login
 		if (isExist.isPresent()) {
 			Long memberId = isExist.get().getId();
@@ -51,11 +53,11 @@ public class FacadeCreateMemberUseCase
 		// sign up
 		HiitMemberEntity source =
 				HiitMemberEntity.builder()
-						.certificationSubject(CertificationSubject.valueOf(certificationSubjectInfo.name()))
+						.certificationSubject(CertificationSubject.valueOf(certificationSubjectDetails.name()))
 						.nickName(nickname)
 						.certificationId(certificationId)
 						.build();
-		Long memberId = memberDao.saveAndFlush(source).getId();
+		Long memberId = dao.saveAndFlush(source).getId();
 		return userTokenGenerator.generateAuthToken(memberId);
 	}
 }

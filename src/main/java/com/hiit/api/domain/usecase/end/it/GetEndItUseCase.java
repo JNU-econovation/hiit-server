@@ -3,14 +3,22 @@ package com.hiit.api.domain.usecase.end.it;
 import com.hiit.api.domain.dao.it.in.InItDao;
 import com.hiit.api.domain.dto.request.end.GetEndItUseCaseRequest;
 import com.hiit.api.domain.dto.response.end.it.EndItInfo;
-import com.hiit.api.domain.model.ItTimeInfo;
-import com.hiit.api.domain.model.it.end.EndItTimeInfo;
+import com.hiit.api.domain.exception.DataNotFoundException;
+import com.hiit.api.domain.exception.MemberAccessDeniedException;
+import com.hiit.api.domain.model.ItTimeDetails;
+import com.hiit.api.domain.model.it.end.EndItTimeDetails;
+import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
-import com.hiit.api.domain.model.it.in.InItTimeInfo;
-import com.hiit.api.domain.service.ItTimeInfoMapper;
+import com.hiit.api.domain.model.it.in.InItTimeDetails;
+import com.hiit.api.domain.model.member.GetMemberId;
+import com.hiit.api.domain.service.ItTimeDetailsMapper;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.usecase.it.InItEntityConverter;
+import com.hiit.api.domain.util.JsonConverter;
+import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,34 +29,45 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> {
 
-	private final InItDao inItDao;
+	private final InItDao dao;
 	private final InItEntityConverter entityConverter;
+	private final ItTimeDetailsMapper timeDetailsMapper;
 
-	private final ItTimeInfoMapper itTimeInfoMapper;
+	private final JsonConverter jsonConverter;
+	private final LogSourceGenerator logSourceGenerator;
 
 	@Override
 	@Transactional(readOnly = true)
 	public EndItInfo execute(final GetEndItUseCaseRequest request) {
-		final Long memberId = request.getMemberId();
-		final Long endInItId = request.getEndInItId();
+		final GetMemberId memberId = request::getMemberId;
+		final GetInItId endInItId = request::getEndInItId;
 
-		log.debug("get end init : m - {}, end - {}", memberId, endInItId);
 		InIt source = getSource(memberId, endInItId);
+		if (source.isOwner(memberId)) {
+			throw new MemberAccessDeniedException(memberId.getId(), endInItId.getId());
+		}
 
-		ItTimeInfo timeInfo = extractTimeInfo(source);
+		ItTimeDetails timeInfo = extractTimeInfo(source);
 
 		return buildResponse(source, timeInfo);
 	}
 
-	private InIt getSource(Long memberId, Long endInItId) {
-		InItEntity source = inItDao.findEndStatusByIdAndMember(memberId, endInItId);
-		String info = source.getInfo();
-		log.debug("convert init info to time info : m - {}, end - {}", memberId, endInItId);
-		ItTimeInfo timeInfo = itTimeInfoMapper.read(info, InItTimeInfo.class);
-		return entityConverter.from(source, timeInfo);
+	private InIt getSource(GetMemberId memberId, GetInItId endInItId) {
+		Optional<InItEntity> source =
+				dao.findEndStatusByIdAndMember(endInItId.getId(), memberId.getId());
+		if (source.isEmpty()) {
+			Map<String, Long> exceptionSource =
+					logSourceGenerator.generate(GetInItId.endKey, endInItId.getId());
+			exceptionSource = logSourceGenerator.add(exceptionSource, GetMemberId.key, memberId.getId());
+			String exceptionData = jsonConverter.toJson(exceptionSource);
+			throw new DataNotFoundException(exceptionData);
+		}
+		String info = source.get().getInfo();
+		ItTimeDetails timeInfo = timeDetailsMapper.read(info, InItTimeDetails.class);
+		return entityConverter.from(source.get(), timeInfo);
 	}
 
-	private EndItInfo buildResponse(InIt source, ItTimeInfo timeInfo) {
+	private EndItInfo buildResponse(InIt source, ItTimeDetails timeInfo) {
 		return EndItInfo.builder()
 				.id(source.getId())
 				.title(source.getTitle())
@@ -57,9 +76,9 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 				.build();
 	}
 
-	private ItTimeInfo extractTimeInfo(InIt inIt) {
-		ItTimeInfo source = inIt.getTimeInfo();
-		return EndItTimeInfo.builder()
+	private ItTimeDetails extractTimeInfo(InIt inIt) {
+		ItTimeDetails source = inIt.getTime();
+		return EndItTimeDetails.builder()
 				.startTime(source.getStartTime())
 				.endTime(source.getEndTime())
 				.build();

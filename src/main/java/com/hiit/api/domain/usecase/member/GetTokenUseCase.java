@@ -4,6 +4,7 @@ import com.hiit.api.common.token.AuthToken;
 import com.hiit.api.common.token.TokenResolver;
 import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.dto.request.member.GetTokenUseCaseRequest;
+import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.model.member.Member;
 import com.hiit.api.domain.service.token.UserTokenGenerator;
 import com.hiit.api.domain.usecase.AbstractUseCase;
@@ -21,8 +22,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GetTokenUseCase implements AbstractUseCase<GetTokenUseCaseRequest> {
 
-	private final MemberDao memberDao;
-	private final MemberEntityConverter memberEntityConverter;
+	private final MemberDao dao;
+	private final MemberEntityConverter entityConverter;
 
 	private final TokenResolver tokenResolver;
 	private final UserTokenGenerator tokenGenerator;
@@ -36,8 +37,7 @@ public class GetTokenUseCase implements AbstractUseCase<GetTokenUseCaseRequest> 
 
 		Long source = getSource(refreshToken);
 
-		log.debug("read member : m - {}", source);
-		Member member = readMember(source);
+		Member member = readMember(() -> source);
 
 		return tokenGenerator.generateAuthToken(member.getId());
 	}
@@ -45,19 +45,19 @@ public class GetTokenUseCase implements AbstractUseCase<GetTokenUseCaseRequest> 
 	private Long getSource(String token) {
 		Optional<Long> source = tokenResolver.resolveId(token);
 		if (source.isEmpty()) {
-			log.warn("Failed to get memberId. token: {}", token);
 			throw new IllegalArgumentException();
 		}
 		return source.get();
 	}
 
-	private Member readMember(Long memberId) {
-		Optional<HiitMemberEntity> source = memberDao.findById(memberId);
+	private Member readMember(GetMemberId memberId) {
+		Optional<HiitMemberEntity> source = dao.findById(memberId.getId());
 		if (source.isEmpty()) {
-			Map<String, Long> exceptionSource = logSourceGenerator.generate("memberId", memberId);
+			Map<String, Long> exceptionSource =
+					logSourceGenerator.generate(GetMemberId.key, memberId.getId());
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new IllegalArgumentException(exceptionData);
 		}
-		return memberEntityConverter.from(source.get());
+		return entityConverter.from(source.get());
 	}
 }
