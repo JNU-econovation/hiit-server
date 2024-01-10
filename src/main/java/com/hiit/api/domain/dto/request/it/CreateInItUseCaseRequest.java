@@ -1,7 +1,7 @@
 package com.hiit.api.domain.dto.request.it;
 
 import com.hiit.api.common.marker.dto.AbstractRequest;
-import com.hiit.api.domain.model.it.relation.TargetItTypeInfo;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -21,5 +21,5 @@ public class CreateInItUseCaseRequest implements AbstractRequest {
 	private Long itId;
 	private String dayCode;
 	private String resolution;
-	private TargetItTypeInfo type;
+	private ItTypeDetails type;
 }

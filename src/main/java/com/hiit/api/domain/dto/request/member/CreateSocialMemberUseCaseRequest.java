@@ -1,7 +1,7 @@
 package com.hiit.api.domain.dto.request.member;
 
 import com.hiit.api.common.marker.dto.AbstractRequest;
-import com.hiit.api.domain.model.member.CertificationSubjectInfo;
+import com.hiit.api.domain.model.member.CertificationSubjectDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,5 +18,5 @@ import lombok.ToString;
 public class CreateSocialMemberUseCaseRequest implements AbstractRequest {
 
 	private String code;
-	private CertificationSubjectInfo certificationSubjectInfo;
+	private CertificationSubjectDetails certificationSubjectDetails;
 }
