@@ -4,10 +4,11 @@
 
 ### 설계
 
-1. 윗을 작성하려는 잇이 멤버가 참여 중인 잇인지 확인합니다.
-2. 멤버가 이미 잇을 작성하였는지 확인합니다.
+1. 윗을 작성하려는 잇을 조회합니다.
+2. 조회한 잇이 멤버가 작성한 잇인지 확인합니다.
 3. 잇의 제한 사항에 따라 윗을 작성할 수 있는지 확인합니다.
-4. 윗을 작성합니다.
+4. 멤버가 이미 잇을 작성하였는지 확인합니다.
+5. 윗을 작성합니다.
 
 ### 예외
 
@@ -26,12 +27,11 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                                             |
-|-------|----------------------------------------------------------------|
-| 1     | InitRepository#findByIdAndHiitMemberAndStatus                  |
-| 2     | ItRelationRepository#findByInItId                              |
-| 2     | RegisteredItRepository#findById                                |
-| 3     | WithRepository#findByInItEntityAndHiitMemberAndCreateAtBetween |
+| 관련 번호 | 쿼리                                                                |
+|-------|-------------------------------------------------------------------|
+| 1     | InitRepository#findByIdAndHiitMemberAndStatus                     |
+| 4     | WithRepository#findAllByInItEntityAndHiitMemberAndCreateAtBetween |
+| 5     | WithRepository#save                                               |
 
 ## 윗을 삭제합니다.
 
@@ -51,21 +51,21 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                           |
-|-------|----------------------------------------------|
-| 1     | WithRepository#findById                      |
-| 2     | InItRepository#findActiveStatusByIdAndMember |
-| 2     | ItRelationRepository#findByInItId            |
-| 2     | RegisteredItRepository#findById              |
-| 3     | WithRepository#delete                        |
+| 관련 번호 | 쿼리                                            |
+|-------|-----------------------------------------------|
+| 1     | WithRepository#findById                       |
+| 2     | InItRepository#findByIdAndHiitMemberAndStatus |
+| 3     | WithRepository#delete                         |
 
 ## 윗 목록을 조회합니다.
 
 ### 설계
 
-1. 잇 목록을 조회하려는 잇이 존재하는 참여하는 잇인지 확인합니다.
-2. my가 true이면 조회하려는 잇이 멤버가 참여 중인 잇인지 확인합니다.
+1. 윗 목록을 조회하려는 잇을 조회합니다.
+2. 조회한 잇이 멤버의 잇인지 확인합니다.
 3. 윗 목록을 조회합니다.
+4. 멤버 정보를 조회합니다.
+5. 윗 목록을 반환합니다.
 
 ### 예외
 
@@ -76,8 +76,9 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                                                    |
-|-------|-----------------------------------------------------------------------|
-| 1     | MemberRepository#findById                                             |
-| 1     | InItRepository#findActiveStatusByIdAndMember                          |
-| 3     | WithRepository#findAllByInIt or WithRepository#findAllByInItAndMember |
+| 관련 번호 | 쿼리                                                         |
+|-------|------------------------------------------------------------|
+| 1     | InitRepository#findByIdAndHiitMemberAndStatus              |
+| 3     | member filter true - WithRepository#findAllByInItAndMember |
+| 3     | member filter false - WithRepository#findAllByInIt         |
+| 4     | MemberRepository#findById                                  |

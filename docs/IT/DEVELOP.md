@@ -41,5 +41,4 @@
 |-------|---------------------------------------------|
 | 1     | RegisteredItRepository#findAll              |
 | 2     | InItRepository#findAllByHiitMemberAndStatus |
-| 2     | ItRelationRepository#findById               |
 | 3     | ItRelationRepository#countByTargetItId      |

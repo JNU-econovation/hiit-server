@@ -3,10 +3,10 @@ package com.hiit.api.web.controller.v1;
 import com.hiit.api.common.exception.ExceptionSpec;
 import com.hiit.api.common.marker.dto.AbstractResponse;
 import com.hiit.api.common.support.DayCodeSpec;
+import com.hiit.api.common.token.AuthToken;
 import com.hiit.api.domain.dto.response.Banners;
 import com.hiit.api.domain.dto.response.NotiInfos;
 import com.hiit.api.domain.dto.response.NoticeInfo;
-import com.hiit.api.domain.dto.response.member.UserAuthToken;
 import com.hiit.api.domain.service.token.UserTokenGenerator;
 import com.hiit.api.security.authentication.authority.Roles;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
@@ -14,9 +14,12 @@ import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.SuggestItRequest;
+import com.hiit.api.web.dto.request.it.RequestItType;
+import com.hiit.api.web.dto.request.member.SocialSubject;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.Builder;
@@ -136,12 +139,27 @@ public class HiitController {
 		private final List<DayCode> days;
 	}
 
+	@GetMapping("/type")
+	public ApiResponse<ApiResponse.SuccessBody<Map<String, List<String>>>> type() {
+		List<String> socialSubject =
+				Arrays.stream(SocialSubject.values())
+						.map(SocialSubject::getValue)
+						.collect(Collectors.toList());
+		List<String> requestTypes =
+				Arrays.stream(RequestItType.values())
+						.map(RequestItType::getValue)
+						.collect(Collectors.toList());
+		Map<String, List<String>> res =
+				Map.of("socialSubjects", socialSubject, "requestTypes", requestTypes);
+		return ApiResponseGenerator.success(res, HttpStatus.OK);
+	}
+
 	// todo for mock server & delete after development
 	private final UserTokenGenerator userTokenGenerator;
 
 	@GetMapping("/token")
-	public ApiResponse<ApiResponse.SuccessBody<UserAuthToken>> token() {
-		UserAuthToken res = userTokenGenerator.generateAuthToken(1L, List.of(Roles.ROLE_USER));
+	public ApiResponse<ApiResponse.SuccessBody<AuthToken>> token() {
+		AuthToken res = userTokenGenerator.generateAuthToken(1L, List.of(Roles.ROLE_USER));
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 }

@@ -4,8 +4,8 @@
 
 ### 설계
 
-1. 참여하려는 잇이 등록된 잇인지 확인합니다.
-2. 멤버가 이미 참여 중인 잇인지 확인합니다.
+1. 참여하려는 잇이 멤버가 이미 참여 중인 잇인지 확인합니다.
+2. 참여하려는 잇의 주제를 조회합니다.
 3. 잇에 참여합니다.
 
 ### 예외
@@ -17,17 +17,20 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                                  |
-|-------|-----------------------------------------------------|
-| 1     | RegisteredItRepository#findById                     |
-| 2     | InItRepository#findByTargetIdAndStatusAndHiitMember |
+| 관련 번호 | 쿼리                                          |
+|-------|---------------------------------------------|
+| 1     | InItRepository#findAllByHiitMemberAndStatus |
+| 2     | RegisteredItRepository#findById             |
+| 3     | InItRepository#save                         |
+| 3     | ItRelationRepository#save                   |
 
 ## 잇 참여 정보를 수정합니다.
 
 ### 설계
 
-1. 수정하려는 잇이 멤버가 참여 중인 잇인지 확인합니다.
-2. 잇 참여 정보를 수정합니다.
+1. 수정하려는 잇을 조회합니다.
+2. 잇이 멤버가 참여 중인 잇인지 확인합니다.
+3. 잇 참여 정보를 수정합니다.
 
 ### 예외
 
@@ -38,16 +41,18 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                            |
-|-------|-----------------------------------------------|
-| 1     | InItRepository#findByIdAndHiitMemberAndStatus |
+| 관련 번호 | 쿼리                      |
+|-------|-------------------------|
+| 1     | InItRepository#findById |
+| 2     | InItRepository#save     |
 
 ## 잇에 더 이상 참여하지 않습니다.
 
 ### 설계
 
-1. 참여하지 않으려는 잇이 멤버가 참여 중인 잇인지 확인합니다.
-2. 잇에 더 이상 참여하지 않습니다.
+1. 참여하지 않으려는 잇을 조회합니다.
+2. 잇이 멤버가 참여 중인 잇인지 확인합니다.
+3. 잇에 더 이상 참여하지 않습니다.
 
 ### 예외
 
@@ -58,16 +63,21 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                            |
-|-------|-----------------------------------------------|
-| 1     | InItRepository#findByIdAndHiitMemberAndStatus |
+| 관련 번호 | 쿼리                              |
+|-------|---------------------------------|
+| 1     | InItRepository#findById         |
+| 2     | InItRepository#save             |
+| 2     | ItRelationRepository#deleteById |
 
 ## 참여 중인 잇을 조회합니다.
 
 ### 설계
 
-1. 조회하려는 잇이 멤버가 참여 중인 잇인지 확인합니다.
-2. 조회된 참여중인 잇을 반환합니다.
+1. 참여 중인 잇을 조회합니다.
+2. 조회한 잇이 멤버가 참여 중인 잇인지 확인합니다.
+3. 조회한 잇에 참여중인 멤버 수를 조회합니다.
+4. 조회한 잇의 주제를 조회합니다.
+5. 참여 중인 잇을 반환합니다.
 
 ### 예외
 
@@ -81,27 +91,37 @@
 | 관련 번호 | 쿼리                                            |
 |-------|-----------------------------------------------|
 | 1     | InItRepository#findByIdAndHiitMemberAndStatus |
+| 3     | ItRelationRepository#findById                 |
+| 3     | ItRelationRepository#countByTargetItId        |
+| 4     | RegisteredItRepository#findById               |
 
 ## 참여 중인 잇 목록을 조회합니다.
 
 ### 설계
 
 1. 멤버가 참여 중인 잇 목록을 조회합니다.
-2. 조회된 참여 중인 잇 목록을 반환합니다.
+2. 조회한 잇이 멤버가 참여 중인 잇인지 확인합니다.
+3. 조회한 잇에 참여중인 멤버 수를 조회합니다.
+4. 조회한 잇의 주제를 조회합니다.
+5. 조회된 참여 중인 잇 목록을 반환합니다.
 
 ### 쿼리
 
 | 관련 번호 | 쿼리                                          |
 |-------|---------------------------------------------|
 | 1     | InItRepository#findAllByHiitMemberAndStatus |
+| 3     | ItRelationRepository#findById               |
+| 3     | ItRelationRepository#countByTargetItId      |
+| 4     | RegisteredItRepository#findById             |
 
 ## 잇 참여 동기부여 멘트를 조회합니다.
 
 ### 설계
 
-1. 조회하려는 잇이 멤버가 참여 중인 잇인지 확인합니다.
-2. 동기부여 멘트를 위한 잇 정보를 조회합니다. // todo check
-3. 동기부여 멘트를 반환합니다.
+1. 동기부여 멘트를 조회하려는 잇을 조회합니다.
+2. 조회한 잇이 멤버가 참여 중인 잇인지 확인합니다.
+3. 동기부여 멘트를 위한 잇 정보를 조회합니다.
+4. 동기부여 멘트를 반환합니다.
 
 ### 예외
 
@@ -112,11 +132,13 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                                                                  |
-|-------|-------------------------------------------------------------------------------------|
-| 1     | InItRepository#findByIdAndHiitMemberAndStatus                                       |
-| 2     | ItRelationRepository#countByTargetItId (잇 참여 중인 사람 수 제공)                            |
-| 2     | HitRepository#countByInItEntityAndStatusAndCreateAtBetween (잇에 특정 시간동안 만들어진 힛 수 제공) |
+| 관련 번호 | 쿼리                                                             |
+|-------|----------------------------------------------------------------|
+| 1     | InItRepository#findById                                        |
+| 3     | ItRelationRepository#findById (잇 참여 중인 사람 수 제공)                |
+| 3     | ItRelationRepository#countByTargetItId (잇 참여 중인 사람 수 제공)       |
+| 3     | WithRepository#countByInIt (잇에 달린 윗 수 제공)                      |
+| 3     | HitRepository#countHitByInItAndPeriod (잇에 특정 시간동안 만들어진 힛 수 제공) |
 
 ### 특이사항
 

@@ -54,21 +54,13 @@
 ### 설계
 
 1. 멤버의 종료된 잇 목록을 조회합니다.
-2. 종료된 잇과 관련된 부가정보를 조회합니다.
-3. 조회된 종료된 잇 목록을 반환합니다.
+2. 조회된 종료된 잇 목록을 반환합니다.
 
 ### 쿼리
 
 | 관련 번호 | 쿼리                                          |
 |-------|---------------------------------------------|
 | 1     | InItRepository#findAllByHiitMemberAndStatus |
-| 2     | RegisteredItDao#findById                    |
-
-### 특이사항
-
-- 현재(v1) 종료된 잇과 관련된 부가사항은 다음과 같습니다.
-    - 시작 시간
-    - 종료 시간
 
 ## 종료된 잇을 조회합니다.
 
@@ -90,23 +82,18 @@
 
 | 관련 번호 | 쿼리                                            |
 |-------|-----------------------------------------------|
-| 1,2   | InItRepository#findByIdAndHiitMemberAndStatus |
-| 3     | RegisteredItDao#findById                      |
-
-### 특이사항
-
-- 현재(v1) 종료된 잇과 관련된 부가사항은 다음과 같습니다.
-    - 시작 시간
-    - 종료 시간
+| 1     | InItRepository#findByIdAndHiitMemberAndStatus |
 
 ## 종료된 잇의 나의 윗 목록 조회합니다.
 
 ### 설계
 
-1. 조회하려는 잇이 종료된 잇인지 확인합니다.
-2. 종료된 잇이 멤버가 작성한 잇인지 확인합니다.
-3. 조회된 종료된 잇의 나의 윗 목록을 조회합니다.
-4. 조회된 윗 목록을 반환합니다.
+1. 종료된 윗 목록을 조회합니다.
+2. 조회한 윛의 잇을 조회합니다.
+3. 조회한 잇이 멤버가 작성한 잇인지 확인합니다.
+4. 멤버 정보를 조회합니다.
+5. 종료 윗 정보를 조회합니다.
+6. 조회된 종료 윗 정보를 반환합니다.
 
 ### 예외
 
@@ -117,7 +104,9 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                            |
-|-------|-----------------------------------------------|
-| 1,2   | InItRepository#findByIdAndHiitMemberAndStatus |
-| 3     | WithRepository#findAllByInIt                  |
+| 관련 번호 | 쿼리                                                         |
+|-------|------------------------------------------------------------|
+| 1     | WithRepository#findAllByInIt                               |
+| 2     | InItRepository#findByIdAndHiitMemberAndStatus              |
+| 4     | MemberRepository#findById                                  |
+| 5     | HitRepository#countByWithEntityAndStatusAndCreateAtBetween |

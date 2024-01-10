@@ -45,4 +45,12 @@ public class SupportDescription {
 			fieldWithPath("data.days[].day").type(JsonFieldType.STRING).description("날짜 코드 날짜"),
 		};
 	}
+
+	public static FieldDescriptor[] type() {
+		return new FieldDescriptor[] {
+			fieldWithPath("data").type(JsonFieldType.OBJECT).description("날짜 코드 리스트"),
+			fieldWithPath("data.socialSubjects[]").type(JsonFieldType.ARRAY).description("날짜 코드 리스트"),
+			fieldWithPath("data.requestTypes[]").type(JsonFieldType.ARRAY).description("날짜 코드"),
+		};
+	}
 }

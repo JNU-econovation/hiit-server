@@ -19,17 +19,14 @@
 
 ### 쿼리
 
-| 관련 번호 | 쿼리                                                                 |
-|-------|--------------------------------------------------------------------|
-| 1     | WithRepository#findById                                            |
-| 2     | ItRelationRepository#findByInItId                                  |
-| 2     | RegisteredItRepository#findById                                    |
-| 3     | HitRepository#findByWithEntityAndHitterAndStatusAndCreateAtBetween |
-| 4     | HitRepository#countByWithEntityAndStatusAndCreateAtBetween         |
+| 관련 번호 | 쿼리                                                               |
+|-------|------------------------------------------------------------------|
+| 1     | WithRepository#findById                                          |
+| 2     | HitRepository#findStatusByWithAndHitterAndStatusAndPeriodExecute |
+| 3     | HitRepository#saveAndFlush                                       |
+| 4     | HitRepository#countByWithEntityAndStatusAndCreateAtBetween       |
 
 ### 특이 사항
 
-- 윗의 힛 수를 갱신할 때 동시성 문제 발생 가능성이 있다.
-    - 힛 수를 count 쿼리를 통해 가져오기 때문에 갱신할 필요가 없어졌다.
-- 힛 수행, 취소에 대한 기록은 힛 테이블에 저장한다.
-    - rdms를 통해 기록하기 보다는 다른 방법을 찾아보는 것이 좋을 것 같다.
+- hit 요청이 연속적인 경우 개선 할 수 있는 사항이 있을 것 가타.
+- with에 상태가 추가되면 hit 요청 수행 여부를 적은 쿼리로 확인 할 수 있을 것 같다.
