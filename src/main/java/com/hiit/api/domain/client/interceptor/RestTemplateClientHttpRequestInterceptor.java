@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class RestTemplateClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
 
 	@Value("${client.max-attempts}")
-	private int maxAttempts;
+	private Integer maxAttempts;
 
 	@Override
 	public ClientHttpResponse intercept(

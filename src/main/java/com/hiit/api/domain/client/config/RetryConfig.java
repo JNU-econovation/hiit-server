@@ -19,8 +19,8 @@ public class RetryConfig {
 
 	@Bean
 	public RetryTemplate kakaoRetryTemplate(
-			@Value("${kakao.retry.maxAttempts}") int maxAttempts,
-			@Value("${kakao.retry.backOffPeriod}") int backOffPeriod) {
+			@Value("${kakao.retry.maxAttempts}") Integer maxAttempts,
+			@Value("${kakao.retry.backOffPeriod}") Integer backOffPeriod) {
 		RetryTemplate retryTemplate = new RetryTemplate();
 
 		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();

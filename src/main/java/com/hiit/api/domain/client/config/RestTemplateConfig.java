@@ -22,10 +22,10 @@ public class RestTemplateConfig {
 
 	@Bean
 	public RestTemplate restTemplate(
-			@Value("${client.timeout.connect}") int connectTimeout,
-			@Value("${client.timeout.read}") int readTimeout,
-			@Value("${client.pool.max-connect}") int maxConnectPool,
-			@Value("${client.pool.max-connect-per-route}") int maxPerRouteConnectPool) {
+			@Value("${client.timeout.connect}") Integer connectTimeout,
+			@Value("${client.timeout.read}") Integer readTimeout,
+			@Value("${client.pool.max-connect}") Integer maxConnectPool,
+			@Value("${client.pool.max-connect-per-route}") Integer maxPerRouteConnectPool) {
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		factory.setReadTimeout(readTimeout);
 		factory.setConnectTimeout(connectTimeout);
