@@ -1,4 +1,5 @@
 kakao:
+  host: ${KAKO_HOST}
   uri:
     token: ${KAKO_TOKEN_URI}
     token_info: ${KAKO_TOKEN_INFO_URI}
