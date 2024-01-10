@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-public class KaKaoProperties {
+public class KaKaoApiProperties {
 
 	private final String host;
 	private final String uriToken;
@@ -15,7 +15,7 @@ public class KaKaoProperties {
 	private final String redirectUri;
 	private final String clientId;
 
-	public KaKaoProperties(
+	public KaKaoApiProperties(
 			@Value("${kakao.host}") String host,
 			@Value("${kakao.uri.token}") String uriToken,
 			@Value("${kakao.uri.token_info}") String uriTokenInfo,

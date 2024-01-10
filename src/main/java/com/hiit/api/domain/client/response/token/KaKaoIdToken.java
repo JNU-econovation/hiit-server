@@ -13,6 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class KaKaoIdToken implements Token {
 
+	// todo fix this to idToken
 	private String id_token;
 
 	@Override

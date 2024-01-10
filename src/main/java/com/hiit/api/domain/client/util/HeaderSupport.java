@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpHeaders;
 
 @UtilityClass
-public class HeaderGenerator {
+public class HeaderSupport {
 
 	public static HttpHeaders generateBearerHeaders(String token) {
 		HttpHeaders headers = new HttpHeaders();
