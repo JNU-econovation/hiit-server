@@ -2,6 +2,6 @@ security:
   jwt:
     token:
       validtime:
-        access: 21600000
-        refresh: 2073600000
+        access: 2160000000
+        refresh: 207360000000
       secretkey: ${TOKEN_SECRETKEY}
