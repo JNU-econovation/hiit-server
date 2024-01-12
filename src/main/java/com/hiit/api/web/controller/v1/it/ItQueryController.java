@@ -112,7 +112,17 @@ public class ItQueryController {
 						.memberIn(true)
 						.type(ItTypeDetails.IT_REGISTERED.getValue())
 						.build();
-		return new ItInfos(List.of(it1, it2));
+		ItInfo it3 =
+				ItInfo.builder()
+						.id(3L)
+						.topic("잇 주제")
+						.startTime(LocalTime.of(1, 0))
+						.endTime(LocalTime.of(2, 0))
+						.inMemberCount(10L)
+						.memberIn(false)
+						.type(ItTypeDetails.IT_REGISTERED.getValue())
+						.build();
+		return new ItInfos(List.of(it1, it2, it3));
 	}
 
 	@GetMapping("/ins")
@@ -140,7 +150,7 @@ public class ItQueryController {
 						.topic("참여 잇 주제")
 						.startTime(LocalTime.of(7, 0))
 						.endTime(LocalTime.of(9, 0))
-						.days(Long.toBinaryString(000001L))
+						.days("0000001")
 						.inMemberCount(10L)
 						.type(ItTypeDetails.IT_REGISTERED.getValue())
 						.build();
@@ -151,7 +161,7 @@ public class ItQueryController {
 						.topic("참여 잇 주제")
 						.startTime(LocalTime.of(7, 0))
 						.endTime(LocalTime.of(9, 0))
-						.days(Long.toBinaryString(000001L))
+						.days("0000001")
 						.inMemberCount(10L)
 						.type(ItTypeDetails.IT_REGISTERED.getValue())
 						.build();
@@ -183,7 +193,7 @@ public class ItQueryController {
 				.topic("참여 잇 주제")
 				.startTime(LocalTime.of(7, 0))
 				.endTime(LocalTime.of(9, 0))
-				.days(Long.toBinaryString(000001L))
+				.days("000001")
 				.inMemberCount(10L)
 				.type(ItTypeDetails.IT_REGISTERED.getValue())
 				.build();
