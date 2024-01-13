@@ -30,7 +30,7 @@ class MemberStatDocRepositoryTest extends AbstractRepositoryTest {
 		ItWithStats itWithStats = new ItWithStats(Map.of(1L, 10L, 2L, 20L));
 		MemberStat memberStat =
 				MemberStat.builder()
-						.id(member.getId())
+						.memberId(member.getId())
 						.totalItCount(10L)
 						.totalWithCount(20L)
 						.itWithCountStats(itWithStats)
@@ -53,7 +53,7 @@ class MemberStatDocRepositoryTest extends AbstractRepositoryTest {
 		ItWithStats itWithStats = new ItWithStats(Map.of(1L, 10L, 2L, 20L));
 		MemberStat memberStat =
 				MemberStat.builder()
-						.id(member.getId())
+						.memberId(member.getId())
 						.totalItCount(10L)
 						.totalWithCount(20L)
 						.itWithCountStats(itWithStats)
