@@ -23,6 +23,9 @@ public class MemberStatDoc extends StringIdBaseEntity {
 
 	public static final String ENTITY_PREFIX = "member_stat_";
 
+	@Column(name = ENTITY_PREFIX + "member_id")
+	private Long memberId;
+
 	@Column(name = ENTITY_PREFIX + "resource", columnDefinition = "json")
 	@Convert(converter = MemberStatConverter.class)
 	private MemberStat resource;
