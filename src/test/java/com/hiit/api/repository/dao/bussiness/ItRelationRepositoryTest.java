@@ -53,7 +53,7 @@ class ItRelationRepositoryTest extends AbstractRepositoryTest {
 	}
 
 	@Test
-	@DisplayName("참여 잇의 멤버를 삭제하면 잇 연관 테이블도 삭제된다.")
+	@DisplayName("특정 참여 잇과 연관된 잇 연관 엔티티를 모두 삭제한다.")
 	void inIt_cascade_remove_test() {
 		// given
 		RegisteredItEntity registeredIt = registeredItInitializer.getData();
