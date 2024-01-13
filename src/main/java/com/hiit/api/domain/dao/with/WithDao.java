@@ -19,6 +19,8 @@ public interface WithDao extends JpaDao<WithEntity, Long> {
 
 	PageElements<WithEntity> findAllByInIt(Long initId, PageRequest pageable, Period period);
 
+	PageElements<WithEntity> findAllByInItRandom(Long initId, Integer size);
+
 	List<WithEntity> findAllByInItAndMember(Long initId, Long memberId);
 
 	Optional<WithEntity> findByInItEntityAndMemberAndPeriod(
