@@ -5,6 +5,7 @@ import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.entity.business.with.QWithEntity;
 import com.hiit.api.repository.entity.business.with.WithEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -69,5 +70,19 @@ public class WithCustomRepositoryImpl extends QuerydslRepositorySupport
 						with.inIt.hiitMember.eq(hiitMemberEntity),
 						with.createAt.between(startTime, endTime))
 				.fetch();
+	}
+
+	@Override
+	public Page<WithEntity> findAllByInItRandom(Long initId, Integer size) {
+		QWithEntity with = QWithEntity.withEntity;
+
+		List<WithEntity> withs =
+				from(with)
+						.where(with.inIt.id.eq(initId))
+						.orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+						.limit(size)
+						.fetch();
+
+		return new PageImpl<>(withs);
 	}
 }
