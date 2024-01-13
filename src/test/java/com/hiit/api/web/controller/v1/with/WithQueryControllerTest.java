@@ -81,6 +81,7 @@ class WithQueryControllerTest {
 								.queryParam("sort", "id,desc")
 								.queryParam("id", "-1")
 								.queryParam("my", "true")
+								.queryParam("random", "true")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andDo(
