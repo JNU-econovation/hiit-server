@@ -14,12 +14,12 @@ public class RegisteredItInitializer {
 	private RegisteredItEntity data;
 
 	public void initialize() {
-		repository.deleteAll();
+		repository.deleteAllInBatch();
 		this.setData();
 	}
 
 	public void initialize(InItEntity inIt) {
-		repository.deleteAll();
+		repository.deleteAllInBatch();
 		this.setData();
 	}
 

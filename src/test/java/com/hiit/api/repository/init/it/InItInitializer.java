@@ -22,7 +22,7 @@ public class InItInitializer {
 	private DayCodeList dayCode;
 
 	public void initialize(RegisteredItEntity registeredIt, HiitMemberEntity hiitMember) {
-		repository.deleteAll();
+		repository.deleteAllInBatch();
 		this.setData(hiitMember, registeredIt);
 	}
 
