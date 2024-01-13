@@ -77,4 +77,9 @@ public class InitDaoImpl extends AbstractJpaDao<InItEntity, Long> implements InI
 		HiitMemberEntity member = HiitMemberEntity.builder().id(memberId).build();
 		return repository.findByHiitMemberAndTargetIdAndStatus(member, targetId, status);
 	}
+
+	@Override
+	public void endByIdWithItRelation(Long inItId, String title) {
+		repository.endByIdWithItRelation(inItId, title);
+	}
 }
