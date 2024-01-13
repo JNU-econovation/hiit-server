@@ -48,7 +48,7 @@ public class EditInItUseCase implements AbstractUseCase<EditInItUseCaseRequest> 
 			throw new MemberAccessDeniedException(member.getId(), inItId.getId());
 		}
 
-		source.updateDayCode(DayCodeDetails.valueOf(dayCode));
+		source.updateDayCode(DayCodeDetails.of(dayCode));
 		source.updateResolution(resolution);
 		dao.save(entityConverter.to(source));
 		return AbstractResponse.VOID;
