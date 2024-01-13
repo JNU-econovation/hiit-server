@@ -32,7 +32,7 @@ public class MemberDaoImpl extends AbstractJpaDao<HiitMemberEntity, Long> implem
 
 	@Override
 	public Optional<MemberStatDoc> findMemberStatDocByMemberId(Long memberId) {
-		return memberStatDocRepository.findById(memberId.toString());
+		return memberStatDocRepository.findByMemberId(memberId);
 	}
 
 	@Override
