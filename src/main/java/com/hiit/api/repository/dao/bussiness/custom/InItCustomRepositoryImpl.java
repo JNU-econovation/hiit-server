@@ -28,6 +28,20 @@ public class InItCustomRepositoryImpl extends QuerydslRepositorySupport
 	}
 
 	@Override
+	public void endByIdWithItRelation(Long id, String title) {
+		QInItEntity inIt = QInItEntity.inItEntity;
+
+		update(inIt)
+				.set(inIt.status, ItStatus.END)
+				.set(inIt.title, title)
+				.where(inIt.id.eq(id))
+				.execute();
+
+		QItRelationEntity relation = QItRelationEntity.itRelationEntity;
+		update(relation).set(relation.deleted, true).where(relation.inIt.id.eq(id)).execute();
+	}
+
+	@Override
 	public List<InItEntity> findAllByTargetIdAndStatusAndDayCode(
 			Long targetId, ItStatus status, DayCodeList dayCode) {
 
