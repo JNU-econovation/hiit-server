@@ -21,4 +21,5 @@ public class GetWithsUseCaseRequest implements AbstractRequest {
 	private Long inItId;
 	private Boolean isMember;
 	private PageRequest pageable;
+	private Boolean random;
 }
