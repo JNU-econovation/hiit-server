@@ -39,7 +39,8 @@ public class WithQueryController {
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
 			@RequestParam @DataId Long id,
-			@RequestParam(defaultValue = "false") Boolean my) {
+			@RequestParam(defaultValue = "false") Boolean my,
+			@RequestParam(defaultValue = "false") Boolean random) {
 		WithPage withPage = null;
 		try {
 			Long memberId = Long.valueOf(userDetails.getUsername());
@@ -50,6 +51,7 @@ public class WithQueryController {
 							.inItId(id)
 							.isMember(my)
 							.pageable(pageRequest)
+							.random(random)
 							.build();
 			withPage = getWithsUseCase.execute(request);
 			if (withPage.getData().isEmpty()) {
