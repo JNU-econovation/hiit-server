@@ -59,12 +59,14 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 		final GetInItId inItId = request::getInItId;
 		final Boolean isMemberFilter = request.getIsMember();
 		final PageRequest pageable = request.getPageable();
+		final Boolean random = request.getRandom();
 
 		InIt inIt = inItQueryManager.query(InItStatusDetails.ACTIVE, inItId, memberId);
 		if (inIt.isOwner(memberId)) {
 			throw new MemberAccessDeniedException(memberId.getId(), inItId.getId());
 		}
-		GetWithElements getWithElements = makeGetWithElements(isMemberFilter, inIt, pageable, memberId);
+		GetWithElements getWithElements =
+				makeGetWithElements(isMemberFilter, inIt, pageable, memberId, random);
 
 		PageElements<With> sources = getSources(getWithElements);
 
@@ -84,9 +86,21 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 			return getSources(
 					elements.getInIt(), elements.getPageRequest(), elements::getMemberId, period);
 		}
+		if (elements.isRandom()) {
+			return getSources(elements.getInIt(), elements.getPageRequest().getPageSize());
+		}
 		return getSources(elements.getInIt(), elements.getPageRequest(), period);
 	}
 
+	// 랜덤하게 윗을 가져온다.
+	private PageElements<With> getSources(InIt inIt, Integer size) {
+		PageElements<WithEntity> source = dao.findAllByInItRandom(inIt.getId(), size);
+		List<With> data =
+				source.getData().stream().map(entityConverter::from).collect(Collectors.toList());
+		return new PageElements<>(source, data);
+	}
+
+	// 기간을 지정하여 윗을 가져온다.
 	private PageElements<With> getSources(InIt inIt, PageRequest pageable, Period period) {
 		PageElements<WithEntity> source = dao.findAllByInIt(inIt.getId(), pageable, period);
 		List<With> data =
@@ -94,6 +108,7 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 		return new PageElements<>(source, data);
 	}
 
+	// 기간을 지정하여 특정 멤버의 윗을 가져온다.
 	private PageElements<With> getSources(
 			InIt inIt, PageRequest pageable, GetMemberId memberId, Period period) {
 		PageElements<WithEntity> source =
@@ -108,7 +123,7 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 	}
 
 	private GetWithElements makeGetWithElements(
-			Boolean isMember, InIt inIt, PageRequest pageable, GetMemberId memberId) {
+			Boolean isMember, InIt inIt, PageRequest pageable, GetMemberId memberId, Boolean random) {
 		InItTimeDetails source = inIt.getTime();
 		ItTimeDetails timeInfo =
 				WithItTimeDetails.builder()
@@ -121,9 +136,15 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 					.timeInfo(timeInfo)
 					.pageRequest(pageable)
 					.memberId(memberId.getId())
+					.random(random)
 					.build();
 		}
-		return GetWithElements.builder().inIt(inIt).pageRequest(pageable).timeInfo(timeInfo).build();
+		return GetWithElements.builder()
+				.inIt(inIt)
+				.pageRequest(pageable)
+				.timeInfo(timeInfo)
+				.random(random)
+				.build();
 	}
 
 	private WithMemberInfo makeMemberInfo(Member member, InIt inIt) {
@@ -146,9 +167,14 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 		private InIt inIt;
 		private PageRequest pageRequest;
 		private ItTimeDetails timeInfo;
+		private Boolean random;
 
 		public boolean isMember() {
 			return memberId != null;
+		}
+
+		public boolean isRandom() {
+			return random;
 		}
 	}
 }
