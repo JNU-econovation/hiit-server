@@ -18,6 +18,7 @@ import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.domain.support.entity.PeriodUtils;
 import com.hiit.api.domain.support.entity.converter.with.WithEntityConverterImpl;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.domain.usecase.with.event.CreateWithEventPublisher;
 import com.hiit.api.repository.entity.business.with.WithEntity;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -40,6 +41,8 @@ public class CreateWithUseCase implements AbstractUseCase<CreateWithUseCaseReque
 
 	private final ActiveInItTimeDetailsQueryImpl activeInItTimeDetailsQuery;
 
+	private final CreateWithEventPublisher publisher;
+
 	@Override
 	@Transactional
 	public AbstractResponse execute(final CreateWithUseCaseRequest request) {
@@ -49,7 +52,7 @@ public class CreateWithUseCase implements AbstractUseCase<CreateWithUseCaseReque
 
 		GetMemberId member = memberQuery.query(memberId);
 		InIt inIt = activeInItTimeDetailsQuery.query(inItId, memberId);
-		if (inIt.isOwner(member)) {
+		if (!inIt.isOwner(member)) {
 			throw new MemberAccessDeniedException(member.getId(), inItId.getId());
 		}
 
@@ -65,7 +68,9 @@ public class CreateWithUseCase implements AbstractUseCase<CreateWithUseCaseReque
 			throw new CreateCountPolicyException(MAX_CREATE_COUNT);
 		}
 		With with = makeWith(content, inIt);
-		dao.save(entityConverter.to(with));
+		Long withId =
+				dao.save(entityConverter.to(with).toBuilder().memberId(memberId.getId()).build()).getId();
+		publisher.publish(memberId.getId(), inItId.getId(), withId);
 		return AbstractResponse.VOID;
 	}
 
