@@ -5,16 +5,19 @@ import com.hiit.api.domain.dao.it.in.InItDao;
 import com.hiit.api.domain.dto.request.it.CreateInItUseCaseRequest;
 import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.GetItId;
+import com.hiit.api.domain.model.it.in.InIt;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.service.it.ItQueryManager;
 import com.hiit.api.domain.service.it.ItRelationCommand;
 import com.hiit.api.domain.service.member.MemberQuery;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.domain.usecase.it.event.CreateInItEventPublisher;
 import com.hiit.api.repository.entity.business.it.DayCodeList;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreateInItUseCase implements AbstractUseCase<CreateInItUseCaseRequest> {
 
 	private final InItDao dao;
+	private final InItEntityConverter converter;
 
 	private final MemberQuery memberQuery;
 	private final ItQueryManager itQueryManager;
 	private final ItRelationCommand itRelationCommand;
+
+	private final CreateInItEventPublisher publisher;
 
 	@Override
 	@Transactional
@@ -51,6 +57,9 @@ public class CreateInItUseCase implements AbstractUseCase<CreateInItUseCaseReque
 
 		BasicIt it = itQueryManager.query(ItTypeDetails.of(type.getValue()), itId);
 		String topic = it.getTopic();
+		LocalTime startTime = it.getStartTime();
+		LocalTime endTime = it.getEndTime();
+		String info = "{\"startTime\":\"" + startTime + "\",\"endTime\":\"" + endTime + "\"}";
 
 		// 현재 제목을 작성하는 화면이 없다, 그래서 임시로 topic을 title로 사용
 		InItEntity entity =
@@ -59,8 +68,11 @@ public class CreateInItUseCase implements AbstractUseCase<CreateInItUseCaseReque
 						.resolution(resolution)
 						.dayCode(DayCodeList.valueOf(dayCode))
 						.hiitMember(HiitMemberEntity.builder().id(member.getId()).build())
+						.info(info)
 						.build();
-		save(entity, itId);
+		InItEntity source = save(entity, itId);
+		InIt init = converter.from(source);
+		publisher.publish(init.getId(), init.getMemberId());
 		return AbstractResponse.VOID;
 	}
 
@@ -72,8 +84,9 @@ public class CreateInItUseCase implements AbstractUseCase<CreateInItUseCaseReque
 				.collect(Collectors.toList());
 	}
 
-	private void save(InItEntity entity, GetItId itId) {
+	private InItEntity save(InItEntity entity, GetItId itId) {
 		InItEntity inIt = dao.save(entity);
 		itRelationCommand.save(itId, inIt);
+		return inIt;
 	}
 }
