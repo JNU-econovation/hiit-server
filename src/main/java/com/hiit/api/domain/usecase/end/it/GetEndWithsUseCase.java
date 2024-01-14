@@ -50,7 +50,7 @@ public class GetEndWithsUseCase implements AbstractUseCase<GetEndWithsUseCaseReq
 		List<With> sources = getSources(endInItId, memberId);
 
 		InIt endInIt = inItQueryManager.query(InItStatusDetails.END, endInItId, memberId);
-		if (endInIt.isOwner(memberId)) {
+		if (!endInIt.isOwner(memberId)) {
 			throw new MemberAccessDeniedException(memberId.getId(), endInItId.getId());
 		}
 
