@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface InItCustomRepository {
 
-	// 특정 참여 잇과 연관된 잇 연관 엔티티를 모두 삭제한다.
-	void deleteByIdWithItRelation(Long id);
+	// 특정 참여 잇을 삭제한다.
+	void deleteByInItId(Long id);
 
 	// 특정 참여 잇의 상태를 종료로 변경 및 종료 제목을 설정하고, 특정 참여 잇과 연관된 잇 연관 엔티티를 모두 삭제한다.
 	void endByIdWithItRelation(Long id, String title);
