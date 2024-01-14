@@ -10,7 +10,10 @@ import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.usecase.it.InItEntityConverter;
 import com.hiit.api.repository.entity.business.it.DayCodeList;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
+import com.hiit.api.repository.entity.business.it.TargetItType;
+import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,5 +71,18 @@ public class InItEntityConverterImpl implements InItEntityConverter {
 	@Override
 	public InItEntity to(Long id, InIt data) {
 		return to(data).toBuilder().id(id).build();
+	}
+
+	public InItEntity to(Long id, InIt data, Long targetItId, TargetItType targetItType) {
+		return to(id, data).toBuilder()
+				.hiitMember(HiitMemberEntity.builder().id(data.getMemberId()).build())
+				.itRelationEntity(
+						ItRelationEntity.builder()
+								.id(data.getItRelationId())
+								.targetItId(targetItId)
+								.targetItType(targetItType)
+								.inIt(InItEntity.builder().id(data.getId()).build())
+								.build())
+				.build();
 	}
 }
