@@ -82,4 +82,9 @@ public class InitDaoImpl extends AbstractJpaDao<InItEntity, Long> implements InI
 	public void endByIdWithItRelation(Long inItId, String title) {
 		repository.endByIdWithItRelation(inItId, title);
 	}
+
+	@Override
+	public void deleteByIdWithItRelation(Long inItId) {
+		repository.deleteByInItId(inItId);
+	}
 }
