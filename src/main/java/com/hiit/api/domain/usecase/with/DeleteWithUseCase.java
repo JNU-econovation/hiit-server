@@ -18,6 +18,7 @@ import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.domain.support.entity.PeriodUtils;
 import com.hiit.api.domain.support.entity.converter.with.WithEntityConverterImpl;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.domain.usecase.with.event.DeleteWithEventPublisher;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.with.WithEntity;
@@ -44,6 +45,8 @@ public class DeleteWithUseCase implements AbstractUseCase<DeleteWithUseCaseReque
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
 
+	private final DeleteWithEventPublisher publisher;
+
 	@Override
 	@Transactional
 	public AbstractResponse execute(final DeleteWithUseCaseRequest request) {
@@ -52,12 +55,12 @@ public class DeleteWithUseCase implements AbstractUseCase<DeleteWithUseCaseReque
 
 		GetMemberId member = memberQuery.query(memberId);
 		With source = getSource(withId);
-		if (source.isOwner(member)) {
+		if (!source.isOwner(member)) {
 			throw new MemberAccessDeniedException(member.getId(), withId.getId());
 		}
 
 		InIt inIt = activeInItTimeDetailsQuery.query(source::getInItId, member);
-		if (inIt.isOwner(member)) {
+		if (!inIt.isOwner(member)) {
 			throw new MemberAccessDeniedException(member.getId(), withId.getId());
 		}
 
@@ -68,7 +71,8 @@ public class DeleteWithUseCase implements AbstractUseCase<DeleteWithUseCaseReque
 			throw new TimePolicyException();
 		}
 
-		dao.delete(entityConverter.to(source));
+		dao.delete(entityConverter.to(source.getId(), source));
+		publisher.publish(member.getId(), inIt.getId(), withId.getId());
 		return AbstractResponse.VOID;
 	}
 
