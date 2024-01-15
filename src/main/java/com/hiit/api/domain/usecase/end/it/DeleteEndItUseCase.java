@@ -42,11 +42,11 @@ public class DeleteEndItUseCase implements AbstractUseCase<DeleteEndItUseCaseReq
 
 		GetMemberId member = memberQuery.query(memberId);
 		InIt source = getSource(member, endInItId);
-		if (source.isOwner(member)) {
+		if (!source.isOwner(member)) {
 			throw new MemberAccessDeniedException(member.getId(), endInItId.getId());
 		}
 
-		dao.delete(entityConverter.to(source));
+		dao.deleteByIdWithItRelation(source.getId());
 		return AbstractResponse.VOID;
 	}
 

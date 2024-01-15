@@ -55,7 +55,7 @@ public class HitUseCase implements AbstractUseCase<HitUseCaseRequest> {
 			return buildResponse(count);
 		}
 		Hit hit = sources.get(TOP_INDEX);
-		dao.saveAndFlush(entityConverter.to(hit.miss()));
+		dao.saveAndFlush(entityConverter.to(hit.getId(), hit.miss()));
 		Long count = dao.countHitStatusByWithAndPeriod(with.getId(), period);
 		return buildResponse(count);
 	}
