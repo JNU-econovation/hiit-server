@@ -10,13 +10,21 @@ import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.service.member.MemberQuery;
+import com.hiit.api.domain.support.entity.converter.in.it.InItEntityConverterImpl;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.it.TargetItType;
 import java.util.Map;
 import java.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EditInItUseCase implements AbstractUseCase<EditInItUseCaseRequest> {
 
 	private final InItDao dao;
-	private final InItEntityConverter entityConverter;
+	private final InItEntityConverterImpl entityConverter;
 
 	private final MemberQuery memberQuery;
 
@@ -43,18 +51,22 @@ public class EditInItUseCase implements AbstractUseCase<EditInItUseCaseRequest> 
 		final String resolution = request.getResolution();
 
 		GetMemberId member = memberQuery.query(memberId);
-		InIt source = getSource(inItId);
+		InItElement element = getSource(inItId);
+		InIt source = element.getSource();
 		if (!source.isOwner(member)) {
 			throw new MemberAccessDeniedException(member.getId(), inItId.getId());
 		}
 
 		source.updateDayCode(DayCodeDetails.of(dayCode));
 		source.updateResolution(resolution);
-		dao.save(entityConverter.to(source));
+		InItEntity inIt =
+				entityConverter.to(
+						source.getId(), source, element.getTargetItId(), element.getTargetItType());
+		dao.save(inIt);
 		return AbstractResponse.VOID;
 	}
 
-	private InIt getSource(GetInItId inItId) {
+	private InItElement getSource(GetInItId inItId) {
 		Optional<InItEntity> source = dao.findById(inItId.getId());
 		if (source.isEmpty()) {
 			Map<String, Long> exceptionSource =
@@ -63,6 +75,23 @@ public class EditInItUseCase implements AbstractUseCase<EditInItUseCaseRequest> 
 			throw new DataNotFoundException(exceptionData);
 		}
 		InItEntity inIt = source.get();
-		return entityConverter.from(inIt);
+		return InItElement.builder()
+				.source(entityConverter.from(inIt))
+				.targetItId(inIt.getItRelationEntity().getTargetItId())
+				.targetItType(inIt.getItRelationEntity().getTargetItType())
+				.build();
+	}
+
+	@Getter
+	@ToString
+	@EqualsAndHashCode
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Builder(toBuilder = true)
+	private static class InItElement {
+
+		private InIt source;
+		private Long targetItId;
+		private TargetItType targetItType;
 	}
 }

@@ -9,11 +9,12 @@ import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.service.member.MemberQuery;
+import com.hiit.api.domain.support.entity.converter.in.it.InItEntityConverterImpl;
 import com.hiit.api.domain.usecase.AbstractUseCase;
-import com.hiit.api.domain.usecase.it.InItEntityConverter;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.it.TargetItType;
 import java.util.Map;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EditEndItUseCase implements AbstractUseCase<EditEndItUseCaseRequest> {
 
 	private final InItDao dao;
-	private final InItEntityConverter entityConverter;
+	private final InItEntityConverterImpl entityConverter;
 
 	private final MemberQuery memberQuery;
 
@@ -47,19 +48,20 @@ public class EditEndItUseCase implements AbstractUseCase<EditEndItUseCaseRequest
 		final GetInItId endInItId = request::getEndInItId;
 
 		GetMemberId member = memberQuery.query(memberId);
-		InIt source = getSource(member, endInItId);
-		if (source.isOwner(member)) {
+		InItElement element = getSource(member, endInItId);
+		InIt source = element.getSource();
+		if (!source.isOwner(member)) {
 			throw new MemberAccessDeniedException(member.getId(), endInItId.getId());
 		}
 
 		EditElements editElements = extractEditElements(request);
 		InIt editedSource = editSource(source, editElements);
 
-		edit(editedSource);
+		edit(editedSource, element);
 		return AbstractResponse.VOID;
 	}
 
-	private InIt getSource(GetMemberId memberId, GetInItId endInItId) {
+	private InItElement getSource(GetMemberId memberId, GetInItId endInItId) {
 		Optional<InItEntity> source =
 				dao.findActiveStatusByIdAndMember(endInItId.getId(), memberId.getId());
 		if (source.isEmpty()) {
@@ -69,7 +71,12 @@ public class EditEndItUseCase implements AbstractUseCase<EditEndItUseCaseRequest
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
-		return entityConverter.from(source.get());
+		InItEntity inIt = source.get();
+		return InItElement.builder()
+				.source(entityConverter.from(inIt))
+				.targetItId(inIt.getItRelationEntity().getTargetItId())
+				.targetItType(inIt.getItRelationEntity().getTargetItType())
+				.build();
 	}
 
 	private EditElements extractEditElements(EditEndItUseCaseRequest request) {
@@ -81,8 +88,10 @@ public class EditEndItUseCase implements AbstractUseCase<EditEndItUseCaseRequest
 		return source.toBuilder().title(title).build();
 	}
 
-	private void edit(InIt source) {
-		dao.save(entityConverter.to(source));
+	private void edit(InIt source, InItElement element) {
+		dao.save(
+				entityConverter.to(
+						source.getId(), source, element.getTargetItId(), element.getTargetItType()));
 	}
 
 	@Getter
@@ -93,5 +102,18 @@ public class EditEndItUseCase implements AbstractUseCase<EditEndItUseCaseRequest
 	@Builder(toBuilder = true)
 	private static class EditElements {
 		private String title;
+	}
+
+	@Getter
+	@ToString
+	@EqualsAndHashCode
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Builder(toBuilder = true)
+	private static class InItElement {
+
+		private InIt source;
+		private Long targetItId;
+		private TargetItType targetItType;
 	}
 }

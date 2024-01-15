@@ -18,13 +18,10 @@ public class InItCustomRepositoryImpl extends QuerydslRepositorySupport
 	}
 
 	@Override
-	public void deleteByIdWithItRelation(Long id) {
+	public void deleteByInItId(Long id) {
 		QInItEntity inIt = QInItEntity.inItEntity;
 
 		update(inIt).set(inIt.deleted, true).where(inIt.id.eq(id)).execute();
-
-		QItRelationEntity relation = QItRelationEntity.itRelationEntity;
-		update(relation).set(relation.deleted, true).where(relation.inIt.id.eq(id)).execute();
 	}
 
 	@Override

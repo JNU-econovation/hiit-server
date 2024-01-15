@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import com.hiit.api.repository.AbstractRepositoryTest;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.init.it.InItInitializer;
@@ -53,7 +54,7 @@ class ItRelationRepositoryTest extends AbstractRepositoryTest {
 	}
 
 	@Test
-	@DisplayName("특정 참여 잇과 연관된 잇 연관 엔티티를 모두 삭제한다.")
+	@DisplayName("특정 참여 잇을 삭제한다.")
 	void inIt_cascade_remove_test() {
 		// given
 		RegisteredItEntity registeredIt = registeredItInitializer.getData();
@@ -64,11 +65,13 @@ class ItRelationRepositoryTest extends AbstractRepositoryTest {
 		// when
 		List<InItEntity> inItsData = inItsInitializer.getData();
 		for (InItEntity data : inItsData) {
-			inItRepository.deleteByIdWithItRelation(data.getId());
+			inItRepository.deleteByInItId(data.getId());
 		}
 
-		Long id = registeredItInitializer.getData().getId();
-		Long result = repository.countByTargetItId(id);
+		int result =
+				inItRepository
+						.findAllByHiitMemberAndStatus(hiitMembersInitializer.getData().get(0), ItStatus.ACTIVE)
+						.size();
 
 		// then
 		assertThat(result).isZero();

@@ -59,7 +59,7 @@ public class InItMotivationUseCase implements AbstractUseCase<InItMotivationUseC
 		final GetInItId inItId = request::getInItId;
 
 		InIt inIt = readInIt(inItId);
-		if (inIt.isOwner(memberId)) {
+		if (!inIt.isOwner(memberId)) {
 			throw new MemberAccessDeniedException();
 		}
 		It_Relation itRelation = readItRelation(inIt::getItRelationId);

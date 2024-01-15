@@ -43,7 +43,7 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 		final GetInItId endInItId = request::getEndInItId;
 
 		InIt source = getSource(memberId, endInItId);
-		if (source.isOwner(memberId)) {
+		if (!source.isOwner(memberId)) {
 			throw new MemberAccessDeniedException(memberId.getId(), endInItId.getId());
 		}
 
