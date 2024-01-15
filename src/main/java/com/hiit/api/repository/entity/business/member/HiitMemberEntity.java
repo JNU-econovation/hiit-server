@@ -50,6 +50,7 @@ public class HiitMemberEntity extends BaseEntity {
 
 	@Column @Builder.Default private Boolean notificationConsent = false;
 
+	@Builder.Default
 	@Column(name = ENTITY_PREFIX + "resource", columnDefinition = "json")
-	private String resource;
+	private String resource = "{}";
 }

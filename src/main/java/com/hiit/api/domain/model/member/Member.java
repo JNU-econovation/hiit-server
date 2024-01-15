@@ -34,4 +34,12 @@ public class Member implements GetMemberId, AbstractDomain {
 	public boolean isSameId(Long id) {
 		return this.id.equals(id);
 	}
+
+	public void consentNotification() {
+		this.notificationConsent = true;
+	}
+
+	public void dissentNotification() {
+		this.notificationConsent = false;
+	}
 }
