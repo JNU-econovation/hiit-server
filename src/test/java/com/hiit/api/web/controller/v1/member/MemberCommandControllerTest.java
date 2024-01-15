@@ -2,6 +2,7 @@ package com.hiit.api.web.controller.v1.member;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -87,7 +88,7 @@ class MemberCommandControllerTest {
 	}
 
 	@Test
-	@DisplayName("[POST] " + BASE_URL + "/notification/consent")
+	@DisplayName("[POST] " + BASE_URL + "/notification")
 	void notificationConsent() throws Exception {
 		// set service mock
 		NotificationConsentRequest request =
@@ -97,7 +98,7 @@ class MemberCommandControllerTest {
 
 		mockMvc
 				.perform(
-						post(BASE_URL + "/notification/consent", 0)
+						post(BASE_URL + "/notification", 0)
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(content))
 				.andExpect(status().is2xxSuccessful())
@@ -110,6 +111,26 @@ class MemberCommandControllerTest {
 												.tag(TAG)
 												.requestSchema(Schema.schema("NotificationConsentRequest"))
 												.responseSchema(Schema.schema("NotificationConsentResponse"))
+												.responseFields(Description.success())
+												.build())));
+	}
+
+	@Test
+	@DisplayName("[DELETE] " + BASE_URL + "/notification")
+	void notificationDissent() throws Exception {
+		// set service mock
+		mockMvc
+				.perform(delete(BASE_URL + "/notification", 0).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"NotificationDissent",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("알림 동의 철회")
+												.tag(TAG)
+												.requestSchema(Schema.schema("NotificationDissentRequest"))
+												.responseSchema(Schema.schema("NotificationDissentResponse"))
 												.responseFields(Description.success())
 												.build())));
 	}
