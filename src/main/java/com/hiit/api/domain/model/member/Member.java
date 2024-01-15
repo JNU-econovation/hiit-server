@@ -42,4 +42,8 @@ public class Member implements GetMemberId, AbstractDomain {
 	public void dissentNotification() {
 		this.notificationConsent = false;
 	}
+
+	public void withdraw() {
+		this.status = MemberStatusDetails.WITHDRAWN;
+	}
 }
