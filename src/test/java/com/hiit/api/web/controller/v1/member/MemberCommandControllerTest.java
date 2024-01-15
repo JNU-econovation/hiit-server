@@ -2,7 +2,6 @@ package com.hiit.api.web.controller.v1.member;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -59,6 +59,28 @@ class MemberCommandControllerTest {
 												.requestSchema(Schema.schema("LoginSaveRequest"))
 												.responseSchema(Schema.schema("LoginSaveResponse"))
 												.responseFields(Description.success(MemberDescription.authToken()))
+												.build())));
+	}
+
+	@Test
+	@DisplayName("[DELETE] " + BASE_URL)
+	void delete() throws Exception {
+		// set service mock
+		mockMvc
+				.perform(
+						RestDocumentationRequestBuilders.delete(BASE_URL, 0)
+								.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"DeleteMember",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("회원탈퇴")
+												.tag(TAG)
+												.requestSchema(Schema.schema("DeleteMemberRequest"))
+												.responseSchema(Schema.schema("DeleteMemberResponse"))
+												.responseFields(Description.success())
 												.build())));
 	}
 
@@ -120,7 +142,9 @@ class MemberCommandControllerTest {
 	void notificationDissent() throws Exception {
 		// set service mock
 		mockMvc
-				.perform(delete(BASE_URL + "/notification", 0).contentType(MediaType.APPLICATION_JSON))
+				.perform(
+						RestDocumentationRequestBuilders.delete(BASE_URL + "/notification", 0)
+								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
