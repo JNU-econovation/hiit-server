@@ -22,4 +22,6 @@ public interface MemberDao extends JpaDao<HiitMemberEntity, Long> {
 
 	List<MemberNotificationInfoEntity> findAllNotificationInfoByHiitMemberEntity(
 			HiitMemberEntity hiitMemberEntity);
+
+	void deleteNotificationInfos(List<MemberNotificationInfoEntity> infos);
 }
