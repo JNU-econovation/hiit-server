@@ -12,6 +12,7 @@ import com.hiit.api.AppMain;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.controller.description.MemberDescription;
 import com.hiit.api.web.dto.request.member.CreateSocialMemberRequest;
+import com.hiit.api.web.dto.request.member.NotificationConsentRequest;
 import com.hiit.api.web.dto.request.member.SocialSubject;
 import com.hiit.api.web.dto.request.member.TokenRefreshRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -82,6 +83,34 @@ class MemberCommandControllerTest {
 												.requestSchema(Schema.schema("TokenRefreshRequest"))
 												.responseSchema(Schema.schema("TokenRefreshResponse"))
 												.responseFields(Description.success(MemberDescription.authToken()))
+												.build())));
+	}
+
+	@Test
+	@DisplayName("[POST] " + BASE_URL + "/notification/consent")
+	void notificationConsent() throws Exception {
+		// set service mock
+		NotificationConsentRequest request =
+				NotificationConsentRequest.builder().device("device").build();
+
+		String content = objectMapper.writeValueAsString(request);
+
+		mockMvc
+				.perform(
+						post(BASE_URL + "/notification/consent", 0)
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(content))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"NotificationConsent",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("알림 동의")
+												.tag(TAG)
+												.requestSchema(Schema.schema("NotificationConsentRequest"))
+												.responseSchema(Schema.schema("NotificationConsentResponse"))
+												.responseFields(Description.success())
 												.build())));
 	}
 }
