@@ -1,6 +1,6 @@
 /*convert snippet to swagger*/
 openapi3 {
-    servers = [ { url = "http://hiit-alb-1485583353.ap-northeast-2.elb.amazonaws.com" } , { url = "http://localhost:8080" }]
+    servers = [ { url = "https://api.hiteat.store" } , { url = "http://localhost:8080" }]
     title = "${projectName}"
     version = "${projectVersion}"
     format = 'yaml'
