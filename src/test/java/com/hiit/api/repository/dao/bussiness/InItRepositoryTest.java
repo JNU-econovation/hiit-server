@@ -72,17 +72,21 @@ class InItRepositoryTest extends AbstractRepositoryTest {
 
 	@Test
 	@DisplayName("특정 참여 잇과 연관된 잇 연관 엔티티를 모두 삭제한다.")
-	void deleteByIdWithItRelation() {
+	void deleteByInItId() {
 		// given
 		Long id = inItInitializer.getData().getId();
 
 		// when
-		repository.deleteByIdWithItRelation(id);
+		repository.deleteByInItId(id);
 		em.clear();
+		int result =
+				repository
+						.findAllByHiitMemberAndStatus(hiitMemberInitializer.getData(), ItStatus.ACTIVE)
+						.size();
 
 		// then
 		assertTrue(repository.findById(id).isEmpty());
-		assertEquals(0, itRelationRepository.countByTargetItId(id));
+		assertEquals(0, result);
 	}
 
 	@Test
