@@ -67,4 +67,9 @@ public class MemberDaoImpl extends AbstractJpaDao<HiitMemberEntity, Long> implem
 			HiitMemberEntity hiitMemberEntity) {
 		return memberNotificationInfoRepository.findAllByHiitMemberEntity(hiitMemberEntity);
 	}
+
+	@Override
+	public void deleteNotificationInfos(List<MemberNotificationInfoEntity> infos) {
+		memberNotificationInfoRepository.deleteAll(infos);
+	}
 }
