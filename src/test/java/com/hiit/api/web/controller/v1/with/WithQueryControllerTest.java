@@ -58,7 +58,7 @@ class WithQueryControllerTest {
 												.tag(TAG)
 												.requestSchema(Schema.schema("WithInfoRequest"))
 												.requestParameters(
-														parameterWithName("id").description("윗 id"),
+														parameterWithName("id").description("잇 id"),
 														parameterWithName("my").description("나의 윗 정보 조회 여부"),
 														parameterWithName("page").description("페이지 번호"),
 														parameterWithName("size").description("페이지 크기"),
@@ -96,7 +96,8 @@ class WithQueryControllerTest {
 														parameterWithName("my").description("나의 윗 정보 조회 여부"),
 														parameterWithName("page").description("페이지 번호"),
 														parameterWithName("size").description("페이지 크기"),
-														parameterWithName("sort").description("정렬 조건"))
+														parameterWithName("sort").description("정렬 조건"),
+														parameterWithName("random").description("랜덤 조회 여부"))
 												.responseSchema(Schema.schema("WithInfoResponse"))
 												.responseFields(Description.fail())
 												.build())));

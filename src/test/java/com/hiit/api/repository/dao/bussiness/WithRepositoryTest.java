@@ -137,4 +137,21 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 		// then
 		assertThat(exists).isTrue();
 	}
+
+	@Test
+	@DisplayName("랜덤한 with 목록을 반환한다.")
+	void findAllByInItRandom() {
+		// given
+		InItEntity inIt = inItInitializer.getData();
+		HiitMemberEntity member = hiitMembersInitializer.getData().get(0);
+		withInitializer.addData(inIt, member);
+		withInitializer.addData(inIt, member);
+
+		// when
+		Page<WithEntity> page = repository.findAllByInItRandom(inIt.getId(), 2);
+
+		// todo: 랜덤 테스트?
+		// then
+		assertThat(page.getTotalElements()).isEqualTo(2);
+	}
 }

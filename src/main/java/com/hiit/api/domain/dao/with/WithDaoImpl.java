@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -73,5 +74,13 @@ public class WithDaoImpl extends AbstractJpaDao<WithEntity, Long> implements Wit
 			return Optional.empty();
 		}
 		return Optional.of(source.get(0));
+	}
+
+	@Override
+	public PageElements<WithEntity> findAllByInItRandom(Long initId, Integer size) {
+		Page<WithEntity> source = repository.findAllByInItRandom(initId, size);
+		List<WithEntity> data = source.getContent();
+		Pageable pageable = source.getPageable();
+		return new PageElements<>(pageable, source.getTotalPages(), source.getTotalElements(), data);
 	}
 }

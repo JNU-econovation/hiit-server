@@ -28,4 +28,6 @@ public interface WithCustomRepository {
 			HiitMemberEntity hiitMemberEntity,
 			LocalDateTime startTime,
 			LocalDateTime endTime);
+
+	Page<WithEntity> findAllByInItRandom(Long initId, Integer size);
 }
