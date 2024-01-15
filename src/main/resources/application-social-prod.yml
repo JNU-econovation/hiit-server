@@ -1,9 +1,11 @@
 kakao:
   host: ${KAKO_HOST}
+  adminKey: ${KAKO_ADMIN_KEY}
   uri:
     token: ${KAKO_TOKEN_URI}
     token_info: ${KAKO_TOKEN_INFO_URI}
     me_info: ${KAKO_ME_INFO_URI}
+    unlink: ${KAKO_UNLINK_URI}
   redirect_uri: ${KAKO_APP_REDIRECT_URI}
   client_id: ${KAKO_APP_CLIENT_ID}
   retry:
