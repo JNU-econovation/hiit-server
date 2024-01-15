@@ -3,11 +3,13 @@ package com.hiit.api.web.controller.v1.member;
 import com.hiit.api.common.token.AuthToken;
 import com.hiit.api.domain.dto.request.member.ConsentNotificationUseCaseRequest;
 import com.hiit.api.domain.dto.request.member.CreateSocialMemberUseCaseRequest;
+import com.hiit.api.domain.dto.request.member.DeleteMemberUseCaseRequest;
 import com.hiit.api.domain.dto.request.member.DissentNotificationUseCaseRequest;
 import com.hiit.api.domain.dto.request.member.GetTokenUseCaseRequest;
 import com.hiit.api.domain.dto.response.member.UserAuthToken;
 import com.hiit.api.domain.model.member.CertificationSubjectDetails;
 import com.hiit.api.domain.usecase.member.ConsentNotificationUseCase;
+import com.hiit.api.domain.usecase.member.DeleteMemberUseCase;
 import com.hiit.api.domain.usecase.member.DissentNotificationUseCase;
 import com.hiit.api.domain.usecase.member.FacadeCreateMemberUseCase;
 import com.hiit.api.domain.usecase.member.GetTokenUseCase;
@@ -38,6 +40,7 @@ public class MemberCommandController {
 	private final GetTokenUseCase getTokenUseCase;
 	private final ConsentNotificationUseCase consentNotificationUseCase;
 	private final DissentNotificationUseCase dissentNotificationUseCase;
+	private final DeleteMemberUseCase deleteMemberUseCase;
 
 	@PostMapping()
 	public ApiResponse<ApiResponse.SuccessBody<AuthToken>> save(
@@ -56,6 +59,20 @@ public class MemberCommandController {
 			return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 		}
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	@DeleteMapping()
+	public ApiResponse<ApiResponse.Success> delete(
+			@AuthenticationPrincipal TokenUserDetails userDetails) {
+		try {
+			Long memberId = Long.valueOf(userDetails.getId());
+			DeleteMemberUseCaseRequest deleteMemberUseCaseRequest =
+					DeleteMemberUseCaseRequest.builder().memberId(memberId).build();
+			deleteMemberUseCase.execute(deleteMemberUseCaseRequest);
+		} catch (Exception e) {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+		}
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 
 	// todo fix
