@@ -3,10 +3,12 @@ package com.hiit.api.web.controller.v1.member;
 import com.hiit.api.common.token.AuthToken;
 import com.hiit.api.domain.dto.request.member.ConsentNotificationUseCaseRequest;
 import com.hiit.api.domain.dto.request.member.CreateSocialMemberUseCaseRequest;
+import com.hiit.api.domain.dto.request.member.DissentNotificationUseCaseRequest;
 import com.hiit.api.domain.dto.request.member.GetTokenUseCaseRequest;
 import com.hiit.api.domain.dto.response.member.UserAuthToken;
 import com.hiit.api.domain.model.member.CertificationSubjectDetails;
 import com.hiit.api.domain.usecase.member.ConsentNotificationUseCase;
+import com.hiit.api.domain.usecase.member.DissentNotificationUseCase;
 import com.hiit.api.domain.usecase.member.FacadeCreateMemberUseCase;
 import com.hiit.api.domain.usecase.member.GetTokenUseCase;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +37,7 @@ public class MemberCommandController {
 	private final FacadeCreateMemberUseCase facadeCreateMemberUseCase;
 	private final GetTokenUseCase getTokenUseCase;
 	private final ConsentNotificationUseCase consentNotificationUseCase;
+	private final DissentNotificationUseCase dissentNotificationUseCase;
 
 	@PostMapping()
 	public ApiResponse<ApiResponse.SuccessBody<AuthToken>> save(
@@ -80,15 +84,29 @@ public class MemberCommandController {
 			@RequestBody NotificationConsentRequest request) {
 		try {
 			Long memberId = Long.valueOf(userDetails.getId());
-			ConsentNotificationUseCaseRequest getTokenUseCaseRequest =
+			ConsentNotificationUseCaseRequest consentNotificationUseCaseRequest =
 					ConsentNotificationUseCaseRequest.builder()
 							.device(request.getDevice())
 							.memberId(memberId)
 							.build();
-			consentNotificationUseCase.execute(getTokenUseCaseRequest);
+			consentNotificationUseCase.execute(consentNotificationUseCaseRequest);
 		} catch (Exception e) {
 			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
 		}
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
+	}
+
+	@DeleteMapping("/notification")
+	public ApiResponse<ApiResponse.Success> notificationDissent(
+			@AuthenticationPrincipal TokenUserDetails userDetails) {
+		try {
+			Long memberId = Long.valueOf(userDetails.getId());
+			DissentNotificationUseCaseRequest dissentNotificationUseCaseRequest =
+					DissentNotificationUseCaseRequest.builder().memberId(memberId).build();
+			dissentNotificationUseCase.execute(dissentNotificationUseCaseRequest);
+		} catch (Exception e) {
+			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+		}
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 }
