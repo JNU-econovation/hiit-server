@@ -38,4 +38,8 @@ public class Member implements GetMemberId, AbstractDomain {
 	public void consentNotification() {
 		this.notificationConsent = true;
 	}
+
+	public void dissentNotification() {
+		this.notificationConsent = false;
+	}
 }
