@@ -13,6 +13,9 @@ public interface InItCustomRepository {
 	// 특정 참여 잇과 연관된 잇 연관 엔티티를 모두 삭제한다.
 	void deleteByIdWithItRelation(Long id);
 
+	// 특정 참여 잇의 상태를 종료로 변경 및 종료 제목을 설정하고, 특정 참여 잇과 연관된 잇 연관 엔티티를 모두 삭제한다.
+	void endByIdWithItRelation(Long id, String title);
+
 	// 특정 타겟 아이디와 특정 상태, 특정 요일 코드를 가진 모든 잇을 조회한다.
 	List<InItEntity> findAllByTargetIdAndStatusAndDayCode(
 			Long targetId, ItStatus status, DayCodeList dayCode);

@@ -14,7 +14,7 @@ public class HiitMembersInitializer {
 	private List<HiitMemberEntity> data;
 
 	public void initialize(int i) {
-		repository.deleteAll();
+		repository.deleteAllInBatch();
 		this.setData(i);
 	}
 

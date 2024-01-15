@@ -8,9 +8,9 @@ import com.hiit.api.domain.exception.MemberAccessDeniedException;
 import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
 import com.hiit.api.domain.model.member.GetMemberId;
-import com.hiit.api.domain.service.it.ItRelationCommand;
 import com.hiit.api.domain.service.member.MemberQuery;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.domain.usecase.it.event.DeleteInItEventPublisher;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.it.InItEntity;
@@ -30,10 +30,11 @@ public class DeleteInItUseCase implements AbstractUseCase<DeleteInItUseCaseReque
 	private final InItEntityConverter entityConverter;
 
 	private final MemberQuery memberQuery;
-	private final ItRelationCommand itRelationCommand;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
+
+	private final DeleteInItEventPublisher publisher;
 
 	@Override
 	@Transactional
@@ -50,8 +51,8 @@ public class DeleteInItUseCase implements AbstractUseCase<DeleteInItUseCaseReque
 
 		source.updateTitle(endTitle);
 		source.end();
-		dao.save(entityConverter.to(source));
-		itRelationCommand.delete(source::getItRelationId);
+		dao.endByIdWithItRelation(source.getId(), source.getTitle());
+		publisher.publish(inItId.getId(), member.getId());
 		return AbstractResponse.VOID;
 	}
 

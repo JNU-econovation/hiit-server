@@ -15,7 +15,7 @@ public class HitInitializer {
 	private HitEntity data;
 
 	public void initialize(WithEntity withEntity, Hitter hitter) {
-		repository.deleteAll();
+		repository.deleteAllInBatch();
 		this.setData(withEntity, hitter);
 	}
 

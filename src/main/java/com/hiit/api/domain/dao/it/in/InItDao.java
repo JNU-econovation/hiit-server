@@ -18,4 +18,6 @@ public interface InItDao extends JpaDao<InItEntity, Long> {
 	Optional<InItEntity> findActiveStatusByItIdAndMember(Long itItd, Long memberId);
 
 	Optional<InItEntity> findEndStatusByItIdAndMember(Long itId, Long memberId);
+
+	void endByIdWithItRelation(Long inItId, String title);
 }

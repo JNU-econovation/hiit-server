@@ -15,7 +15,7 @@ public class WithInitializer {
 	private WithEntity data;
 
 	public void initialize(InItEntity inIt, HiitMemberEntity hiitMember) {
-		repository.deleteAll();
+		repository.deleteAllInBatch();
 		this.setData(inIt, hiitMember);
 	}
 

@@ -13,7 +13,7 @@ public class HiitMemberInitializer {
 	private HiitMemberEntity data;
 
 	public void initialize() {
-		repository.deleteAll();
+		repository.deleteAllInBatch();
 		this.setData();
 	}
 

@@ -1,5 +1,6 @@
 package com.hiit.api.repository.document;
 
+import com.hiit.api.repository.support.listener.DocumentListener;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -21,7 +22,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @MappedSuperclass
-@EntityListeners({AuditingEntityListener.class})
+@EntityListeners({DocumentListener.class, AuditingEntityListener.class})
 @SuperBuilder(toBuilder = true)
 public class StringIdBaseEntity implements Persistable<String> {
 
@@ -38,5 +39,9 @@ public class StringIdBaseEntity implements Persistable<String> {
 	@Override
 	public boolean isNew() {
 		return createAt == null && updateAt == null;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

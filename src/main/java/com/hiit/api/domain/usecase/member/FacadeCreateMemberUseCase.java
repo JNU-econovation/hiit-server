@@ -7,6 +7,7 @@ import com.hiit.api.domain.model.member.CertificationSubjectDetails;
 import com.hiit.api.domain.model.member.Member;
 import com.hiit.api.domain.service.token.UserTokenGenerator;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.domain.usecase.member.event.CreateMemberEventPublisher;
 import com.hiit.api.repository.entity.business.member.CertificationSubject;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import java.util.Objects;
@@ -27,6 +28,8 @@ public class FacadeCreateMemberUseCase
 	private final MemberDao dao;
 
 	private final UserTokenGenerator userTokenGenerator;
+
+	private final CreateMemberEventPublisher publisher;
 
 	@Override
 	@Transactional
@@ -57,7 +60,8 @@ public class FacadeCreateMemberUseCase
 						.nickName(nickname)
 						.certificationId(certificationId)
 						.build();
-		Long memberId = dao.saveAndFlush(source).getId();
+		Long memberId = dao.save(source).getId();
+		publisher.publish(memberId);
 		return userTokenGenerator.generateAuthToken(memberId);
 	}
 }
