@@ -7,19 +7,22 @@ import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
+import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.model.it.relation.GetItRelationId;
 import com.hiit.api.domain.model.it.relation.It_Relation;
 import com.hiit.api.domain.model.member.GetMemberId;
+import com.hiit.api.domain.service.ItTimeDetailsMapper;
 import com.hiit.api.domain.support.entity.converter.in.it.InItEntityConverterImpl;
 import com.hiit.api.domain.support.entity.converter.in.relation.ItRelationEntityConverterImpl;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
+import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,13 +32,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InItRelationBrowseService {
+public class ActiveItRelationBrowseService {
 
 	private final InItDao initDao;
 	private final InItEntityConverterImpl inItEntityConverter;
 
 	private final ItRelationDao itRelationDao;
 	private final ItRelationEntityConverterImpl itRelationEntityConverter;
+
+	private final ItTimeDetailsMapper timeDetailsMapper;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
@@ -54,9 +59,17 @@ public class InItRelationBrowseService {
 	}
 
 	private List<InIt> getInIts(Long memberId) {
-		return initDao.findAllActiveStatusByMember(memberId).stream()
-				.map(inItEntityConverter::from)
-				.collect(Collectors.toList());
+		List<InItEntity> entities = new ArrayList<>(initDao.findAllActiveStatusByMemberId(memberId));
+		List<InIt> inIts = new ArrayList<>();
+		for (InItEntity entity : entities) {
+			ItRelationEntity itRelation =
+					itRelationDao.findByInItIdAndStatus(entity.getId(), ItStatus.ACTIVE).orElse(null);
+			assert itRelation != null;
+			String info = entity.getInfo();
+			InItTimeDetails timeDetails = timeDetailsMapper.read(info, InItTimeDetails.class);
+			inIts.add(inItEntityConverter.from(entity, itRelation, timeDetails));
+		}
+		return inIts;
 	}
 
 	private It_Relation getItRelation(InIt inIt) {

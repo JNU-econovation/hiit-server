@@ -1,20 +1,20 @@
-package com.hiit.api.domain.service.it.in;
+package com.hiit.api.domain.service.with;
 
 import com.hiit.api.domain.dao.it.in.InItDao;
-import com.hiit.api.domain.dao.it.relation.ItRelationDao;
+import com.hiit.api.domain.dao.with.WithDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.model.it.in.GetInItId;
-import com.hiit.api.domain.model.it.in.InIt;
 import com.hiit.api.domain.model.it.in.InItStatusDetails;
 import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
+import com.hiit.api.domain.model.with.GetWithId;
+import com.hiit.api.domain.model.with.With;
 import com.hiit.api.domain.service.ItTimeDetailsMapper;
-import com.hiit.api.domain.support.entity.converter.in.it.InItEntityConverterImpl;
+import com.hiit.api.domain.usecase.with.WithEntityConverter;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.it.InItEntity;
-import com.hiit.api.repository.entity.business.it.ItRelationEntity;
-import com.hiit.api.repository.entity.business.it.ItStatus;
+import com.hiit.api.repository.entity.business.with.WithEntity;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,38 +23,44 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-public class ActiveInItTimeDetailsQueryImpl implements InItTimeDetailsQuery {
+public class EndWithTimeDetailsQueryImpl implements WithTimeDetailsQuery {
+
+	private final WithDao withDao;
+	private final WithEntityConverter withEntityConverter;
 
 	private final InItDao inItDao;
-	private final ItRelationDao itRelationDao;
+
 	private final ItTimeDetailsMapper itTimeDetailsMapper;
-	private final InItEntityConverterImpl inItEntityConverter;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
 
 	@Override
 	@Transactional(readOnly = true)
-	public InIt query(GetInItId inItId, GetMemberId memberId) {
-		Optional<InItEntity> source =
-				inItDao.findActiveStatusByIdAndMember(inItId.getId(), memberId.getId());
+	public With query(GetWithId withId, GetMemberId memberId) {
+		Optional<WithEntity> source = withDao.findById(withId.getId());
 		if (source.isEmpty()) {
-			Map<String, Long> exceptionSource = logSourceGenerator.generate(inItId.key, inItId.getId());
+			Map<String, Long> exceptionSource = logSourceGenerator.generate(withId.key, withId.getId());
 			exceptionSource = logSourceGenerator.add(exceptionSource, memberId.key, memberId.getId());
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
-		InItEntity inIt = source.get();
-		ItRelationEntity itRelation =
-				itRelationDao.findByInItIdAndStatus(inIt.getId(), ItStatus.ACTIVE).orElse(null);
-		assert itRelation != null;
-		String info = inIt.getInfo();
+		Optional<InItEntity> inItEntity =
+				inItDao.findEndStatusByIdAndMember(source.get().getInIt().getId(), memberId.getId());
+		if (inItEntity.isEmpty()) {
+			Map<String, Long> exceptionSource =
+					logSourceGenerator.generate(GetInItId.key, source.get().getInIt().getId());
+			exceptionSource = logSourceGenerator.add(exceptionSource, memberId.key, memberId.getId());
+			String exceptionData = jsonConverter.toJson(exceptionSource);
+			throw new DataNotFoundException(exceptionData);
+		}
+		String info = inItEntity.get().getInfo();
 		InItTimeDetails timeInfo = itTimeDetailsMapper.read(info, InItTimeDetails.class);
-		return inItEntityConverter.from(inIt, itRelation, timeInfo);
+		return withEntityConverter.from(source.get(), timeInfo);
 	}
 
 	@Override
 	public InItStatusDetails getStatus() {
-		return InItStatusDetails.ACTIVE;
+		return InItStatusDetails.END;
 	}
 }

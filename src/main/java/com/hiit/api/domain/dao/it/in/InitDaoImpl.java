@@ -32,7 +32,7 @@ public class InitDaoImpl extends AbstractJpaDao<InItEntity, Long> implements InI
 	}
 
 	@Override
-	public List<InItEntity> findAllActiveStatusByMember(Long memberId) {
+	public List<InItEntity> findAllActiveStatusByMemberId(Long memberId) {
 		return findStatusByMember(memberId, ItStatus.ACTIVE);
 	}
 

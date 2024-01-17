@@ -22,6 +22,8 @@ public class InIt implements AbstractDomain {
 	private Long id;
 	private Long memberId;
 	private Long itRelationId;
+	private Long itId;
+	private String itType;
 
 	private String title;
 	private String resolution;

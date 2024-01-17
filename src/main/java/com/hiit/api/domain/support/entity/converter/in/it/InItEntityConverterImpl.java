@@ -12,7 +12,6 @@ import com.hiit.api.repository.entity.business.it.DayCodeList;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
-import com.hiit.api.repository.entity.business.it.TargetItType;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
@@ -27,31 +26,29 @@ public class InItEntityConverterImpl implements InItEntityConverter {
 	private final ObjectMapper objectMapper;
 
 	@Override
-	public InIt from(InItEntity entity) {
+	public InIt from(InItEntity entity, ItRelationEntity relation, ItTimeDetails timeInfo) {
+		LocalTime startTime = timeInfo.getStartTime();
+		LocalTime endTime = timeInfo.getEndTime();
+		InItTimeDetails inItTimeInfo =
+				InItTimeDetails.builder().startTime(startTime).endTime(endTime).build();
 		return InIt.builder()
 				.id(entity.getId())
 				.memberId(entity.getHiitMember().getId())
-				.itRelationId(entity.getItRelationEntity().getId())
+				.itRelationId(relation.getId())
+				.itId(relation.getItId())
+				.itType(relation.getItType().getType())
 				.title(entity.getTitle())
 				.resolution(entity.getResolution())
 				.dayCode(DayCodeDetails.valueOf(entity.getDayCode().name()))
 				.status(InItStatusDetails.valueOf(entity.getStatus().name()))
+				.time(inItTimeInfo)
 				.createAt(entity.getCreateAt())
 				.updateAt(entity.getUpdateAt())
 				.build();
 	}
 
 	@Override
-	public InIt from(InItEntity entity, ItTimeDetails timeInfo) {
-		LocalTime startTime = timeInfo.getStartTime();
-		LocalTime endTime = timeInfo.getEndTime();
-		InItTimeDetails inItTimeInfo =
-				InItTimeDetails.builder().startTime(startTime).endTime(endTime).build();
-		return from(entity).toBuilder().time(inItTimeInfo).build();
-	}
-
-	@Override
-	public InItEntity to(InIt data) {
+	public InItEntity to(Long id, InIt data) {
 		InItTimeDetails timeInfo = data.getTime();
 		String info = null;
 		try {
@@ -60,29 +57,13 @@ public class InItEntityConverterImpl implements InItEntityConverter {
 			// info에 기존 데이터가 지워질 수 있으니 null로 둔다.
 		}
 		return InItEntity.builder()
+				.id(id)
 				.title(data.getTitle())
 				.resolution(data.getResolution())
 				.dayCode(DayCodeList.of(data.getDayCode().getValue()))
 				.status(ItStatus.valueOf(data.getStatus().name()))
 				.info(info)
-				.build();
-	}
-
-	@Override
-	public InItEntity to(Long id, InIt data) {
-		return to(data).toBuilder().id(id).build();
-	}
-
-	public InItEntity to(Long id, InIt data, Long targetItId, TargetItType targetItType) {
-		return to(id, data).toBuilder()
 				.hiitMember(HiitMemberEntity.builder().id(data.getMemberId()).build())
-				.itRelationEntity(
-						ItRelationEntity.builder()
-								.id(data.getItRelationId())
-								.targetItId(targetItId)
-								.targetItType(targetItType)
-								.inIt(InItEntity.builder().id(data.getId()).build())
-								.build())
 				.build();
 	}
 }

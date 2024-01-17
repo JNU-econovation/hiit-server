@@ -1,8 +1,8 @@
 package com.hiit.api.domain.dto.response.end.it;
 
 import com.hiit.api.common.marker.dto.AbstractResponse;
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -23,7 +23,7 @@ public class EndItInfo implements AbstractResponse {
 	private String topic;
 	private LocalTime startTime;
 	private LocalTime endTime;
-	private Date startDate;
-	private Date endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	private Long withCount;
 }

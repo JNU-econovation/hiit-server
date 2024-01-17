@@ -15,6 +15,7 @@ import com.hiit.api.domain.model.member.Member;
 import com.hiit.api.domain.model.with.With;
 import com.hiit.api.domain.service.it.in.InItQueryManager;
 import com.hiit.api.domain.service.member.MemberQuery;
+import com.hiit.api.domain.service.with.WithTimeDetailsQueryManager;
 import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.domain.support.entity.PeriodUtils;
 import com.hiit.api.domain.usecase.AbstractUseCase;
@@ -37,6 +38,7 @@ public class GetEndWithsUseCase implements AbstractUseCase<GetEndWithsUseCaseReq
 
 	private final MemberQuery itMemberQuery;
 	private final InItQueryManager inItQueryManager;
+	private final WithTimeDetailsQueryManager withTimeDetailsQueryManager;
 
 	// todo fix
 	private final HitDao hitDao;
@@ -68,9 +70,16 @@ public class GetEndWithsUseCase implements AbstractUseCase<GetEndWithsUseCaseReq
 	}
 
 	private List<With> getSources(GetInItId endInItId, GetMemberId memberId) {
-		return dao.findAllByInItAndMember(endInItId.getId(), memberId.getId()).stream()
-				.map(entityConverter::from)
-				.collect(Collectors.toList());
+		List<With> sources =
+				dao.findAllByInItAndMemberAndStatusEnd(endInItId.getId(), memberId.getId()).stream()
+						.map(entityConverter::from)
+						.collect(Collectors.toList());
+		List<With> withs = new ArrayList<>();
+		for (With source : sources) {
+			With with = withTimeDetailsQueryManager.query(InItStatusDetails.END, source::getId, memberId);
+			withs.add(with);
+		}
+		return withs;
 	}
 
 	private EndWithInfos buildResponse(List<EndWithInfo> sources) {

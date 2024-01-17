@@ -6,9 +6,9 @@ import com.hiit.api.domain.dto.response.it.ItInfos;
 import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.relation.It_Relation;
 import com.hiit.api.domain.model.member.GetMemberId;
-import com.hiit.api.domain.service.it.InItRelationBrowseService;
-import com.hiit.api.domain.service.it.ItInMemberCountService;
-import com.hiit.api.domain.service.it.ItsQuery;
+import com.hiit.api.domain.service.it.ActiveItRelationBrowseService;
+import com.hiit.api.domain.service.it.ItActiveMemberCountService;
+import com.hiit.api.domain.service.it.ItsQueryService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,34 +23,30 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 
-	private final ItsQuery itsQuery;
-	private final InItRelationBrowseService inItRelationBrowseService;
+	private final ItsQueryService itsQueryService;
+	private final ActiveItRelationBrowseService activeItRelationBrowseService;
 
-	private final ItInMemberCountService itInMemberCountService;
+	private final ItActiveMemberCountService itActiveMemberCountService;
 
 	@Override
 	@Transactional(readOnly = true)
 	public ItInfos execute(final GetItsUseCaseRequest request) {
 		final GetMemberId memberId = request::getMemberId;
 
-		List<BasicIt> sources = getSources();
+		List<BasicIt> sources = itsQueryService.execute();
 
 		List<Long> memberInItIds =
-				inItRelationBrowseService.execute(memberId).stream()
+				activeItRelationBrowseService.execute(memberId).stream()
 						.map(It_Relation::getItId)
 						.collect(Collectors.toList());
 
 		List<ItInfo> its = new ArrayList<>();
 		for (BasicIt source : sources) {
-			Long inMemberCount = itInMemberCountService.execute(source::getId);
+			Long activeMemberCount = itActiveMemberCountService.execute(source::getId);
 			boolean memberIn = memberInItIds.contains(source.getId());
-			its.add(makeItInfo(source, inMemberCount, memberIn));
+			its.add(makeItInfo(source, activeMemberCount, memberIn));
 		}
 		return buildResponse(its);
-	}
-
-	private List<BasicIt> getSources() {
-		return itsQuery.query();
 	}
 
 	private ItInfos buildResponse(List<ItInfo> source) {

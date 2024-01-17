@@ -49,7 +49,7 @@ public class MemberDaoImpl extends AbstractJpaDao<HiitMemberEntity, Long> implem
 
 	@Override
 	public Optional<ItWithStat> findItWithStatByMemberIdAndInItId(Long memberId, Long inItId) {
-		Optional<MemberStatDoc> docs = memberStatDocRepository.findById(memberId.toString());
+		Optional<MemberStatDoc> docs = memberStatDocRepository.findByMemberId(memberId);
 		if (docs.isEmpty()) {
 			return Optional.empty();
 		}

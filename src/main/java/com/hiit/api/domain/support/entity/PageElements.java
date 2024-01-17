@@ -21,6 +21,15 @@ public class PageElements<T> {
 		this.data = data;
 	}
 
+	public PageElements(
+			int pageSize, int pageNumber, int totalPageCount, Long totalCount, List<T> data) {
+		this.pageSize = pageSize;
+		this.pageNumber = pageNumber;
+		this.totalPageCount = totalPageCount;
+		this.totalCount = totalCount;
+		this.data = data;
+	}
+
 	public PageElements(PageElements<?> source, List<T> data) {
 		this.pageSize = source.getPageSize();
 		this.pageNumber = source.getPageNumber();

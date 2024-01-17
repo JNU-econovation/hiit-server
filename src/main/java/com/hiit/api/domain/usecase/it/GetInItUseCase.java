@@ -1,6 +1,7 @@
 package com.hiit.api.domain.usecase.it;
 
 import com.hiit.api.domain.dao.it.in.InItDao;
+import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dto.request.it.GetInItUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.InItInfo;
 import com.hiit.api.domain.exception.DataNotFoundException;
@@ -8,16 +9,18 @@ import com.hiit.api.domain.exception.MemberAccessDeniedException;
 import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
+import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
-import com.hiit.api.domain.model.it.relation.It_Relation;
 import com.hiit.api.domain.model.member.GetMemberId;
-import com.hiit.api.domain.service.it.ItInMemberCountService;
+import com.hiit.api.domain.service.ItTimeDetailsMapper;
+import com.hiit.api.domain.service.it.ItActiveMemberCountService;
 import com.hiit.api.domain.service.it.ItQueryManager;
-import com.hiit.api.domain.service.it.ItRelationQuery;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +34,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetInItUseCase implements AbstractUseCase<GetInItUseCaseRequest> {
 
 	private final InItDao dao;
-	private final InItEntityConverter entityConverter;
+	private final ItRelationDao itRelationDao;
+	private final ItTimeDetailsMapper itTimeDetailsMapper;
+	private final InItEntityConverter itEntityConverter;
 
-	private final ItRelationQuery itRelationQuery;
 	private final ItQueryManager itQueryManager;
-
-	private final ItInMemberCountService itInMemberCountService;
+	private final ItActiveMemberCountService itActiveMemberCountService;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
@@ -52,12 +55,11 @@ public class GetInItUseCase implements AbstractUseCase<GetInItUseCaseRequest> {
 			throw new MemberAccessDeniedException(memberId.getId(), inItId.getId());
 		}
 
-		It_Relation itRelation = itRelationQuery.query(source::getItRelationId);
-		ItTypeDetails type = itRelation.getType();
-		Long inMemberCount = itInMemberCountService.execute(itRelation::getItId);
-		BasicIt it = itQueryManager.query(type, itRelation::getItId);
+		ItTypeDetails type = ItTypeDetails.of(source.getItType());
+		Long activeMemberCount = itActiveMemberCountService.execute(source::getItId);
+		BasicIt it = itQueryManager.query(type, (GetInItId) source::getId);
 		String topic = it.getTopic();
-		return buildResponse(source, type.getValue(), topic, inMemberCount);
+		return buildResponse(source, type.getValue(), topic, activeMemberCount);
 	}
 
 	private InIt getSource(GetInItId inItId, GetMemberId memberId) {
@@ -70,7 +72,13 @@ public class GetInItUseCase implements AbstractUseCase<GetInItUseCaseRequest> {
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
-		return entityConverter.from(source.get());
+		InItEntity inIt = source.get();
+		ItRelationEntity itRelation =
+				itRelationDao.findByInItIdAndStatus(inIt.getId(), ItStatus.ACTIVE).orElse(null);
+		assert itRelation != null;
+		String info = inIt.getInfo();
+		InItTimeDetails timeDetails = itTimeDetailsMapper.read(info, InItTimeDetails.class);
+		return itEntityConverter.from(inIt, itRelation, timeDetails);
 	}
 
 	private InItInfo buildResponse(InIt source, String type, String topic, Long inMemberCount) {

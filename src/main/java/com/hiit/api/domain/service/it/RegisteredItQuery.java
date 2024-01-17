@@ -1,13 +1,16 @@
 package com.hiit.api.domain.service.it;
 
 import com.hiit.api.domain.dao.it.registerd.RegisteredItDao;
+import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.GetItId;
+import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.usecase.it.RegisteredItEntityConverter;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class RegisteredItQuery implements ItQuery {
+
+	private final ItRelationDao itRelationDao;
 
 	private final RegisteredItDao registeredItDao;
 	private final RegisteredItEntityConverter registeredItEntityConverter;
@@ -34,6 +39,27 @@ public class RegisteredItQuery implements ItQuery {
 		if (source.isEmpty()) {
 			Map<String, String> exceptionSource =
 					logSourceGenerator.generate(GetItId.key, itId.toString());
+			exceptionSource = logSourceGenerator.add(exceptionSource, "it_type", type.getValue());
+			String exceptionData = jsonConverter.toJson(exceptionSource);
+			throw new DataNotFoundException(exceptionData);
+		}
+		return registeredItEntityConverter.from(source.get());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public BasicIt query(ItTypeDetails type, GetInItId inItId) {
+		Optional<ItRelationEntity> itRelation = itRelationDao.findByInItId(inItId.getId());
+		if (itRelation.isEmpty()) {
+			Map<String, String> exceptionSource =
+					logSourceGenerator.generate(GetInItId.key, inItId.toString());
+			String exceptionData = jsonConverter.toJson(exceptionSource);
+			throw new DataNotFoundException(exceptionData);
+		}
+		Optional<RegisteredItEntity> source = registeredItDao.findById(itRelation.get().getItId());
+		if (source.isEmpty()) {
+			Map<String, String> exceptionSource =
+					logSourceGenerator.generate(GetItId.key, inItId.toString());
 			exceptionSource = logSourceGenerator.add(exceptionSource, "it_type", type.getValue());
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);

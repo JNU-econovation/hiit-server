@@ -22,6 +22,7 @@ import com.hiit.api.domain.usecase.with.event.DeleteWithEventPublisher;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.with.WithEntity;
+import com.hiit.api.repository.entity.business.with.WithStatus;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -71,7 +72,7 @@ public class DeleteWithUseCase implements AbstractUseCase<DeleteWithUseCaseReque
 			throw new TimePolicyException();
 		}
 
-		dao.delete(entityConverter.to(source.getId(), source));
+		dao.save(entityConverter.to(source.getId(), source).toBuilder().status(WithStatus.END).build());
 		publisher.publish(member.getId(), inIt.getId(), withId.getId());
 		return AbstractResponse.VOID;
 	}

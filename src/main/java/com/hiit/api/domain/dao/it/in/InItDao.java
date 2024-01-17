@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface InItDao extends JpaDao<InItEntity, Long> {
 
-	List<InItEntity> findAllActiveStatusByMember(Long memberId);
+	List<InItEntity> findAllActiveStatusByMemberId(Long memberId);
 
 	List<InItEntity> findAllEndStatusByMember(Long memberId);
 

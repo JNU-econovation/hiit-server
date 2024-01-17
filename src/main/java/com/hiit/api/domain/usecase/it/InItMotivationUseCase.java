@@ -11,9 +11,10 @@ import com.hiit.api.domain.exception.MemberAccessDeniedException;
 import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
-import com.hiit.api.domain.model.it.relation.GetItRelationId;
-import com.hiit.api.domain.model.it.relation.It_Relation;
+import com.hiit.api.domain.model.it.in.InItTimeDetails;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
+import com.hiit.api.domain.service.ItTimeDetailsMapper;
 import com.hiit.api.domain.service.it.ItQueryManager;
 import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.domain.usecase.AbstractUseCase;
@@ -21,6 +22,7 @@ import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -38,16 +40,15 @@ public class InItMotivationUseCase implements AbstractUseCase<InItMotivationUseC
 
 	private static final String IN_MEMBER_COUNT_STR = "현재 %d명이 참여 중입니다.";
 	private static final String IN_WITH_COUNT_STR = "현재 %d명이 함께 하고 있습니다.";
-	private static final String HIT_COUNT_STR = "현재 %d번 힛 했습니다.";
+	private static final String HIT_COUNT_STR = "현재 %d명이 힛 했습니다.";
 
 	private final InItDao inItDao;
-	private final InItEntityConverter inItEntityConverter;
 	private final ItRelationDao itRelationDao;
-	private final ItRelationEntityConverter itRelationEntityConverter;
+	private final ItTimeDetailsMapper itTimeDetailsMapper;
+	private final InItEntityConverter inItEntityConverter;
+
 	private final ItQueryManager itQueryManager;
-
 	private final WithDao withDao;
-
 	private final HitDao hitDao;
 
 	private final JsonConverter jsonConverter;
@@ -62,13 +63,12 @@ public class InItMotivationUseCase implements AbstractUseCase<InItMotivationUseC
 		if (!inIt.isOwner(memberId)) {
 			throw new MemberAccessDeniedException();
 		}
-		It_Relation itRelation = readItRelation(inIt::getItRelationId);
-		Long inMemberCount = itRelationDao.countByItId(itRelation.getItId());
+		Long inMemberCount = itRelationDao.countByItIdAndStatus(inIt.getItId(), ItStatus.ACTIVE);
 
 		Long inWithCount = withDao.countByInIt(inIt.getId());
 
-		BasicIt basicIt = itQueryManager.query(itRelation.getType(), itRelation::getItId);
-		Period period = makePeriod(basicIt);
+		BasicIt it = itQueryManager.query(ItTypeDetails.of(inIt.getItType()), (GetInItId) inIt::getId);
+		Period period = makePeriod(it);
 		Long hitCount = hitDao.countHitByInItAndPeriod(inItId.getId(), period);
 
 		return buildResponse(inMemberCount, inWithCount, hitCount);
@@ -85,17 +85,6 @@ public class InItMotivationUseCase implements AbstractUseCase<InItMotivationUseC
 		return new ItMotivations(source);
 	}
 
-	private It_Relation readItRelation(GetItRelationId itRelationId) {
-		Optional<ItRelationEntity> source = itRelationDao.findById(itRelationId.getId());
-		if (source.isEmpty()) {
-			Map<String, Long> exceptionSource =
-					logSourceGenerator.generate(GetItRelationId.key, itRelationId.getId());
-			String exceptionData = jsonConverter.toJson(exceptionSource);
-			throw new DataNotFoundException(exceptionData);
-		}
-		return itRelationEntityConverter.from(source.get());
-	}
-
 	private InIt readInIt(GetInItId inItId) {
 		Optional<InItEntity> source = inItDao.findById(inItId.getId());
 		if (source.isEmpty()) {
@@ -104,7 +93,13 @@ public class InItMotivationUseCase implements AbstractUseCase<InItMotivationUseC
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
-		return inItEntityConverter.from(source.get());
+		InItEntity inIt = source.get();
+		ItRelationEntity itRelation =
+				itRelationDao.findByInItIdAndStatus(inIt.getId(), ItStatus.ACTIVE).orElse(null);
+		assert itRelation != null;
+		String info = inIt.getInfo();
+		InItTimeDetails timeDetails = itTimeDetailsMapper.read(info, InItTimeDetails.class);
+		return inItEntityConverter.from(inIt, itRelation, timeDetails);
 	}
 
 	private Period makePeriod(BasicIt basicIt) {

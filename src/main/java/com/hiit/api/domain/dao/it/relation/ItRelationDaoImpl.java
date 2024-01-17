@@ -5,6 +5,7 @@ import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.dao.bussiness.jpa.ItRelationJpaRepository;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -30,8 +31,20 @@ public class ItRelationDaoImpl extends AbstractJpaDao<ItRelationEntity, Long>
 	}
 
 	@Override
-	public Long countByItId(Long itId) {
-		return repository.countByTargetItId(itId);
+	public Long countByItIdAndStatus(Long itId, ItStatus status) {
+		return repository.countByItIdAndStatus(itId, status);
+	}
+
+	@Override
+	public Optional<ItRelationEntity> findByInItIdAndStatus(Long inItId, ItStatus status) {
+		return repository.findByInItIdAndStatus(inItId, status);
+	}
+
+	@Override
+	public void endById(Long id) {
+		ItRelationEntity relation = repository.findById(id).orElse(null);
+		assert relation != null;
+		repository.save(relation.toBuilder().status(ItStatus.END).build());
 	}
 
 	@Override

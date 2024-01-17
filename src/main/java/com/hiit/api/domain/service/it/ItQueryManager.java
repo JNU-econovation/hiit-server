@@ -2,6 +2,7 @@ package com.hiit.api.domain.service.it;
 
 import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.GetItId;
+import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,15 @@ public class ItQueryManager {
 						.findFirst()
 						.orElseThrow(IllegalAccessError::new);
 		return service.query(type, itId);
+	}
+
+	@Transactional(readOnly = true)
+	public BasicIt query(ItTypeDetails type, GetInItId inItId) {
+		ItQuery service =
+				services.values().stream()
+						.filter(s -> s.getType().equals(type))
+						.findFirst()
+						.orElseThrow(IllegalAccessError::new);
+		return service.query(type, inItId);
 	}
 }

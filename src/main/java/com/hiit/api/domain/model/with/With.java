@@ -24,6 +24,7 @@ public class With implements GetWithId, AbstractDomain {
 
 	private String content;
 
+	// todo fix
 	private WithItTimeDetails time;
 
 	private LocalDateTime createAt;

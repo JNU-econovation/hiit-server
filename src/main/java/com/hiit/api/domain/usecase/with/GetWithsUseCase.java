@@ -25,6 +25,7 @@ import com.hiit.api.domain.support.entity.PeriodUtils;
 import com.hiit.api.domain.support.entity.converter.with.WithEntityConverterImpl;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.repository.entity.business.with.WithEntity;
+import com.hiit.api.repository.entity.business.with.WithStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +63,7 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 		final Boolean random = request.getRandom();
 
 		InIt inIt = inItQueryManager.query(InItStatusDetails.ACTIVE, inItId, memberId);
-		if (inIt.isOwner(memberId)) {
+		if (!inIt.isOwner(memberId)) {
 			throw new MemberAccessDeniedException(memberId.getId(), inItId.getId());
 		}
 		GetWithElements getWithElements =
@@ -94,7 +95,8 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 
 	// 랜덤하게 윗을 가져온다.
 	private PageElements<With> getSources(InIt inIt, Integer size) {
-		PageElements<WithEntity> source = dao.findAllByInItRandom(inIt.getId(), size);
+		PageElements<WithEntity> source =
+				dao.findAllByInItRandomAndStatus(inIt.getId(), size, WithStatus.ACTIVE);
 		List<With> data =
 				source.getData().stream().map(entityConverter::from).collect(Collectors.toList());
 		return new PageElements<>(source, data);
@@ -102,7 +104,8 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 
 	// 기간을 지정하여 윗을 가져온다.
 	private PageElements<With> getSources(InIt inIt, PageRequest pageable, Period period) {
-		PageElements<WithEntity> source = dao.findAllByInIt(inIt.getId(), pageable, period);
+		PageElements<WithEntity> source =
+				dao.findAllByInItAndStatus(inIt.getId(), pageable, period, WithStatus.ACTIVE);
 		List<With> data =
 				source.getData().stream().map(entityConverter::from).collect(Collectors.toList());
 		return new PageElements<>(source, data);
@@ -112,7 +115,8 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 	private PageElements<With> getSources(
 			InIt inIt, PageRequest pageable, GetMemberId memberId, Period period) {
 		PageElements<WithEntity> source =
-				dao.findAllByInItAndMember(inIt.getId(), pageable, memberId.getId(), period);
+				dao.findAllByInItAndMemberAndStatus(
+						inIt.getId(), pageable, memberId.getId(), period, WithStatus.ACTIVE);
 		List<With> data =
 				source.getData().stream().map(entityConverter::from).collect(Collectors.toList());
 		return new PageElements<>(source, data);

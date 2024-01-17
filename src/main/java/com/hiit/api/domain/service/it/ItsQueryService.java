@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ItsQuery {
+public class ItsQueryService {
 
 	private final RegisteredItDao registeredItDao;
 	private final RegisteredItEntityConverter registeredItEntityConverter;
@@ -31,14 +31,14 @@ public class ItsQuery {
 	private final LogSourceGenerator logSourceGenerator;
 
 	@Transactional(readOnly = true)
-	public List<BasicIt> query() {
+	public List<BasicIt> execute() {
 		return registeredItDao.findAll().stream()
 				.map(registeredItEntityConverter::from)
 				.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public BasicIt query(GetItId itId) {
+	public BasicIt execute(GetItId itId) {
 		Optional<RegisteredItEntity> source = registeredItDao.findById(itId.getId());
 		if (source.isEmpty()) {
 			Map<String, Long> exceptionSource =

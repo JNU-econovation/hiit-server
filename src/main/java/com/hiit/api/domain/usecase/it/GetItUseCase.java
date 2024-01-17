@@ -6,9 +6,9 @@ import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.GetItId;
 import com.hiit.api.domain.model.it.relation.It_Relation;
 import com.hiit.api.domain.model.member.GetMemberId;
-import com.hiit.api.domain.service.it.InItRelationBrowseService;
-import com.hiit.api.domain.service.it.ItInMemberCountService;
-import com.hiit.api.domain.service.it.ItsQuery;
+import com.hiit.api.domain.service.it.ActiveItRelationBrowseService;
+import com.hiit.api.domain.service.it.ItActiveMemberCountService;
+import com.hiit.api.domain.service.it.ItsQueryService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 
-	private final ItsQuery itsQuery;
-	private final InItRelationBrowseService inItRelationBrowseService;
+	private final ItsQueryService itsQueryService;
+	private final ActiveItRelationBrowseService activeItRelationBrowseService;
 
-	private final ItInMemberCountService itInMemberCountService;
+	private final ItActiveMemberCountService itActiveMemberCountService;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -32,17 +32,17 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 		final GetMemberId memberId = request::getMemberId;
 		final GetItId registeredItId = request::getItId;
 
-		BasicIt source = itsQuery.query(registeredItId);
+		BasicIt source = itsQueryService.execute(registeredItId);
 
-		Long inMemberCount = itInMemberCountService.execute(source::getId);
-		List<It_Relation> memberRegisteredIts = inItRelationBrowseService.execute(memberId);
+		Long activeMemberCount = itActiveMemberCountService.execute(source::getId);
+		List<It_Relation> activeItRelations = activeItRelationBrowseService.execute(memberId);
 
-		for (It_Relation memberRegisteredIt : memberRegisteredIts) {
-			if (memberRegisteredIt.isIt(registeredItId)) {
-				return buildResponse(source, inMemberCount, true);
+		for (It_Relation activeItRelation : activeItRelations) {
+			if (activeItRelation.isIt(registeredItId)) {
+				return buildResponse(source, activeMemberCount, true);
 			}
 		}
-		return buildResponse(source, inMemberCount, false);
+		return buildResponse(source, activeMemberCount, false);
 	}
 
 	private ItInfo buildResponse(BasicIt it, Long inMemberCount, boolean memberIn) {

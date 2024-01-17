@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-public class EndInItQueryImpl implements InItQuery {
+public class EndInItTimeDetailsQueryImpl implements InItTimeDetailsQuery {
 
 	private final InItDao inItDao;
 	private final ItRelationDao itRelationDao;
@@ -46,11 +46,11 @@ public class EndInItQueryImpl implements InItQuery {
 		}
 		InItEntity inIt = source.get();
 		ItRelationEntity itRelation =
-				itRelationDao.findByInItIdAndStatus(inIt.getId(), ItStatus.END).get();
+				itRelationDao.findByInItIdAndStatus(inIt.getId(), ItStatus.END).orElse(null);
 		assert itRelation != null;
 		String info = inIt.getInfo();
-		InItTimeDetails timeDetails = itTimeDetailsMapper.read(info, InItTimeDetails.class);
-		return inItEntityConverter.from(inIt, itRelation, timeDetails);
+		InItTimeDetails timeInfo = itTimeDetailsMapper.read(info, InItTimeDetails.class);
+		return inItEntityConverter.from(inIt, itRelation, timeInfo);
 	}
 
 	@Override

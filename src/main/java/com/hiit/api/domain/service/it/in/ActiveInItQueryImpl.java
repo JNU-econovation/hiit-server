@@ -1,15 +1,20 @@
 package com.hiit.api.domain.service.it.in;
 
 import com.hiit.api.domain.dao.it.in.InItDao;
+import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.in.InIt;
 import com.hiit.api.domain.model.it.in.InItStatusDetails;
+import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
-import com.hiit.api.domain.usecase.it.InItEntityConverter;
+import com.hiit.api.domain.service.ItTimeDetailsMapper;
+import com.hiit.api.domain.support.entity.converter.in.it.InItEntityConverterImpl;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ActiveInItQueryImpl implements InItQuery {
 
 	private final InItDao inItDao;
-	private final InItEntityConverter inItEntityConverter;
+	private final ItRelationDao itRelationDao;
+	private final ItTimeDetailsMapper itTimeDetailsMapper;
+	private final InItEntityConverterImpl inItEntityConverter;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
@@ -37,7 +44,13 @@ public class ActiveInItQueryImpl implements InItQuery {
 			String exceptionData = jsonConverter.toJson(exceptionSource);
 			throw new DataNotFoundException(exceptionData);
 		}
-		return inItEntityConverter.from(source.get());
+		InItEntity inIt = source.get();
+		ItRelationEntity itRelation =
+				itRelationDao.findByInItIdAndStatus(inIt.getId(), ItStatus.ACTIVE).orElse(null);
+		assert itRelation != null;
+		String info = inIt.getInfo();
+		InItTimeDetails timeDetails = itTimeDetailsMapper.read(info, InItTimeDetails.class);
+		return inItEntityConverter.from(inIt, itRelation, timeDetails);
 	}
 
 	@Override

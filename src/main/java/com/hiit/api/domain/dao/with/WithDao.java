@@ -5,6 +5,7 @@ import com.hiit.api.domain.dto.PageRequest;
 import com.hiit.api.domain.support.entity.PageElements;
 import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.repository.entity.business.with.WithEntity;
+import com.hiit.api.repository.entity.business.with.WithStatus;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,16 +13,24 @@ public interface WithDao extends JpaDao<WithEntity, Long> {
 
 	Long countByInIt(Long inItId);
 
+	Long countEndByInIt(Long inItId);
+
 	boolean existsById(Long withId);
 
-	PageElements<WithEntity> findAllByInItAndMember(
-			Long initId, PageRequest pageable, Long memberId, Period period);
+	boolean existsByIdAndStatus(Long withId, WithStatus status);
 
-	PageElements<WithEntity> findAllByInIt(Long initId, PageRequest pageable, Period period);
+	PageElements<WithEntity> findAllByInItAndMemberAndStatus(
+			Long initId, PageRequest pageable, Long memberId, Period period, WithStatus status);
 
-	PageElements<WithEntity> findAllByInItRandom(Long initId, Integer size);
+	PageElements<WithEntity> findAllByInItAndStatus(
+			Long initId, PageRequest pageable, Period period, WithStatus status);
 
-	List<WithEntity> findAllByInItAndMember(Long initId, Long memberId);
+	PageElements<WithEntity> findAllByInItRandomAndStatus(
+			Long initId, Integer size, WithStatus status);
+
+	List<WithEntity> findAllByInItAndMemberAndStatus(Long initId, Long memberId, WithStatus status);
+
+	List<WithEntity> findAllByInItAndMemberAndStatusEnd(Long initId, Long memberId);
 
 	Optional<WithEntity> findByInItEntityAndMemberAndPeriod(
 			Long inItId, Long memberId, Period period);

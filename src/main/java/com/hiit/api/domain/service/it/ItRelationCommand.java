@@ -5,7 +5,7 @@ import com.hiit.api.domain.model.it.GetItId;
 import com.hiit.api.domain.model.it.relation.GetItRelationId;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
-import com.hiit.api.repository.entity.business.it.TargetItType;
+import com.hiit.api.repository.entity.business.it.ItType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,14 +24,13 @@ public class ItRelationCommand {
 	}
 
 	@Transactional
-	public ItRelationEntity save(GetItId itId, InItEntity inIt) {
+	public ItRelationEntity save(GetItId createTargetItId, InItEntity inIt) {
 		ItRelationEntity relation =
 				ItRelationEntity.builder()
-						.targetItId(itId.getId())
-						.targetItType(TargetItType.REGISTERED_IT)
-						.inIt(inIt)
+						.itId(createTargetItId.getId())
+						.itType(ItType.REGISTERED_IT)
+						.inItId(inIt.getId())
 						.build();
-		inIt.associate(relation);
 		return itRelationDao.save(relation);
 	}
 }

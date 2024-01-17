@@ -43,7 +43,8 @@ public class GetMemberItInfoUseCase implements AbstractUseCase<GetMemberItInfoUs
 
 		ItWithStat docs = readDocs(source, inItId);
 
-		BasicIt it = itQueryManager.query(ItTypeDetails.of(docs.getType()), docs::getItId);
+		BasicIt it =
+				itQueryManager.query(ItTypeDetails.of(docs.getType()), (GetInItId) docs::getInItId);
 		String topic = it.getTopic();
 		String itInfo = topic + "에 " + docs.getWithCount() + "번 참여했어요!";
 

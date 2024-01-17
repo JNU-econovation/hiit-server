@@ -2,10 +2,10 @@ package com.hiit.api.domain.usecase.it;
 
 import com.hiit.api.common.marker.dto.AbstractResponse;
 import com.hiit.api.domain.dao.it.in.InItDao;
+import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dto.request.it.CreateInItUseCaseRequest;
 import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.GetItId;
-import com.hiit.api.domain.model.it.in.InIt;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.service.it.ItQueryManager;
@@ -16,9 +16,13 @@ import com.hiit.api.domain.usecase.it.event.CreateInItEventPublisher;
 import com.hiit.api.repository.entity.business.it.DayCodeList;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CreateInItUseCase implements AbstractUseCase<CreateInItUseCaseRequest> {
 
-	private final InItDao dao;
-	private final InItEntityConverter converter;
+	private final InItDao inItDao;
+	private final ItRelationDao itRelationDao;
+
+	private final ItRelationCommand itRelationCommand;
 
 	private final MemberQuery memberQuery;
 	private final ItQueryManager itQueryManager;
-	private final ItRelationCommand itRelationCommand;
 
 	private final CreateInItEventPublisher publisher;
 
@@ -43,50 +48,60 @@ public class CreateInItUseCase implements AbstractUseCase<CreateInItUseCaseReque
 	@Transactional
 	public AbstractResponse execute(CreateInItUseCaseRequest request) {
 		final GetMemberId memberId = request::getMemberId;
-		final GetItId itId = request::getItId;
+		final GetItId createTargetItId = request::getItId;
 		final ItTypeDetails type = request.getType();
 		final String dayCode = request.getDayCode();
 		final String resolution = request.getResolution();
 
 		GetMemberId member = memberQuery.query(memberId);
-		List<Long> inItIds = browseInItIds(member.getId());
-		if (inItIds.contains(itId.getId())) {
-			// 이미 참여 중인 it
+		List<Long> inAlreadyItIds = browseInAlreadyItIds(member.getId());
+		if (inAlreadyItIds.contains(createTargetItId.getId())) {
 			return AbstractResponse.VOID;
 		}
 
-		BasicIt it = itQueryManager.query(ItTypeDetails.of(type.getValue()), itId);
+		BasicIt it = itQueryManager.query(type, createTargetItId);
 		String topic = it.getTopic();
 		LocalTime startTime = it.getStartTime();
 		LocalTime endTime = it.getEndTime();
 		String info = "{\"startTime\":\"" + startTime + "\",\"endTime\":\"" + endTime + "\"}";
 
-		// 현재 제목을 작성하는 화면이 없다, 그래서 임시로 topic을 title로 사용
+		InItEntity source = save(topic, resolution, dayCode, memberId, info, createTargetItId);
+		publisher.publish(source.getId(), source.getHiitMember().getId(), type);
+		return AbstractResponse.VOID;
+	}
+
+	private List<Long> browseInAlreadyItIds(Long memberId) {
+		Set<Long> inAlreadyItIds = new HashSet<>();
+		List<Long> inItIds =
+				inItDao.findAllActiveStatusByMemberId(memberId).stream()
+						.map(InItEntity::getId)
+						.collect(Collectors.toList());
+		for (Long inItId : inItIds) {
+			ItRelationEntity relation =
+					itRelationDao.findByInItIdAndStatus(inItId, ItStatus.ACTIVE).orElse(null);
+			assert relation != null;
+			inAlreadyItIds.add(relation.getItId());
+		}
+		return new ArrayList<>(inAlreadyItIds);
+	}
+
+	private InItEntity save(
+			String topic,
+			String resolution,
+			String dayCode,
+			GetMemberId memberId,
+			String info,
+			GetItId createTargetItId) {
 		InItEntity entity =
 				InItEntity.builder()
 						.title(topic)
 						.resolution(resolution)
-						.dayCode(DayCodeList.valueOf(dayCode))
-						.hiitMember(HiitMemberEntity.builder().id(member.getId()).build())
+						.dayCode(DayCodeList.of(dayCode))
+						.hiitMember(HiitMemberEntity.builder().id(memberId.getId()).build())
 						.info(info)
 						.build();
-		InItEntity source = save(entity, itId);
-		InIt init = converter.from(source);
-		publisher.publish(init.getId(), init.getMemberId(), type);
-		return AbstractResponse.VOID;
-	}
-
-	private List<Long> browseInItIds(Long memberId) {
-		return dao.findAllActiveStatusByMember(memberId).stream()
-				.map(InItEntity::getItRelationEntity)
-				.map(ItRelationEntity::getTargetItId)
-				.distinct()
-				.collect(Collectors.toList());
-	}
-
-	private InItEntity save(InItEntity entity, GetItId itId) {
-		InItEntity inIt = dao.save(entity);
-		itRelationCommand.save(itId, inIt);
+		InItEntity inIt = inItDao.save(entity);
+		itRelationCommand.save(createTargetItId, inIt);
 		return inIt;
 	}
 }

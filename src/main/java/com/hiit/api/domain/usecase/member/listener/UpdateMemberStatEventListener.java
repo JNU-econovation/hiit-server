@@ -1,6 +1,7 @@
 package com.hiit.api.domain.usecase.member.listener;
 
 import com.hiit.api.domain.dao.member.MemberDao;
+import com.hiit.api.domain.dao.with.WithDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
@@ -10,8 +11,12 @@ import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.document.member.MemberStat;
 import com.hiit.api.repository.document.member.MemberStatDoc;
+import com.hiit.api.repository.entity.business.with.WithEntity;
+import com.hiit.api.repository.entity.business.with.WithStatus;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,6 +30,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class UpdateMemberStatEventListener {
 
 	private final MemberDao dao;
+	private final WithDao withDao;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
@@ -62,5 +68,11 @@ public class UpdateMemberStatEventListener {
 		MemberStat stat = memberStatDoc.getResource();
 		stat.endIt(inItId);
 		dao.saveMemberStatDoc(memberStatDoc);
+		List<WithEntity> withs =
+				withDao.findAllByInItAndMemberAndStatus(inItId, memberId, WithStatus.ACTIVE);
+		withDao.saveAll(
+				withs.stream()
+						.map(withEntity -> withEntity.toBuilder().status(WithStatus.END).build())
+						.collect(Collectors.toList()));
 	}
 }
