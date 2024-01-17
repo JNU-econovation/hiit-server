@@ -6,6 +6,7 @@ import com.hiit.api.repository.AbstractRepositoryTest;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.entity.business.with.WithEntity;
+import com.hiit.api.repository.entity.business.with.WithStatus;
 import com.hiit.api.repository.init.it.InItInitializer;
 import com.hiit.api.repository.init.it.RegisteredItInitializer;
 import com.hiit.api.repository.init.member.HiitMembersInitializer;
@@ -60,7 +61,9 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 		LocalDateTime end = now.plusMinutes(1);
 
 		// when
-		Page<WithEntity> page = repository.findAllByInIt(init, PageRequest.of(0, 10), null, start, end);
+		Page<WithEntity> page =
+				repository.findAllByInItAndStatus(
+						init, PageRequest.of(0, 10), null, start, end, WithStatus.ACTIVE);
 
 		// then
 		WithEntity content = page.getContent().get(0);
@@ -80,7 +83,8 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 
 		// when
 		Page<WithEntity> page =
-				repository.findAllByInIt(init, PageRequest.of(0, 10), hiitMember, start, end);
+				repository.findAllByInItAndStatus(
+						init, PageRequest.of(0, 10), hiitMember, start, end, WithStatus.ACTIVE);
 
 		// then
 		WithEntity content = page.getContent().get(0);
@@ -98,7 +102,7 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 		HiitMemberEntity hiitMember = hiitMembersInitializer.getData().get(0);
 
 		// when
-		List<WithEntity> withs = repository.findAllByInIt(init, hiitMember);
+		List<WithEntity> withs = repository.findAllByInItAndStatus(init, hiitMember);
 
 		// then
 		assertThat(withs.size()).isEqualTo(1);
@@ -148,7 +152,8 @@ class WithRepositoryTest extends AbstractRepositoryTest {
 		withInitializer.addData(inIt, member);
 
 		// when
-		Page<WithEntity> page = repository.findAllByInItRandom(inIt.getId(), 2);
+		Page<WithEntity> page =
+				repository.findAllByInItRandomAndStatus(inIt.getId(), 2, WithStatus.ACTIVE);
 
 		// todo: 랜덤 테스트?
 		// then

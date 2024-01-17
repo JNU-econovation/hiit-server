@@ -3,8 +3,11 @@ package com.hiit.api.domain.usecase.end.it;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.hiit.api.domain.dao.it.in.InItDao;
+import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dto.request.end.DeleteEndItUseCaseRequest;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.init.it.InItInitializer;
@@ -28,6 +31,7 @@ class DeleteEndItUseCaseTest {
 	@Autowired private DeleteEndItUseCase deleteEndItUseCase;
 
 	@Autowired private InItDao inItDao;
+	@Autowired private ItRelationDao itRelationDao;
 
 	@Autowired private HiitMemberInitializer hiitMemberInitializer;
 
@@ -60,13 +64,17 @@ class DeleteEndItUseCaseTest {
 		// given
 		final Long memberId = request.getMemberId();
 		final Long endInItId = request.getEndInItId();
+		ItRelationEntity itRelation =
+				itRelationDao.findByInItIdAndStatus(endInItId, ItStatus.ACTIVE).orElse(null);
+		assert itRelation != null;
 		inItDao.endByIdWithItRelation(endInItId, "끝!!");
+		itRelationDao.endById(itRelation.getId());
 
 		// when
 		deleteEndItUseCase.execute(request);
 
 		// then
-		int active = inItDao.findAllActiveStatusByMember(memberId).size();
+		int active = inItDao.findAllActiveStatusByMemberId(memberId).size();
 		int end = inItDao.findAllEndStatusByMember(memberId).size();
 		assertThat(active).isZero();
 		assertThat(end).isZero();

@@ -8,6 +8,7 @@ import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.entity.business.with.WithEntity;
+import com.hiit.api.repository.entity.business.with.WithStatus;
 import com.hiit.api.repository.init.it.InItInitializer;
 import com.hiit.api.repository.init.it.RegisteredItInitializer;
 import com.hiit.api.repository.init.member.HiitMemberInitializer;
@@ -61,7 +62,7 @@ class DeleteWithUseCaseTest {
 		// when
 		deleteWithUseCase.execute(request);
 		// then
-		boolean exist = withDao.existsById(withId);
+		boolean exist = withDao.existsByIdAndStatus(withId, WithStatus.ACTIVE);
 		assertThat(exist).isFalse();
 	}
 }

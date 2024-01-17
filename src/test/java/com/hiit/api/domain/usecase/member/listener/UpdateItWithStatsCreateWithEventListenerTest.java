@@ -1,5 +1,6 @@
 package com.hiit.api.domain.usecase.member.listener;
 
+import static com.hiit.api.repository.entity.business.it.ItType.REGISTERED_IT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 
@@ -55,7 +56,7 @@ class UpdateItWithStatsCreateWithEventListenerTest {
 		final Long memberId = member.getId();
 		final Long inItId = inIt.getId();
 		final Long withId = with.getId();
-		ItWithStats itWithStats = new ItWithStats(Map.of(inItId, 0L));
+		ItWithStats itWithStats = new ItWithStats(Map.of(inItId, Map.of(REGISTERED_IT.getType(), 0L)));
 		MemberStat memberStat =
 				MemberStat.builder()
 						.memberId(memberId)
@@ -80,6 +81,6 @@ class UpdateItWithStatsCreateWithEventListenerTest {
 		MemberStat resource = docs.getResource();
 		assertThat(resource.getMemberId()).isEqualTo(memberId);
 		assertThat(resource.getTotalWithCount()).isOne();
-		assertThat(resource.getItWithCountStats().get(inItId)).isOne();
+		assertThat(resource.getItWithCountStats().get(inItId).get(REGISTERED_IT.getType())).isOne();
 	}
 }

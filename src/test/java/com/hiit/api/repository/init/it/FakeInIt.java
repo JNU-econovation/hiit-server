@@ -11,9 +11,8 @@ public class FakeInIt {
 	public FakeInIt() {}
 
 	public static InItEntity create(HiitMemberEntity member) {
-		LocalTime now = LocalTime.now();
-		LocalTime startTime = now.minusHours(1);
-		LocalTime endTime = now.plusHours(1);
+		LocalTime startTime = LocalTime.of(0, 0, 0);
+		LocalTime endTime = LocalTime.of(23, 59, 59);
 		String info = "{\"startTime\":\"" + startTime + "\",\"endTime\":\"" + endTime + "\"}";
 		return InItEntity.builder()
 				.title("title")

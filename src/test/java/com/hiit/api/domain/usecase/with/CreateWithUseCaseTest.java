@@ -8,6 +8,7 @@ import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.entity.business.with.WithEntity;
+import com.hiit.api.repository.entity.business.with.WithStatus;
 import com.hiit.api.repository.init.it.InItInitializer;
 import com.hiit.api.repository.init.it.RegisteredItInitializer;
 import com.hiit.api.repository.init.member.HiitMemberInitializer;
@@ -71,7 +72,8 @@ class CreateWithUseCaseTest {
 		// then
 		Long count = withDao.countByInIt(inItId);
 		assertEquals(1, count);
-		List<WithEntity> withs = withDao.findAllByInItAndMember(inItId, memberId);
+		List<WithEntity> withs =
+				withDao.findAllByInItAndMemberAndStatus(inItId, memberId, WithStatus.ACTIVE);
 		assertEquals(1, withs.size());
 		WithEntity with = withs.get(0);
 		assertEquals(content, with.getContent());

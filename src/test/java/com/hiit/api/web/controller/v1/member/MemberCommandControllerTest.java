@@ -42,7 +42,11 @@ class MemberCommandControllerTest {
 	void save() throws Exception {
 		// set service mock
 		CreateSocialMemberRequest request =
-				CreateSocialMemberRequest.builder().code("1234").socialSubject(SocialSubject.KAKAO).build();
+				CreateSocialMemberRequest.builder()
+						.code(
+								"R-tqQ1jrxBBUgQXXKJbnoQl_PN6HdLFjIXWUSwpB8I_TrbeEED2ld_pP2wUKKiUNAAABjRgzDvMBl6J2VXah6g")
+						.socialSubject(SocialSubject.KAKAO)
+						.build();
 		String content = objectMapper.writeValueAsString(request);
 		content = content.replace(SocialSubject.KAKAO.name(), "kakao");
 

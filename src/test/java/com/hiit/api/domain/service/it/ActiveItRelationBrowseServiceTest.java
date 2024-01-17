@@ -2,6 +2,7 @@ package com.hiit.api.domain.service.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +17,7 @@ import com.hiit.api.repository.entity.business.it.DayCodeList;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
-import com.hiit.api.repository.entity.business.it.TargetItType;
+import com.hiit.api.repository.entity.business.it.ItType;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -34,9 +35,9 @@ import org.springframework.test.context.ContextConfiguration;
 @ActiveProfiles(value = "test")
 @SpringBootTest
 @ContextConfiguration(classes = {AppMain.class})
-class InItRelationBrowseServiceTest {
+class ActiveItRelationBrowseServiceTest {
 
-	@InjectMocks @Autowired private InItRelationBrowseService browseRegisteredItRelationService;
+	@InjectMocks @Autowired private ActiveItRelationBrowseService browseRegisteredItRelationService;
 
 	@MockBean private InItDao initDao;
 
@@ -57,15 +58,24 @@ class InItRelationBrowseServiceTest {
 		Long memberId = 1L;
 		int testDataSize = 5;
 
-		when(initDao.findAllActiveStatusByMember(memberId)).thenReturn(setInItTestData(testDataSize));
+		when(initDao.findAllActiveStatusByMemberId(memberId)).thenReturn(setInItTestData(testDataSize));
+		when(itRelationDao.findByInItIdAndStatus(anyLong(), eq(ItStatus.ACTIVE)))
+				.thenAnswer(
+						invocation -> {
+							Long argument = (Long) invocation.getArguments()[0];
+							if (argument % 2 == 1L) {
+								return setItRelationTestData(argument, ItType.REGISTERED_IT);
+							}
+							return setItRelationTestData(argument, ItType.FOR_TEST);
+						});
 		when(itRelationDao.findById(anyLong()))
 				.thenAnswer(
 						invocation -> {
 							Long argument = (Long) invocation.getArguments()[0];
 							if (argument % 2 == 1L) {
-								return setItRelationTestData(TargetItType.REGISTERED_IT);
+								return setItRelationTestData(argument, ItType.REGISTERED_IT);
 							}
-							return setItRelationTestData(TargetItType.FOR_TEST);
+							return setItRelationTestData(argument, ItType.FOR_TEST);
 						});
 		// when
 		List<It_Relation> res = browseRegisteredItRelationService.execute(() -> memberId);
@@ -75,14 +85,9 @@ class InItRelationBrowseServiceTest {
 		assertThat(res).hasSize(registeredItRelationSize);
 	}
 
-	private Optional<ItRelationEntity> setItRelationTestData(TargetItType typeInfo) {
+	private Optional<ItRelationEntity> setItRelationTestData(Long id, ItType typeInfo) {
 		return Optional.of(
-				ItRelationEntity.builder()
-						.id(1L)
-						.targetItId(1L)
-						.targetItType(typeInfo)
-						.inIt(InItEntity.builder().id(1L).build())
-						.build());
+				ItRelationEntity.builder().id(id).itId(1L).itType(typeInfo).inItId(1L).build());
 	}
 
 	private List<InItEntity> setInItTestData(int size) {
@@ -101,7 +106,6 @@ class InItRelationBrowseServiceTest {
 							.status(ItStatus.ACTIVE)
 							.info(info)
 							.hiitMember(HiitMemberEntity.builder().id(1L).build())
-							.itRelationEntity(ItRelationEntity.builder().id((long) i).build())
 							.build());
 		}
 		return inItDataList;

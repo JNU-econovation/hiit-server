@@ -45,7 +45,7 @@ class CreateInItUseCaseTest {
 		RegisteredItEntity it = registeredItInitializer.getData();
 		final Long memberId = member.getId();
 		final Long itId = it.getId();
-		final String dayCode = DayCodeList.MON.toString();
+		final String dayCode = DayCodeList.MON.getCode();
 		final String resolution = "다짐!!";
 		final ItTypeDetails type = ItTypeDetails.IT_REGISTERED;
 		request =
@@ -69,10 +69,10 @@ class CreateInItUseCaseTest {
 		createInItUseCase.execute(request);
 
 		// then
-		List<InItEntity> sources = inItDao.findAllActiveStatusByMember(memberId);
+		List<InItEntity> sources = inItDao.findAllActiveStatusByMemberId(memberId);
 		InItEntity source = sources.get(0);
 		assertThat(source.getResolution()).isEqualTo(resolution);
-		assertThat(source.getDayCode()).isEqualTo(DayCodeList.valueOf(dayCode));
+		assertThat(source.getDayCode()).isEqualTo(DayCodeList.of(dayCode));
 		assertThat(source.getHiitMember().getId()).isEqualTo(memberId);
 	}
 
@@ -89,11 +89,11 @@ class CreateInItUseCaseTest {
 		}
 
 		// then
-		List<InItEntity> sources = inItDao.findAllActiveStatusByMember(memberId);
+		List<InItEntity> sources = inItDao.findAllActiveStatusByMemberId(memberId);
 		assertThat(sources).hasSize(1);
 		InItEntity source = sources.get(0);
 		assertThat(source.getResolution()).isEqualTo(resolution);
-		assertThat(source.getDayCode()).isEqualTo(DayCodeList.valueOf(dayCode));
+		assertThat(source.getDayCode()).isEqualTo(DayCodeList.of(dayCode));
 		assertThat(source.getHiitMember().getId()).isEqualTo(memberId);
 	}
 }

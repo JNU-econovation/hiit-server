@@ -47,7 +47,7 @@ class ItRelationRepositoryTest extends AbstractRepositoryTest {
 		Long id = registeredItInitializer.getData().getId();
 
 		// when
-		Long result = repository.countByTargetItId(id);
+		Long result = repository.countByItIdAndStatus(id, ItStatus.ACTIVE);
 
 		// then
 		assertThat(result).isEqualTo(size);
@@ -87,11 +87,12 @@ class ItRelationRepositoryTest extends AbstractRepositoryTest {
 		InItEntity inIt = inItInitializer.getData();
 
 		// when
-		Optional<ItRelationEntity> itRelation = repository.findByInItId(inIt.getId());
+		Optional<ItRelationEntity> itRelation =
+				repository.findByInItIdAndStatus(inIt.getId(), ItStatus.ACTIVE);
 
 		// then
 		assertThat(itRelation).isPresent();
-		assertThat(itRelation.get().getInIt()).isEqualTo(inIt);
+		assertThat(itRelation.get().getInItId()).isEqualTo(inIt.getId());
 	}
 
 	private List<HiitMemberEntity> setUpMembers(int count) {

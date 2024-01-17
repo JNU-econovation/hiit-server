@@ -4,8 +4,8 @@ import com.hiit.api.repository.dao.bussiness.InItRepository;
 import com.hiit.api.repository.dao.bussiness.ItRelationRepository;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItType;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
-import com.hiit.api.repository.entity.business.it.TargetItType;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +35,16 @@ public class InItsInitializer {
 
 	private InItEntity setData(HiitMemberEntity hiitMember, RegisteredItEntity registeredIt) {
 		InItEntity source = FakeInIt.create(hiitMember);
+		InItEntity inIt = repository.save(source);
 		ItRelationEntity relation =
 				ItRelationEntity.builder()
-						.targetItId(registeredIt.getId())
-						.targetItType(TargetItType.REGISTERED_IT)
-						.inIt(source)
+						.itId(registeredIt.getId())
+						.itType(ItType.REGISTERED_IT)
+						.inItId(inIt.getId())
 						.build();
-		source.associate(relation);
+		itRelationRepository.save(relation);
 		this.relations.add(relation);
-		return repository.save(source);
+		return inIt;
 	}
 
 	public List<InItEntity> getData() {

@@ -4,8 +4,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.hiit.api.domain.dao.it.in.InItDao;
+import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dto.request.end.EditEndItUseCaseRequest;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.init.it.InItInitializer;
@@ -20,15 +23,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
+import org.springframework.transaction.annotation.Transactional;
 
 @ActiveProfiles(value = "test")
 @SpringBootTest
 @RecordApplicationEvents
 class EditEndItUseCaseTest {
 
-	@Autowired private EditEndItUseCase deleteEndItUseCase;
+	@Autowired private EditEndItUseCase editEndItUseCase;
 
 	@Autowired private InItDao inItDao;
+
+	@Autowired private ItRelationDao itRelationDao;
 
 	@Autowired private HiitMemberInitializer hiitMemberInitializer;
 
@@ -58,14 +64,22 @@ class EditEndItUseCaseTest {
 	}
 
 	@Test
+	@Transactional
 	void execute() {
 		// given
 		final Long memberId = request.getMemberId();
 		final Long inItId = request.getEndInItId();
 		final String title = request.getTitle();
+		ItRelationEntity itRelation =
+				itRelationDao.findByInItIdAndStatus(inItId, ItStatus.ACTIVE).orElse(null);
+		assert itRelation != null;
+		inItDao.endByIdWithItRelation(inItId, title);
+		itRelationDao.endById(itRelation.getId());
+		entityManager.flush();
+		entityManager.clear();
 
 		// when
-		deleteEndItUseCase.execute(request);
+		editEndItUseCase.execute(request);
 
 		// then
 		Optional<InItEntity> source = inItDao.findById(inItId);

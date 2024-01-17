@@ -103,7 +103,7 @@ class InItRepositoryTest extends AbstractRepositoryTest {
 		assertNotNull(repository.findById(id).get());
 		InItEntity inIt = repository.findById(id).get();
 		assertThat(inIt.getStatus()).isEqualTo(ItStatus.END);
-		assertEquals(0, itRelationRepository.countByTargetItId(id));
+		assertEquals(0, itRelationRepository.countByItIdAndStatus(id, ItStatus.ACTIVE));
 	}
 
 	@Test
@@ -120,9 +120,9 @@ class InItRepositoryTest extends AbstractRepositoryTest {
 
 		// when
 		List<InItEntity> result =
-				repository.findAllByTargetIdAndStatusAndDayCode(targetId, ItStatus.ACTIVE, dayCode);
+				repository.findAllByItIdAndStatusAndDayCode(targetId, ItStatus.ACTIVE, dayCode);
 		List<InItEntity> otherResult =
-				repository.findAllByTargetIdAndStatusAndDayCode(targetId, ItStatus.ACTIVE, otherDayCode);
+				repository.findAllByItIdAndStatusAndDayCode(targetId, ItStatus.ACTIVE, otherDayCode);
 
 		// then
 		assertEquals(size + 1, result.size());

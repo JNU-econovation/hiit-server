@@ -1,5 +1,6 @@
 package com.hiit.api.repository.dao.document;
 
+import static com.hiit.api.repository.entity.business.it.ItType.REGISTERED_IT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +28,13 @@ class MemberStatDocRepositoryTest extends AbstractRepositoryTest {
 	void save() {
 		// given
 		HiitMemberEntity member = HiitMemberEntity.builder().id(1L).build();
-		ItWithStats itWithStats = new ItWithStats(Map.of(1L, 10L, 2L, 20L));
+		ItWithStats itWithStats =
+				new ItWithStats(
+						Map.of(
+								1L,
+								Map.of(REGISTERED_IT.getType(), 10L),
+								2L,
+								Map.of(REGISTERED_IT.getType(), 20L)));
 		MemberStat memberStat =
 				MemberStat.builder()
 						.memberId(member.getId())
@@ -50,7 +57,13 @@ class MemberStatDocRepositoryTest extends AbstractRepositoryTest {
 	void update() {
 		// given
 		HiitMemberEntity member = HiitMemberEntity.builder().id(1L).build();
-		ItWithStats itWithStats = new ItWithStats(Map.of(1L, 10L, 2L, 20L));
+		ItWithStats itWithStats =
+				new ItWithStats(
+						Map.of(
+								1L,
+								Map.of(REGISTERED_IT.getType(), 10L),
+								2L,
+								Map.of(REGISTERED_IT.getType(), 20L)));
 		MemberStat memberStat =
 				MemberStat.builder()
 						.memberId(member.getId())
