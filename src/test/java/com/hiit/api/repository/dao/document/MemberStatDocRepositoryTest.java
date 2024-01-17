@@ -72,7 +72,11 @@ class MemberStatDocRepositoryTest extends AbstractRepositoryTest {
 						.itWithCountStats(itWithStats)
 						.build();
 		MemberStatDoc docs =
-				MemberStatDoc.builder().id(member.getId().toString()).resource(memberStat).build();
+				MemberStatDoc.builder()
+						.id(member.getId().toString())
+						.memberId(member.getId())
+						.resource(memberStat)
+						.build();
 		MemberStatDoc source = repository.saveAndFlush(docs);
 		entityManager.clear();
 		entityManager.close();

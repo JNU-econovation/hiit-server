@@ -5,14 +5,17 @@ import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 
 import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.usecase.it.event.DeleteInItEvent;
+import com.hiit.api.repository.document.member.ItWithStats;
 import com.hiit.api.repository.document.member.MemberStat;
 import com.hiit.api.repository.document.member.MemberStatDoc;
 import com.hiit.api.repository.entity.business.it.InItEntity;
+import com.hiit.api.repository.entity.business.it.ItType;
 import com.hiit.api.repository.entity.business.it.RegisteredItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.init.it.InItInitializer;
 import com.hiit.api.repository.init.it.RegisteredItInitializer;
 import com.hiit.api.repository.init.member.HiitMemberInitializer;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +50,13 @@ class UpdateMemberStatDeleteInItEventListenerTest {
 		InItEntity inIt = inItInitializer.getData();
 		final Long memberId = member.getId();
 		final Long inItId = inIt.getId();
-		MemberStat memberStat = MemberStat.builder().memberId(memberId).totalItCount(1L).build();
+		MemberStat memberStat =
+				MemberStat.builder()
+						.memberId(memberId)
+						.totalItCount(1L)
+						.itWithCountStats(
+								new ItWithStats(Map.of(inIt.getId(), Map.of(ItType.REGISTERED_IT.getType(), 0L))))
+						.build();
 		MemberStatDoc doc = MemberStatDoc.builder().memberId(memberId).resource(memberStat).build();
 		memberDao.saveMemberStatDoc(doc);
 		event = DeleteInItEvent.builder().memberId(memberId).inItId(inItId).build();
