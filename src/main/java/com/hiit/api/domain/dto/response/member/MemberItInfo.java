@@ -19,5 +19,5 @@ public class MemberItInfo implements AbstractResponse {
 	private Long id;
 	private String name;
 	private String profile;
-	private Long withCount;
+	private String itInfo;
 }

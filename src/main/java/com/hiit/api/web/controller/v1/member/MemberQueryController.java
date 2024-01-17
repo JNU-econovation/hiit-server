@@ -71,6 +71,11 @@ public class MemberQueryController {
 	}
 
 	private MemberItInfo getMemberItInfoMockResponse() {
-		return MemberItInfo.builder().id(1L).name("멤버 이름").profile("멤버 프로필").withCount(10L).build();
+		return MemberItInfo.builder()
+				.id(1L)
+				.name("멤버 이름")
+				.profile("멤버 프로필")
+				.itInfo("00에 0번 참여중입니다.")
+				.build();
 	}
 }

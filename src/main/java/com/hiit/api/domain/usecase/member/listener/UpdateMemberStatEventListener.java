@@ -2,6 +2,7 @@ package com.hiit.api.domain.usecase.member.listener;
 
 import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.exception.DataNotFoundException;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.usecase.it.event.CreateInItEvent;
 import com.hiit.api.domain.usecase.it.event.DeleteInItEvent;
@@ -33,6 +34,7 @@ public class UpdateMemberStatEventListener {
 	public void handle(CreateInItEvent event) {
 		final Long memberId = event.getMemberId();
 		final Long inItId = event.getInItId();
+		final ItTypeDetails type = event.getType();
 		Optional<MemberStatDoc> source = dao.findMemberStatDocByMemberId(memberId);
 		if (source.isEmpty()) {
 			Map<String, Long> exceptionSource = logSourceGenerator.generate(GetMemberId.key, memberId);
@@ -41,7 +43,7 @@ public class UpdateMemberStatEventListener {
 		}
 		MemberStatDoc memberStatDoc = source.get();
 		MemberStat stat = memberStatDoc.getResource();
-		stat.participateIt(inItId);
+		stat.participateIt(inItId, type.getValue());
 		dao.saveMemberStatDoc(memberStatDoc);
 	}
 

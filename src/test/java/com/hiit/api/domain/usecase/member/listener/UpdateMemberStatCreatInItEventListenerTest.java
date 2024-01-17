@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 
 import com.hiit.api.domain.dao.member.MemberDao;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.usecase.it.event.CreateInItEvent;
 import com.hiit.api.repository.document.member.MemberStat;
 import com.hiit.api.repository.document.member.MemberStatDoc;
@@ -50,7 +51,12 @@ class UpdateMemberStatCreatInItEventListenerTest {
 		MemberStat memberStat = MemberStat.builder().memberId(memberId).build();
 		MemberStatDoc doc = MemberStatDoc.builder().memberId(memberId).resource(memberStat).build();
 		memberDao.saveMemberStatDoc(doc);
-		event = CreateInItEvent.builder().memberId(memberId).inItId(inItId).build();
+		event =
+				CreateInItEvent.builder()
+						.memberId(memberId)
+						.inItId(inItId)
+						.type(ItTypeDetails.IT_REGISTERED)
+						.build();
 	}
 
 	@Test

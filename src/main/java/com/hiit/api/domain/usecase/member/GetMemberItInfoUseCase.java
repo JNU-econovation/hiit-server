@@ -4,9 +4,12 @@ import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.dto.request.member.GetMemberItInfoUseCaseRequest;
 import com.hiit.api.domain.dto.response.member.MemberItInfo;
 import com.hiit.api.domain.exception.DataNotFoundException;
+import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.in.GetInItId;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.model.member.Member;
+import com.hiit.api.domain.service.it.ItQueryManager;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
@@ -26,6 +29,8 @@ public class GetMemberItInfoUseCase implements AbstractUseCase<GetMemberItInfoUs
 	private final MemberDao dao;
 	private final MemberEntityConverter entityConverter;
 
+	private final ItQueryManager itQueryManager;
+
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
 
@@ -38,11 +43,15 @@ public class GetMemberItInfoUseCase implements AbstractUseCase<GetMemberItInfoUs
 
 		ItWithStat docs = readDocs(source, inItId);
 
+		BasicIt it = itQueryManager.query(ItTypeDetails.of(docs.getType()), docs::getItId);
+		String topic = it.getTopic();
+		String itInfo = topic + "에 " + docs.getWithCount() + "번 참여했어요!";
+
 		return MemberItInfo.builder()
 				.id(source.getId())
 				.name(source.getNickName())
 				.profile(source.getProfile())
-				.withCount(docs.getWithCount())
+				.itInfo(itInfo)
 				.build();
 	}
 

@@ -72,7 +72,7 @@ public class CreateInItUseCase implements AbstractUseCase<CreateInItUseCaseReque
 						.build();
 		InItEntity source = save(entity, itId);
 		InIt init = converter.from(source);
-		publisher.publish(init.getId(), init.getMemberId());
+		publisher.publish(init.getId(), init.getMemberId(), type);
 		return AbstractResponse.VOID;
 	}
 

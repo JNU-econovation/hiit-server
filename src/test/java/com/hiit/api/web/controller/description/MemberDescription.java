@@ -23,7 +23,7 @@ public class MemberDescription {
 			fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("멤버 id"),
 			fieldWithPath("data.name").type(JsonFieldType.STRING).description("멤버 이름"),
 			fieldWithPath("data.profile").type(JsonFieldType.STRING).description("멤버 프로필"),
-			fieldWithPath("data.withCount").type(JsonFieldType.NUMBER).description("멤버 윗 수"),
+			fieldWithPath("data.itInfo").type(JsonFieldType.STRING).description("멤버 잇 참여 정보"),
 		};
 	}
 
