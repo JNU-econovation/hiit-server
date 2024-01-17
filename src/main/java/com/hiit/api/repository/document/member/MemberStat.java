@@ -55,7 +55,11 @@ public class MemberStat implements Serializable {
 	}
 
 	public void endIt(Long inItId) {
+		ItWithStat itWithStat = this.getItWithCountStats(inItId).orElse(null);
+		assert itWithStat != null;
+		Long withCount = itWithStat.getWithCount();
 		totalItCount--;
+		totalWithCount -= withCount;
 		itWithCountStats.endIt(inItId);
 	}
 
