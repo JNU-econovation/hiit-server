@@ -17,6 +17,7 @@ import lombok.ToString;
 public class ItWithStat implements Serializable {
 
 	private Long itId;
+	private String type;
 	private Long withCount;
 
 	public void increaseWithCount() {

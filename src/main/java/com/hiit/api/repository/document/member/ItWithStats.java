@@ -34,8 +34,8 @@ public class ItWithStats implements Serializable {
 								.values());
 	}
 
-	public void startIt(Long itId) {
-		itWithCountStats.add(ItWithStat.builder().itId(itId).withCount(0L).build());
+	public void startIt(Long itId, String type) {
+		itWithCountStats.add(ItWithStat.builder().itId(itId).type(type).withCount(0L).build());
 	}
 
 	public void endIt(Long itId) {

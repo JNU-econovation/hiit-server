@@ -43,9 +43,9 @@ public class MemberStat implements Serializable {
 		this.itWithCountStats = new ItWithStats(itWithCountStats);
 	}
 
-	public void participateIt(Long itId) {
+	public void participateIt(Long itId, String type) {
 		totalItCount++;
-		itWithCountStats.startIt(itId);
+		itWithCountStats.startIt(itId, type);
 	}
 
 	public void endIt(Long itId) {
