@@ -16,8 +16,8 @@ import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -64,8 +64,8 @@ public class EndItQueryController {
 				.topic("종료 잇 주제")
 				.startTime(LocalTime.of(7, 0))
 				.endTime(LocalTime.of(9, 0))
-				.startDate(new Date())
-				.endDate(new Date())
+				.startDate(LocalDate.now())
+				.endDate(LocalDate.now())
 				.withCount(10L)
 				.build();
 	}
@@ -96,8 +96,8 @@ public class EndItQueryController {
 						.topic("종료 잇 주제")
 						.startTime(LocalTime.of(7, 0))
 						.endTime(LocalTime.of(9, 0))
-						.startDate(new Date())
-						.endDate(new Date())
+						.startDate(LocalDate.now())
+						.endDate(LocalDate.now())
 						.withCount(10L)
 						.build();
 		EndItInfo endIt2 =
@@ -107,8 +107,8 @@ public class EndItQueryController {
 						.topic("종료 잇 주제")
 						.startTime(LocalTime.of(10, 0))
 						.endTime(LocalTime.of(12, 0))
-						.startDate(new Date())
-						.endDate(new Date())
+						.startDate(LocalDate.now())
+						.endDate(LocalDate.now())
 						.withCount(10L)
 						.build();
 

@@ -3,6 +3,7 @@ package com.hiit.api.web.controller.v1.it;
 import com.hiit.api.domain.dto.request.it.CreateInItUseCaseRequest;
 import com.hiit.api.domain.dto.request.it.DeleteInItUseCaseRequest;
 import com.hiit.api.domain.dto.request.it.EditInItUseCaseRequest;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.usecase.it.CreateInItUseCase;
 import com.hiit.api.domain.usecase.it.DeleteInItUseCase;
 import com.hiit.api.domain.usecase.it.EditInItUseCase;
@@ -47,6 +48,7 @@ public class ItCommandController {
 							.itId(request.getId())
 							.dayCode(request.getDayCode())
 							.resolution(request.getResolution())
+							.type(ItTypeDetails.of(request.getType().getValue()))
 							.build();
 			createInItUseCase.execute(useCaseRequest);
 			return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
