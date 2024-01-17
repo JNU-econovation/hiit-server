@@ -26,31 +26,37 @@ public class MemberStat implements Serializable {
 	@Builder.Default private Long totalWithCount = 0L;
 	@Builder.Default private ItWithStats itWithCountStats = new ItWithStats();
 
-	public Optional<ItWithStat> getItWithCountStats(Long itId) {
+	public Optional<ItWithStat> getItWithCountStats(Long inItId) {
 		return itWithCountStats.getItWithCountStats().stream()
-				.filter(itWithStat -> itWithStat.getItId().equals(itId))
+				.filter(itWithStat -> itWithStat.getInItId().equals(inItId))
 				.findFirst();
 	}
 
 	// for convert to json
-	public Map<Long, Long> getItWithCountStats() {
+	public Map<Long, Map<String, Long>> getItWithCountStats() {
 		List<ItWithStat> sources = itWithCountStats.getItWithCountStats();
-		return sources.stream().collect(toMap(ItWithStat::getItId, ItWithStat::getWithCount));
+		return sources.stream()
+				.collect(
+						toMap(
+								ItWithStat::getInItId,
+								(stat) -> {
+									return Map.of(stat.getType(), stat.getWithCount());
+								}));
 	}
 
 	// for convert from json
-	public void setItWithCountStats(Map<Long, Long> itWithCountStats) {
+	public void setItWithCountStats(Map<Long, Map<String, Long>> itWithCountStats) {
 		this.itWithCountStats = new ItWithStats(itWithCountStats);
 	}
 
-	public void participateIt(Long itId, String type) {
+	public void participateIt(Long inItId, String type) {
 		totalItCount++;
-		itWithCountStats.startIt(itId, type);
+		itWithCountStats.startIt(inItId, type);
 	}
 
-	public void endIt(Long itId) {
+	public void endIt(Long inItId) {
 		totalItCount--;
-		itWithCountStats.endIt(itId);
+		itWithCountStats.endIt(inItId);
 	}
 
 	public void createWith(Long inItId) {

@@ -2,7 +2,6 @@ package com.hiit.api.repository.entity.business.it;
 
 import com.hiit.api.repository.entity.BaseEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Convert;
@@ -13,7 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -64,12 +62,4 @@ public class InItEntity extends BaseEntity {
 			nullable = false,
 			foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	private HiitMemberEntity hiitMember;
-
-	@Exclude
-	@OneToOne(mappedBy = "inIt", cascade = CascadeType.ALL, orphanRemoval = true)
-	private ItRelationEntity itRelationEntity;
-
-	public void associate(ItRelationEntity itRelationEntity) {
-		this.itRelationEntity = itRelationEntity;
-	}
 }

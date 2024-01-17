@@ -4,6 +4,7 @@ import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
 import com.hiit.api.repository.entity.business.with.QWithEntity;
 import com.hiit.api.repository.entity.business.with.WithEntity;
+import com.hiit.api.repository.entity.business.with.WithStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import java.time.LocalDateTime;
@@ -21,29 +22,36 @@ public class WithCustomRepositoryImpl extends QuerydslRepositorySupport
 	}
 
 	@Override
-	public Page<WithEntity> findAllByInIt(
+	public Page<WithEntity> findAllByInItAndStatus(
 			InItEntity init,
 			Pageable pageable,
 			HiitMemberEntity member,
 			LocalDateTime startTime,
-			LocalDateTime endTime) {
+			LocalDateTime endTime,
+			WithStatus status) {
 		QWithEntity with = QWithEntity.withEntity;
 
 		List<WithEntity> withs =
 				from(with)
 						.where(
-								with.inIt.eq(init), memberEqual(member), with.createAt.between(startTime, endTime))
+								with.inIt.eq(init),
+								memberEqual(member),
+								with.createAt.between(startTime, endTime),
+								with.status.eq(status))
 						.offset(pageable.getOffset())
 						.limit(pageable.getPageSize())
 						.fetch();
 
-		long total = from(with).where(with.inIt.eq(init), memberEqual(member)).fetchCount();
+		long total =
+				from(with)
+						.where(with.inIt.eq(init), memberEqual(member), with.status.eq(status))
+						.fetchCount();
 
 		return new PageImpl<>(withs, pageable, total);
 	}
 
 	@Override
-	public List<WithEntity> findAllByInIt(InItEntity init, HiitMemberEntity member) {
+	public List<WithEntity> findAllByInItAndStatus(InItEntity init, HiitMemberEntity member) {
 		QWithEntity with = QWithEntity.withEntity;
 
 		return from(with).where(with.inIt.eq(init), memberEqual(member)).fetch();
@@ -73,16 +81,28 @@ public class WithCustomRepositoryImpl extends QuerydslRepositorySupport
 	}
 
 	@Override
-	public Page<WithEntity> findAllByInItRandom(Long initId, Integer size) {
+	public Page<WithEntity> findAllByInItRandomAndStatus(
+			Long initId, Integer size, WithStatus status) {
+
 		QWithEntity with = QWithEntity.withEntity;
 
 		List<WithEntity> withs =
 				from(with)
-						.where(with.inIt.id.eq(initId))
+						.where(with.inIt.id.eq(initId), with.status.eq(status))
 						.orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
 						.limit(size)
 						.fetch();
 
 		return new PageImpl<>(withs);
+	}
+
+	@Override
+	public List<WithEntity> findAllByInItAnsStatus(
+			InItEntity init, HiitMemberEntity member, WithStatus status) {
+		QWithEntity with = QWithEntity.withEntity;
+
+		return from(with)
+				.where(with.inIt.eq(init), with.status.eq(status), memberEqual(member))
+				.fetch();
 	}
 }

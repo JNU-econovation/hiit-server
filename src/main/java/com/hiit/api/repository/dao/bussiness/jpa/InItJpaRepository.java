@@ -1,6 +1,5 @@
 package com.hiit.api.repository.dao.bussiness.jpa;
 
-import com.hiit.api.repository.dao.UniqueOrOptionalParam;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
@@ -17,5 +16,5 @@ public interface InItJpaRepository extends JpaRepository<InItEntity, Long> {
 
 	/** 특정 아이디 값과 특정 멤버를 가진 특정 상태의 잇을 조회한다. */
 	Optional<InItEntity> findByIdAndHiitMemberAndStatus(
-			@UniqueOrOptionalParam Long id, HiitMemberEntity member, ItStatus status);
+			Long id, HiitMemberEntity member, ItStatus status);
 }

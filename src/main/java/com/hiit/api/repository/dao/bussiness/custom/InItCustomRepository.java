@@ -1,6 +1,5 @@
 package com.hiit.api.repository.dao.bussiness.custom;
 
-import com.hiit.api.repository.dao.UniqueOrOptionalParam;
 import com.hiit.api.repository.entity.business.it.DayCodeList;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
@@ -17,10 +16,10 @@ public interface InItCustomRepository {
 	void endByIdWithItRelation(Long id, String title);
 
 	// 특정 타겟 아이디와 특정 상태, 특정 요일 코드를 가진 모든 잇을 조회한다.
-	List<InItEntity> findAllByTargetIdAndStatusAndDayCode(
-			Long targetId, ItStatus status, DayCodeList dayCode);
+	List<InItEntity> findAllByItIdAndStatusAndDayCode(
+			Long itId, ItStatus status, DayCodeList dayCode);
 
 	/** 특정 멤버와 특정 타겟 아이디, 특정 상태를 가진 잇을 조회한다. */
 	Optional<InItEntity> findByHiitMemberAndTargetIdAndStatus(
-			@UniqueOrOptionalParam HiitMemberEntity hiitMember, Long targetId, ItStatus status);
+			HiitMemberEntity hiitMember, Long itId, ItStatus status);
 }

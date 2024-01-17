@@ -2,16 +2,13 @@ package com.hiit.api.repository.entity.business.it;
 
 import com.hiit.api.repository.entity.IdBaseEntity;
 import javax.persistence.Column;
-import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -33,20 +30,21 @@ public class ItRelationEntity extends IdBaseEntity {
 	public static final String ENTITY_PREFIX = "it_relation_";
 
 	@Column(name = ENTITY_PREFIX + "target_it_id", nullable = false)
-	private Long targetItId;
+	private Long itId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = ENTITY_PREFIX + "target_it_type", nullable = false)
-	private TargetItType targetItType;
+	private ItType itType;
 
-	@OneToOne
-	@JoinColumn(
-			name = InItEntity.ENTITY_PREFIX + "fk",
-			nullable = false,
-			foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
-	private InItEntity inIt;
+	@Column(name = InItEntity.ENTITY_PREFIX + "fk", nullable = false)
+	private Long inItId;
+
+	@Builder.Default
+	@Enumerated(EnumType.STRING)
+	@Column(name = ENTITY_PREFIX + "status", nullable = false)
+	private ItStatus status = ItStatus.ACTIVE;
 
 	public boolean isTargetRootType() {
-		return targetItType.getRoot();
+		return itType.getRoot();
 	}
 }

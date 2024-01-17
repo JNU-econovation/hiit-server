@@ -16,7 +16,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class ItWithStat implements Serializable {
 
-	private Long itId;
+	private Long inItId;
 	private String type;
 	private Long withCount;
 
