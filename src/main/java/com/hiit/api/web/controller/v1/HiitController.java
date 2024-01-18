@@ -45,7 +45,15 @@ public class HiitController {
 
 	@GetMapping("/banners")
 	public ApiResponse<ApiResponse.SuccessBody<AbstractResponse>> banners() {
-		Banners res = Banners.builder().size(1L).urls(List.of("배너 이미지 주소1", "배너 이미지 주소2")).build();
+		Banners res =
+				Banners.builder()
+						.size(3L)
+						.urls(
+								List.of(
+										"https://github.com/JNU-econovation/hiit-server/assets/102807742/46c08ab6-95fb-452e-a470-03b138e6188e",
+										"https://github.com/JNU-econovation/hiit-server/assets/102807742/7ae07141-91a7-4012-93ca-aed23830ffb9",
+										"https://github.com/JNU-econovation/hiit-server/assets/102807742/ee3f38f6-e812-4baf-b124-0510ae0ba23e"))
+						.build();
 		return ApiResponseGenerator.success(res, HttpStatus.OK);
 	}
 
