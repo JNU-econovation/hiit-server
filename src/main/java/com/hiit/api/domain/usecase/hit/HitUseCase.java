@@ -65,10 +65,12 @@ public class HitUseCase implements AbstractUseCase<HitUseCaseRequest> {
 	}
 
 	private List<Hit> getSources(GetWithId withId, HitterDetail hitter, Period period) {
+		log.info("-----------------------------------------");
 		boolean exists = withDao.existsByIdAndStatus(withId.getId(), WithStatus.ACTIVE);
 		if (!exists) {
 			throw new IllegalArgumentException("with is not active");
 		}
+		log.info("-----------------------------------------");
 		return dao.findHitStatusByWithAndHitterAndPeriod(withId.getId(), hitter, period).stream()
 				.map(entityConverter::from)
 				.collect(Collectors.toList());
