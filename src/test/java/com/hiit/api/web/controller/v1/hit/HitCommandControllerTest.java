@@ -16,6 +16,7 @@ import com.hiit.api.domain.dto.response.hit.HitInfo;
 import com.hiit.api.domain.usecase.hit.HitUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.dto.request.hit.HitRequest;
+import com.hiit.config.security.TestSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(classes = AppMain.class)
+@SpringBootTest(classes = {AppMain.class, TestSecurityConfig.class})
 class HitCommandControllerTest {
 
 	@Autowired private MockMvc mockMvc;
@@ -47,6 +49,7 @@ class HitCommandControllerTest {
 
 	@Test
 	@DisplayName("[POST] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void hit() throws Exception {
 
 		HitRequest request = HitRequest.builder().id(1L).build();

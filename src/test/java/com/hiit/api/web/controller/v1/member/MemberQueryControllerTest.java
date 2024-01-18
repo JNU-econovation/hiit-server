@@ -18,6 +18,7 @@ import com.hiit.api.domain.usecase.member.GetMemberInfoUseCase;
 import com.hiit.api.domain.usecase.member.GetMemberItInfoUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.controller.description.MemberDescription;
+import com.hiit.config.security.TestSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(classes = AppMain.class)
+@SpringBootTest(classes = {AppMain.class, TestSecurityConfig.class})
 class MemberQueryControllerTest {
 
 	@Autowired private MockMvc mockMvc;
@@ -48,6 +50,7 @@ class MemberQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void browseMember() throws Exception {
 		// set service mock
 		when(getMemberInfoUseCase.execute(any())).thenReturn(getMemberInfoMockResponse());
@@ -77,6 +80,7 @@ class MemberQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL + "/stats/it")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void browseItStat() throws Exception {
 		// set service mock
 		when(getMemberItInfoUseCase.execute(any())).thenReturn(getMemberItInfoMockResponse());

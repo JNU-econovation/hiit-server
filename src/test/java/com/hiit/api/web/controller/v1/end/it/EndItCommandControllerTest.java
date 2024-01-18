@@ -18,6 +18,7 @@ import com.hiit.api.domain.usecase.end.it.EditEndItUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.dto.request.end.it.DeleteEndItRequest;
 import com.hiit.api.web.dto.request.end.it.EditEndItRequest;
+import com.hiit.config.security.TestSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(classes = AppMain.class)
+@SpringBootTest(classes = {AppMain.class, TestSecurityConfig.class})
 class EndItCommandControllerTest {
 
 	@Autowired private MockMvc mockMvc;
@@ -40,11 +42,13 @@ class EndItCommandControllerTest {
 
 	@MockBean private DeleteEndItUseCase deleteEndItUseCase;
 	@MockBean private EditEndItUseCase editEndItUseCase;
+
 	private static final String TAG = "EndIt-Controller";
 	private static final String BASE_URL = "/api/v1/end/its";
 
 	@Test
 	@DisplayName("[PUT] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void editEndIt() throws Exception {
 		// set service mock
 
@@ -176,6 +180,7 @@ class EndItCommandControllerTest {
 
 	@Test
 	@DisplayName("[DELETE] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void deleteEndIt() throws Exception {
 		// set service mock
 

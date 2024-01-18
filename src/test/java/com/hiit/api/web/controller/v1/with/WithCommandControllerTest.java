@@ -18,6 +18,7 @@ import com.hiit.api.domain.usecase.with.DeleteWithUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.dto.request.with.AddWithRequest;
 import com.hiit.api.web.dto.request.with.DeleteWithRequest;
+import com.hiit.config.security.TestSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(classes = AppMain.class)
+@SpringBootTest(classes = {AppMain.class, TestSecurityConfig.class})
 class WithCommandControllerTest {
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
@@ -47,6 +49,7 @@ class WithCommandControllerTest {
 
 	@Test
 	@DisplayName("[POST] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void createWith() throws Exception {
 		// set service mock
 		AddWithRequest request = AddWithRequest.builder().id(1L).content("윗 내용").build();
@@ -174,6 +177,7 @@ class WithCommandControllerTest {
 
 	@Test
 	@DisplayName("[DELETE] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void deleteWith() throws Exception {
 		// set service mock
 		DeleteWithRequest request = DeleteWithRequest.builder().id(1L).build();

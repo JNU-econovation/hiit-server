@@ -25,6 +25,7 @@ import com.hiit.api.domain.usecase.it.GetItsUseCase;
 import com.hiit.api.domain.usecase.it.InItMotivationUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.controller.description.ItDescription;
+import com.hiit.config.security.TestSecurityConfig;
 import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -35,13 +36,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(classes = AppMain.class)
+@SpringBootTest(classes = {AppMain.class, TestSecurityConfig.class})
 class ItQueryControllerTest {
 
 	@Autowired private MockMvc mockMvc;
@@ -60,6 +62,7 @@ class ItQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL + "/{id}")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void browseIt() throws Exception {
 		// set service mock
 		when(getItUseCase.execute(any())).thenReturn(getItInfoMockResponse());
@@ -117,6 +120,7 @@ class ItQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void readIts() throws Exception {
 		// set service mock
 		when(getItsUseCase.execute(any())).thenReturn(getItInfosMockResponse());
@@ -175,6 +179,7 @@ class ItQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL + "/ins")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void readInIts() throws Exception {
 		// set service mock
 		when(getInItsUseCase.execute(any())).thenReturn(getInItInfosMockResponse());
@@ -223,6 +228,7 @@ class ItQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL + "/ins/{id}")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void browseInIt() throws Exception {
 		// set service mock
 		when(getInItUseCase.execute(any())).thenReturn(getInItInfoMockResponse());
@@ -283,6 +289,7 @@ class ItQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL + "/ins/{id}/motivations")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void readItMotivations() throws Exception {
 		// set service mock
 		when(inItMotivationUseCase.execute(any())).thenReturn(getItMotivationsMockResponse());

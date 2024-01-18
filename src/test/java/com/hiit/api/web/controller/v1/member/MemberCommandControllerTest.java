@@ -24,6 +24,7 @@ import com.hiit.api.web.dto.request.member.CreateSocialMemberRequest;
 import com.hiit.api.web.dto.request.member.NotificationConsentRequest;
 import com.hiit.api.web.dto.request.member.SocialSubject;
 import com.hiit.api.web.dto.request.member.TokenRefreshRequest;
+import com.hiit.config.security.TestSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(classes = AppMain.class)
+@SpringBootTest(classes = {AppMain.class, TestSecurityConfig.class})
 class MemberCommandControllerTest {
 
 	@Autowired private MockMvc mockMvc;
@@ -56,6 +58,7 @@ class MemberCommandControllerTest {
 
 	@Test
 	@DisplayName("[POST] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void save() throws Exception {
 		// set service mock
 		CreateSocialMemberRequest request =
@@ -86,6 +89,7 @@ class MemberCommandControllerTest {
 
 	@Test
 	@DisplayName("[DELETE] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void delete() throws Exception {
 		// set service mock
 		when(deleteMemberUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
@@ -110,6 +114,7 @@ class MemberCommandControllerTest {
 
 	@Test
 	@DisplayName("[POST] " + BASE_URL + "/token")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void token() throws Exception {
 		// set service mock
 		TokenRefreshRequest request =
@@ -137,6 +142,7 @@ class MemberCommandControllerTest {
 
 	@Test
 	@DisplayName("[POST] " + BASE_URL + "/notification")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void notificationConsent() throws Exception {
 		// set service mock
 		NotificationConsentRequest request =
@@ -167,6 +173,7 @@ class MemberCommandControllerTest {
 
 	@Test
 	@DisplayName("[DELETE] " + BASE_URL + "/notification")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void notificationDissent() throws Exception {
 		// set service mock
 

@@ -21,6 +21,7 @@ import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.dto.request.it.AddInItRequest;
 import com.hiit.api.web.dto.request.it.DeleteInItRequest;
 import com.hiit.api.web.dto.request.it.RequestItType;
+import com.hiit.config.security.TestSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +30,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(classes = AppMain.class)
+@SpringBootTest(classes = {AppMain.class, TestSecurityConfig.class})
 class ItCommandControllerTest {
 
 	@Autowired private MockMvc mockMvc;
@@ -52,6 +54,7 @@ class ItCommandControllerTest {
 
 	@Test
 	@DisplayName("[POST] " + BASE_URL + "/ins")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void addInIt() throws Exception {
 
 		when(createInItUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
@@ -237,6 +240,7 @@ class ItCommandControllerTest {
 
 	@Test
 	@DisplayName("[PUT] " + BASE_URL + "/ins")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void editInIt() throws Exception {
 
 		when(editInItUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
@@ -269,6 +273,7 @@ class ItCommandControllerTest {
 
 	@Test
 	@DisplayName("[DELETE] " + BASE_URL + "/ins")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void deleteInIt() throws Exception {
 
 		DeleteInItRequest request = DeleteInItRequest.builder().id(1L).endTitle("종료 잇 제목").build();

@@ -22,6 +22,7 @@ import com.hiit.api.domain.usecase.end.it.GetEndItsUseCase;
 import com.hiit.api.domain.usecase.end.it.GetEndWithsUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.controller.description.EndItDescription;
+import com.hiit.config.security.TestSecurityConfig;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -33,13 +34,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(classes = AppMain.class)
+@SpringBootTest(classes = {AppMain.class, TestSecurityConfig.class})
 class EndItQueryControllerTest {
 
 	@Autowired private MockMvc mockMvc;
@@ -56,6 +58,7 @@ class EndItQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL + "/{id}")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void browseEndIt() throws Exception {
 		// set service mock
 		when(getEndItUseCase.execute(any())).thenReturn(getEndItMockResponse());
@@ -114,6 +117,7 @@ class EndItQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void readEndIts() throws Exception {
 		// set service mock
 		when(getEndItsUseCase.execute(any())).thenReturn(getEndItInfosMockResponse());
@@ -164,6 +168,7 @@ class EndItQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL + "/withs")
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void browseEndWith() throws Exception {
 		// set service mock
 		when(getEndWithsUseCase.execute(any())).thenReturn(getEndWithInfosMockResponse());

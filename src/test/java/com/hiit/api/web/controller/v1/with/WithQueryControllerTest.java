@@ -18,6 +18,7 @@ import com.hiit.api.domain.dto.response.with.WithPage;
 import com.hiit.api.domain.usecase.with.GetWithsUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.controller.description.WithDescription;
+import com.hiit.config.security.TestSecurityConfig;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,13 +30,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@SpringBootTest(classes = AppMain.class)
+@SpringBootTest(classes = {AppMain.class, TestSecurityConfig.class})
 class WithQueryControllerTest {
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
@@ -49,6 +51,7 @@ class WithQueryControllerTest {
 
 	@Test
 	@DisplayName("[GET] " + BASE_URL)
+	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void readWiths() throws Exception {
 		// set service mock
 		when(getWithsUseCase.execute(any())).thenReturn(getWithPageMockResponse());
