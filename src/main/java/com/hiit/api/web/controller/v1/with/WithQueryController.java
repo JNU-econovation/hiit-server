@@ -10,7 +10,6 @@ import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.support.usecase.PageRequestGenerator;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,12 +37,7 @@ public class WithQueryController {
 			@RequestParam @DataId Long id,
 			@RequestParam(defaultValue = "false", required = false) Boolean my,
 			@RequestParam(defaultValue = "false", required = false) Boolean random) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		PageRequest pageRequest = PageRequestGenerator.generate(pageable);
 		GetWithsUseCaseRequest request =
 				GetWithsUseCaseRequest.builder()

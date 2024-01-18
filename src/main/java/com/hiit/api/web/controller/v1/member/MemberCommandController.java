@@ -19,7 +19,6 @@ import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.member.CreateSocialMemberRequest;
 import com.hiit.api.web.dto.request.member.NotificationConsentRequest;
 import com.hiit.api.web.dto.request.member.TokenRefreshRequest;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -58,12 +57,7 @@ public class MemberCommandController {
 	@DeleteMapping()
 	public ApiResponse<ApiResponse.Success> delete(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		DeleteMemberUseCaseRequest deleteMemberUseCaseRequest =
 				DeleteMemberUseCaseRequest.builder().memberId(memberId).build();
 		deleteMemberUseCase.execute(deleteMemberUseCaseRequest);
@@ -84,12 +78,7 @@ public class MemberCommandController {
 	public ApiResponse<ApiResponse.Success> notificationConsent(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@RequestBody NotificationConsentRequest request) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		ConsentNotificationUseCaseRequest consentNotificationUseCaseRequest =
 				ConsentNotificationUseCaseRequest.builder()
 						.device(request.getDevice())
@@ -102,12 +91,7 @@ public class MemberCommandController {
 	@DeleteMapping("/notification")
 	public ApiResponse<ApiResponse.Success> notificationDissent(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		DissentNotificationUseCaseRequest dissentNotificationUseCaseRequest =
 				DissentNotificationUseCaseRequest.builder().memberId(memberId).build();
 		dissentNotificationUseCase.execute(dissentNotificationUseCaseRequest);

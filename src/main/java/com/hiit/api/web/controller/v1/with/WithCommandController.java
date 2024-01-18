@@ -10,7 +10,6 @@ import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.with.AddWithRequest;
 import com.hiit.api.web.dto.request.with.DeleteWithRequest;
-import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,12 +34,7 @@ public class WithCommandController {
 	public ApiResponse<ApiResponse.Success> createWith(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody AddWithRequest request) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		CreateWithUseCaseRequest createWithRequest =
 				CreateWithUseCaseRequest.builder()
 						.memberId(memberId)
@@ -55,12 +49,7 @@ public class WithCommandController {
 	public ApiResponse<ApiResponse.Success> deleteWith(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody DeleteWithRequest request) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		DeleteWithUseCaseRequest deleteWithRequest =
 				DeleteWithUseCaseRequest.builder().memberId(memberId).withId(request.getId()).build();
 		deleteWithUseCase.execute(deleteWithRequest);

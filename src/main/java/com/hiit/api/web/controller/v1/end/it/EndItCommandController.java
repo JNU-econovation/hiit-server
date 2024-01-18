@@ -10,7 +10,6 @@ import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.end.it.DeleteEndItRequest;
 import com.hiit.api.web.dto.request.end.it.EditEndItRequest;
-import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,12 +34,7 @@ public class EndItCommandController {
 	public ApiResponse<ApiResponse.Success> editEndIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody EditEndItRequest request) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		EditEndItUseCaseRequest editRequest =
 				EditEndItUseCaseRequest.builder()
 						.memberId(memberId)
@@ -55,12 +49,7 @@ public class EndItCommandController {
 	public ApiResponse<ApiResponse.Success> deleteEndIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody DeleteEndItRequest request) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		DeleteEndItUseCaseRequest deleteRequest =
 				DeleteEndItUseCaseRequest.builder().memberId(memberId).endInItId(request.getId()).build();
 		deleteEndItUseCase.execute(deleteRequest);

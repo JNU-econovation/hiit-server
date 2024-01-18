@@ -14,7 +14,6 @@ import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,12 +37,7 @@ public class EndItQueryController {
 	@GetMapping("{id}")
 	public ApiResponse<ApiResponse.SuccessBody<EndItInfo>> browseEndIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		GetEndItUseCaseRequest request =
 				GetEndItUseCaseRequest.builder().endInItId(id).memberId(memberId).build();
 		EndItInfo res = getEndItUseCase.execute(request);
@@ -53,12 +47,7 @@ public class EndItQueryController {
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<EndItInfos>> readEndIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		GetEndItsUseCaseRequest request = GetEndItsUseCaseRequest.builder().memberId(memberId).build();
 		EndItInfos res = getEndItsUseCase.execute(request);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
@@ -67,12 +56,7 @@ public class EndItQueryController {
 	@GetMapping("/withs")
 	public ApiResponse<ApiResponse.SuccessBody<EndWithInfos>> browseEndWith(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @RequestParam @DataId Long id) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		GetEndWithsUseCaseRequest request =
 				GetEndWithsUseCaseRequest.builder().memberId(memberId).endInItId(id).build();
 		EndWithInfos res = getEndWithsUseCase.execute(request);

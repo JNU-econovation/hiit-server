@@ -14,7 +14,6 @@ import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.it.AddInItRequest;
 import com.hiit.api.web.dto.request.it.DeleteInItRequest;
 import com.hiit.api.web.dto.request.it.EditInItRequest;
-import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,33 +40,24 @@ public class ItCommandController {
 	public ApiResponse<ApiResponse.Success> createInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody AddInItRequest request) {
-		try {
-			Long memberId = Long.valueOf(userDetails.getUsername());
-			CreateInItUseCaseRequest useCaseRequest =
-					CreateInItUseCaseRequest.builder()
-							.memberId(memberId)
-							.itId(request.getId())
-							.dayCode(request.getDayCode())
-							.resolution(request.getResolution())
-							.type(ItTypeDetails.of(request.getType().getValue()))
-							.build();
-			createInItUseCase.execute(useCaseRequest);
-			return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
-		} catch (Exception e) {
-			return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		CreateInItUseCaseRequest useCaseRequest =
+				CreateInItUseCaseRequest.builder()
+						.memberId(memberId)
+						.itId(request.getId())
+						.dayCode(request.getDayCode())
+						.resolution(request.getResolution())
+						.type(ItTypeDetails.of(request.getType().getValue()))
+						.build();
+		createInItUseCase.execute(useCaseRequest);
+		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
 
 	@PutMapping("/ins")
 	public ApiResponse<ApiResponse.Success> editInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody EditInItRequest request) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		EditInItUseCaseRequest useCaseRequest =
 				EditInItUseCaseRequest.builder()
 						.memberId(memberId)
@@ -83,12 +73,7 @@ public class ItCommandController {
 	public ApiResponse<ApiResponse.Success> deleteInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody DeleteInItRequest request) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		DeleteInItUseCaseRequest useCaseRequest =
 				DeleteInItUseCaseRequest.builder()
 						.memberId(memberId)

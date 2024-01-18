@@ -20,7 +20,6 @@ import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,12 +44,7 @@ public class ItQueryController {
 	@GetMapping("{id}")
 	public ApiResponse<ApiResponse.SuccessBody<ItInfo>> browseIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		GetItUseCaseRequest request = GetItUseCaseRequest.builder().itId(id).memberId(memberId).build();
 		ItInfo res = getItUseCase.execute(request);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
@@ -59,12 +53,7 @@ public class ItQueryController {
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<ItInfos>> readIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		GetItsUseCaseRequest request = GetItsUseCaseRequest.builder().memberId(memberId).build();
 		ItInfos res = getItsUseCase.execute(request);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
@@ -73,12 +62,7 @@ public class ItQueryController {
 	@GetMapping("/ins")
 	public ApiResponse<ApiResponse.SuccessBody<InItInfos>> readInIts(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		GetInItsUseCaseRequest request = GetInItsUseCaseRequest.builder().memberId(memberId).build();
 		InItInfos res = getInItsUseCase.execute(request);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
@@ -87,12 +71,7 @@ public class ItQueryController {
 	@GetMapping("/ins/{id}")
 	public ApiResponse<ApiResponse.SuccessBody<InItInfo>> browseInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		GetInItUseCaseRequest request =
 				GetInItUseCaseRequest.builder().inIt(id).memberId(memberId).build();
 		InItInfo res = getInItUseCase.execute(request);
@@ -102,12 +81,7 @@ public class ItQueryController {
 	@GetMapping("/ins/{id}/motivations")
 	public ApiResponse<ApiResponse.SuccessBody<ItMotivations>> readItMotivations(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable @DataId Long id) {
-		Long memberId = null;
-		if (Objects.isNull(userDetails)) {
-			memberId = 1L;
-		} else {
-			memberId = Long.valueOf(userDetails.getUsername());
-		}
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		InItMotivationUseCaseRequest request =
 				InItMotivationUseCaseRequest.builder().inItId(id).memberId(memberId).build();
 		ItMotivations res = inItMotivationUseCase.execute(request);
