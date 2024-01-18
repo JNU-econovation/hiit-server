@@ -3,6 +3,8 @@ package com.hiit.api.web.controller.v1.with;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -10,14 +12,22 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
+import com.hiit.api.domain.dto.response.with.WithInfo;
+import com.hiit.api.domain.dto.response.with.WithMemberInfo;
+import com.hiit.api.domain.dto.response.with.WithPage;
+import com.hiit.api.domain.usecase.with.GetWithsUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.controller.description.WithDescription;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +39,9 @@ import org.springframework.test.web.servlet.MockMvc;
 class WithQueryControllerTest {
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
+
+	@MockBean private GetWithsUseCase getWithsUseCase;
+
 	private static final String TAG = "With-Controller";
 	private static final String BASE_URL = "/api/v1/its/withs";
 
@@ -38,6 +51,7 @@ class WithQueryControllerTest {
 	@DisplayName("[GET] " + BASE_URL)
 	void readWiths() throws Exception {
 		// set service mock
+		when(getWithsUseCase.execute(any())).thenReturn(getWithPageMockResponse());
 
 		mockMvc
 				.perform(
@@ -66,6 +80,19 @@ class WithQueryControllerTest {
 												.responseSchema(Schema.schema("WithInfoResponse"))
 												.responseFields(Description.success(WithDescription.readWiths()))
 												.build())));
+	}
+
+	private WithPage getWithPageMockResponse() {
+		WithMemberInfo withMemberInfo =
+				WithMemberInfo.builder().name("멤버 이름").profile("멤버 프로필").resolution("멤버 다짐").build();
+		WithInfo withInfo1 =
+				WithInfo.builder().id(1L).content("윗 내용").hit(10L).withMemberInfo(withMemberInfo).build();
+		WithInfo withInfo2 =
+				WithInfo.builder().id(2L).content("윗 내용").hit(10L).withMemberInfo(withMemberInfo).build();
+		List<WithInfo> withInfos = List.of(withInfo1, withInfo2);
+		PageImpl<WithInfo> withInfoPage =
+				new PageImpl<>(withInfos, PageRequest.of(1, 10), withInfos.size());
+		return new WithPage(withInfoPage);
 	}
 
 	@Test

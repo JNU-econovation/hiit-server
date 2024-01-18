@@ -2,6 +2,8 @@ package com.hiit.api.web.controller.v1.hit;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -10,6 +12,8 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
+import com.hiit.api.domain.dto.response.hit.HitInfo;
+import com.hiit.api.domain.usecase.hit.HitUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.dto.request.hit.HitRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -32,6 +37,9 @@ class HitCommandControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
+
+	@MockBean private HitUseCase hitUseCase;
+
 	private static final String TAG = "Hit-Controller";
 	private static final String BASE_URL = "/api/v1/its/withs/hits";
 
@@ -46,6 +54,7 @@ class HitCommandControllerTest {
 		String content = objectMapper.writeValueAsString(request);
 
 		// set service mock
+		when(hitUseCase.execute(any())).thenReturn(getHitInfoMockResponse());
 
 		mockMvc
 				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
@@ -67,6 +76,10 @@ class HitCommandControllerTest {
 																			.description("힛 수")
 																}))
 												.build())));
+	}
+
+	private HitInfo getHitInfoMockResponse() {
+		return HitInfo.builder().count(100L).build();
 	}
 
 	@Test

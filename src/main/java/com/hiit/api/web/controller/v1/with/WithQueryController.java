@@ -2,8 +2,6 @@ package com.hiit.api.web.controller.v1.with;
 
 import com.hiit.api.domain.dto.PageRequest;
 import com.hiit.api.domain.dto.request.with.GetWithsUseCaseRequest;
-import com.hiit.api.domain.dto.response.with.WithInfo;
-import com.hiit.api.domain.dto.response.with.WithMemberInfo;
 import com.hiit.api.domain.dto.response.with.WithPage;
 import com.hiit.api.domain.usecase.with.GetWithsUseCase;
 import com.hiit.api.security.authentication.token.TokenUserDetails;
@@ -12,9 +10,8 @@ import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
 import com.hiit.api.web.support.usecase.PageRequestGenerator;
-import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -41,39 +38,23 @@ public class WithQueryController {
 			@RequestParam @DataId Long id,
 			@RequestParam(defaultValue = "false", required = false) Boolean my,
 			@RequestParam(defaultValue = "false", required = false) Boolean random) {
-		WithPage withPage = null;
-		try {
-			Long memberId = Long.valueOf(userDetails.getUsername());
-			PageRequest pageRequest = PageRequestGenerator.generate(pageable);
-			GetWithsUseCaseRequest request =
-					GetWithsUseCaseRequest.builder()
-							.memberId(memberId)
-							.inItId(id)
-							.isMember(my)
-							.pageable(pageRequest)
-							.random(random)
-							.build();
-			withPage = getWithsUseCase.execute(request);
-			if (withPage.getData().isEmpty()) {
-				withPage = getWithPageMockResponse(pageable);
-				return ApiResponseGenerator.success(withPage, HttpStatus.OK, MessageCode.SUCCESS);
-			}
-			return ApiResponseGenerator.success(withPage, HttpStatus.OK, MessageCode.SUCCESS);
-		} catch (Exception e) {
-			withPage = getWithPageMockResponse(pageable);
-			return ApiResponseGenerator.success(withPage, HttpStatus.OK, MessageCode.SUCCESS);
+		Long memberId = null;
+		if (Objects.isNull(userDetails)) {
+			memberId = 1L;
+		} else {
+			memberId = Long.valueOf(userDetails.getUsername());
 		}
-	}
+		PageRequest pageRequest = PageRequestGenerator.generate(pageable);
+		GetWithsUseCaseRequest request =
+				GetWithsUseCaseRequest.builder()
+						.memberId(memberId)
+						.inItId(id)
+						.isMember(my)
+						.pageable(pageRequest)
+						.random(random)
+						.build();
+		WithPage withPage = getWithsUseCase.execute(request);
 
-	private WithPage getWithPageMockResponse(Pageable pageable) {
-		WithMemberInfo withMemberInfo =
-				WithMemberInfo.builder().name("멤버 이름").profile("멤버 프로필").resolution("멤버 다짐").build();
-		WithInfo withInfo1 =
-				WithInfo.builder().id(1L).content("윗 내용").hit(10L).withMemberInfo(withMemberInfo).build();
-		WithInfo withInfo2 =
-				WithInfo.builder().id(2L).content("윗 내용").hit(10L).withMemberInfo(withMemberInfo).build();
-		List<WithInfo> withInfos = List.of(withInfo1, withInfo2);
-		PageImpl<WithInfo> withInfoPage = new PageImpl<>(withInfos, pageable, withInfos.size());
-		return new WithPage(withInfoPage);
+		return ApiResponseGenerator.success(withPage, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 }

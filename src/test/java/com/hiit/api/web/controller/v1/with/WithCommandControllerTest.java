@@ -2,6 +2,8 @@ package com.hiit.api.web.controller.v1.with;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -10,6 +12,9 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
+import com.hiit.api.common.marker.dto.AbstractResponse;
+import com.hiit.api.domain.usecase.with.CreateWithUseCase;
+import com.hiit.api.domain.usecase.with.DeleteWithUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.dto.request.with.AddWithRequest;
 import com.hiit.api.web.dto.request.with.DeleteWithRequest;
@@ -19,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +36,10 @@ import org.springframework.test.web.servlet.MockMvc;
 class WithCommandControllerTest {
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
+
+	@MockBean private CreateWithUseCase createWithUseCase;
+	@MockBean private DeleteWithUseCase deleteWithUseCase;
+
 	private static final String TAG = "With-Controller";
 	private static final String BASE_URL = "/api/v1/its/withs";
 
@@ -42,6 +52,8 @@ class WithCommandControllerTest {
 		AddWithRequest request = AddWithRequest.builder().id(1L).content("윗 내용").build();
 
 		String content = objectMapper.writeValueAsString(request);
+
+		when(createWithUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
 
 		mockMvc
 				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
@@ -66,6 +78,8 @@ class WithCommandControllerTest {
 		AddWithRequest request = AddWithRequest.builder().id(-1L).content("윗 내용").build();
 
 		String content = objectMapper.writeValueAsString(request);
+
+		when(deleteWithUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
 
 		mockMvc
 				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))

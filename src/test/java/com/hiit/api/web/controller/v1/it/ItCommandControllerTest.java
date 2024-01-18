@@ -2,6 +2,8 @@ package com.hiit.api.web.controller.v1.it;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -11,6 +13,10 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
+import com.hiit.api.common.marker.dto.AbstractResponse;
+import com.hiit.api.domain.usecase.it.CreateInItUseCase;
+import com.hiit.api.domain.usecase.it.DeleteInItUseCase;
+import com.hiit.api.domain.usecase.it.EditInItUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.dto.request.it.AddInItRequest;
 import com.hiit.api.web.dto.request.it.DeleteInItRequest;
@@ -21,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +40,11 @@ class ItCommandControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
+
+	@MockBean private CreateInItUseCase createInItUseCase;
+	@MockBean private EditInItUseCase editInItUseCase;
+	@MockBean private DeleteInItUseCase deleteInItUseCase;
+
 	private static final String TAG = "It-Controller";
 	private static final String BASE_URL = "/api/v1/its";
 
@@ -41,6 +53,8 @@ class ItCommandControllerTest {
 	@Test
 	@DisplayName("[POST] " + BASE_URL + "/ins")
 	void addInIt() throws Exception {
+
+		when(createInItUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
 
 		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
 		AddInItRequest request =
@@ -225,6 +239,8 @@ class ItCommandControllerTest {
 	@DisplayName("[PUT] " + BASE_URL + "/ins")
 	void editInIt() throws Exception {
 
+		when(editInItUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
+
 		String dayCode = String.format("%7s", Long.toBinaryString(0000001L)).replace(' ', '0');
 		AddInItRequest request =
 				AddInItRequest.builder().id(1L).dayCode(dayCode).resolution("다짐").build();
@@ -258,6 +274,8 @@ class ItCommandControllerTest {
 		DeleteInItRequest request = DeleteInItRequest.builder().id(1L).endTitle("종료 잇 제목").build();
 
 		String content = objectMapper.writeValueAsString(request);
+
+		when(deleteInItUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
 
 		// set service mock
 

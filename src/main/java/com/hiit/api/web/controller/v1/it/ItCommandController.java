@@ -14,6 +14,7 @@ import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.it.AddInItRequest;
 import com.hiit.api.web.dto.request.it.DeleteInItRequest;
 import com.hiit.api.web.dto.request.it.EditInItRequest;
+import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -61,38 +62,40 @@ public class ItCommandController {
 	public ApiResponse<ApiResponse.Success> editInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody EditInItRequest request) {
-		try {
-			Long memberId = Long.valueOf(userDetails.getUsername());
-			EditInItUseCaseRequest useCaseRequest =
-					EditInItUseCaseRequest.builder()
-							.memberId(memberId)
-							.inIt(request.getId())
-							.dayCode(request.getDayCode())
-							.resolution(request.getResolution())
-							.build();
-			editInItUseCase.execute(useCaseRequest);
-			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
-		} catch (Exception e) {
-			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
+		Long memberId = null;
+		if (Objects.isNull(userDetails)) {
+			memberId = 1L;
+		} else {
+			memberId = Long.valueOf(userDetails.getUsername());
 		}
+		EditInItUseCaseRequest useCaseRequest =
+				EditInItUseCaseRequest.builder()
+						.memberId(memberId)
+						.inIt(request.getId())
+						.dayCode(request.getDayCode())
+						.resolution(request.getResolution())
+						.build();
+		editInItUseCase.execute(useCaseRequest);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
 	}
 
 	@DeleteMapping("/ins")
 	public ApiResponse<ApiResponse.Success> deleteInIt(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody DeleteInItRequest request) {
-		try {
-			Long memberId = Long.valueOf(userDetails.getUsername());
-			DeleteInItUseCaseRequest useCaseRequest =
-					DeleteInItUseCaseRequest.builder()
-							.memberId(memberId)
-							.inItId(request.getId())
-							.endTitle(request.getEndTitle())
-							.build();
-			deleteInItUseCase.execute(useCaseRequest);
-			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
-		} catch (Exception e) {
-			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+		Long memberId = null;
+		if (Objects.isNull(userDetails)) {
+			memberId = 1L;
+		} else {
+			memberId = Long.valueOf(userDetails.getUsername());
 		}
+		DeleteInItUseCaseRequest useCaseRequest =
+				DeleteInItUseCaseRequest.builder()
+						.memberId(memberId)
+						.inItId(request.getId())
+						.endTitle(request.getEndTitle())
+						.build();
+		deleteInItUseCase.execute(useCaseRequest);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 }

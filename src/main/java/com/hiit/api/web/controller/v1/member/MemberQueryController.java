@@ -11,7 +11,6 @@ import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,23 +33,10 @@ public class MemberQueryController {
 	@GetMapping("/{id}")
 	public ApiResponse<ApiResponse.SuccessBody<MemberInfo>> browseMember(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable("id") @DataId Long id) {
-		MemberInfo res = null;
 		GetMemberInfoUseCaseRequest request =
 				GetMemberInfoUseCaseRequest.builder().memberId(id).build();
-		try {
-			res = getMemberInfoUseCase.execute(request);
-			if (Objects.isNull(res)) {
-				return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
-			}
-			return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
-		} catch (Exception e) {
-			res = getMemberInfoMockResponse();
-			return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
-		}
-	}
-
-	private MemberInfo getMemberInfoMockResponse() {
-		return MemberInfo.builder().id(1L).name("멤버 이름").profile("멤버 프로필").inItCount(10L).build();
+		MemberInfo res = getMemberInfoUseCase.execute(request);
+		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
 	@GetMapping("/stats/it")
@@ -60,22 +46,7 @@ public class MemberQueryController {
 			@RequestParam @DataId Long iid) {
 		GetMemberItInfoUseCaseRequest request =
 				GetMemberItInfoUseCaseRequest.builder().memberId(id).itId(iid).build();
-		MemberItInfo res = null;
-		try {
-			res = getMemberItInfoUseCase.execute(request);
-		} catch (Exception e) {
-			res = getMemberItInfoMockResponse();
-			return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
-		}
+		MemberItInfo res = getMemberItInfoUseCase.execute(request);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
-	}
-
-	private MemberItInfo getMemberItInfoMockResponse() {
-		return MemberItInfo.builder()
-				.id(1L)
-				.name("멤버 이름")
-				.profile("멤버 프로필")
-				.itInfo("00에 0번 참여중입니다.")
-				.build();
 	}
 }

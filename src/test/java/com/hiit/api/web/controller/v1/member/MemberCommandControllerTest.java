@@ -2,6 +2,8 @@ package com.hiit.api.web.controller.v1.member;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -9,6 +11,13 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiit.api.AppMain;
+import com.hiit.api.common.marker.dto.AbstractResponse;
+import com.hiit.api.domain.dto.response.member.UserAuthToken;
+import com.hiit.api.domain.usecase.member.ConsentNotificationUseCase;
+import com.hiit.api.domain.usecase.member.DeleteMemberUseCase;
+import com.hiit.api.domain.usecase.member.DissentNotificationUseCase;
+import com.hiit.api.domain.usecase.member.FacadeCreateMemberUseCase;
+import com.hiit.api.domain.usecase.member.GetTokenUseCase;
 import com.hiit.api.web.controller.description.Description;
 import com.hiit.api.web.controller.description.MemberDescription;
 import com.hiit.api.web.dto.request.member.CreateSocialMemberRequest;
@@ -21,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.ActiveProfiles;
@@ -34,6 +44,13 @@ class MemberCommandControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
+
+	@MockBean private FacadeCreateMemberUseCase facadeCreateMemberUseCase;
+	@MockBean private GetTokenUseCase getTokenUseCase;
+	@MockBean private ConsentNotificationUseCase consentNotificationUseCase;
+	@MockBean private DissentNotificationUseCase dissentNotificationUseCase;
+	@MockBean private DeleteMemberUseCase deleteMemberUseCase;
+
 	private static final String TAG = "Member-Controller";
 	private static final String BASE_URL = "/api/v1/members";
 
@@ -42,14 +59,11 @@ class MemberCommandControllerTest {
 	void save() throws Exception {
 		// set service mock
 		CreateSocialMemberRequest request =
-				CreateSocialMemberRequest.builder()
-						.code(
-								"R-tqQ1jrxBBUgQXXKJbnoQl_PN6HdLFjIXWUSwpB8I_TrbeEED2ld_pP2wUKKiUNAAABjRgzDvMBl6J2VXah6g")
-						.socialSubject(SocialSubject.KAKAO)
-						.build();
+				CreateSocialMemberRequest.builder().code("code").socialSubject(SocialSubject.KAKAO).build();
 		String content = objectMapper.writeValueAsString(request);
 		content = content.replace(SocialSubject.KAKAO.name(), "kakao");
 
+		when(facadeCreateMemberUseCase.execute(any())).thenReturn(getUserAuthTokenMockResponse());
 		mockMvc
 				.perform(post(BASE_URL, 0).content(content).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
@@ -66,10 +80,16 @@ class MemberCommandControllerTest {
 												.build())));
 	}
 
+	private UserAuthToken getUserAuthTokenMockResponse() {
+		return UserAuthToken.builder().accessToken("accessToken").refreshToken("refreshToken").build();
+	}
+
 	@Test
 	@DisplayName("[DELETE] " + BASE_URL)
 	void delete() throws Exception {
 		// set service mock
+		when(deleteMemberUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
+
 		mockMvc
 				.perform(
 						RestDocumentationRequestBuilders.delete(BASE_URL, 0)
@@ -95,6 +115,8 @@ class MemberCommandControllerTest {
 		TokenRefreshRequest request =
 				TokenRefreshRequest.builder().token("dkjafd.dfkajdf.dfjk").build();
 		String content = objectMapper.writeValueAsString(request);
+
+		when(getTokenUseCase.execute(any())).thenReturn(getUserAuthTokenMockResponse());
 
 		mockMvc
 				.perform(
@@ -122,6 +144,8 @@ class MemberCommandControllerTest {
 
 		String content = objectMapper.writeValueAsString(request);
 
+		when(consentNotificationUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
+
 		mockMvc
 				.perform(
 						post(BASE_URL + "/notification", 0)
@@ -145,6 +169,9 @@ class MemberCommandControllerTest {
 	@DisplayName("[DELETE] " + BASE_URL + "/notification")
 	void notificationDissent() throws Exception {
 		// set service mock
+
+		when(dissentNotificationUseCase.execute(any())).thenReturn(AbstractResponse.VOID);
+
 		mockMvc
 				.perform(
 						RestDocumentationRequestBuilders.delete(BASE_URL + "/notification", 0)

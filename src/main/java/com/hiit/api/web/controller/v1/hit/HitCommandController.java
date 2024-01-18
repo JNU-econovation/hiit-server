@@ -8,6 +8,7 @@ import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.hit.HitRequest;
+import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,24 +31,16 @@ public class HitCommandController {
 	public ApiResponse<ApiResponse.SuccessBody<HitInfo>> hit(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody HitRequest request) {
-		HitInfo hit = null;
-		try {
-			Long memberId = Long.valueOf(userDetails.getUsername());
-			HitUseCaseRequest hitRequest =
-					HitUseCaseRequest.builder().memberId(memberId).withId(request.getId()).build();
-			hit = hitUseCase.execute(hitRequest);
-			if (hit == null) {
-				hit = getHitInfoMockResponse();
-				return ApiResponseGenerator.success(hit, HttpStatus.OK, MessageCode.SUCCESS);
-			}
-			return ApiResponseGenerator.success(hit, HttpStatus.OK, MessageCode.SUCCESS);
-		} catch (Exception e) {
-			hit = getHitInfoMockResponse();
-			return ApiResponseGenerator.success(hit, HttpStatus.OK, MessageCode.SUCCESS);
+		Long memberId = null;
+		if (Objects.isNull(userDetails)) {
+			memberId = 1L;
+		} else {
+			memberId = Long.valueOf(userDetails.getUsername());
 		}
-	}
+		HitUseCaseRequest hitRequest =
+				HitUseCaseRequest.builder().memberId(memberId).withId(request.getId()).build();
+		HitInfo hit = hitUseCase.execute(hitRequest);
 
-	private HitInfo getHitInfoMockResponse() {
-		return HitInfo.builder().count(100L).build();
+		return ApiResponseGenerator.success(hit, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 }

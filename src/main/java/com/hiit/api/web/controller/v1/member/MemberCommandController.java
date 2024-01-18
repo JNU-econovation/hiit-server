@@ -6,7 +6,6 @@ import com.hiit.api.domain.dto.request.member.CreateSocialMemberUseCaseRequest;
 import com.hiit.api.domain.dto.request.member.DeleteMemberUseCaseRequest;
 import com.hiit.api.domain.dto.request.member.DissentNotificationUseCaseRequest;
 import com.hiit.api.domain.dto.request.member.GetTokenUseCaseRequest;
-import com.hiit.api.domain.dto.response.member.UserAuthToken;
 import com.hiit.api.domain.model.member.CertificationSubjectDetails;
 import com.hiit.api.domain.usecase.member.ConsentNotificationUseCase;
 import com.hiit.api.domain.usecase.member.DeleteMemberUseCase;
@@ -20,6 +19,7 @@ import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.request.member.CreateSocialMemberRequest;
 import com.hiit.api.web.dto.request.member.NotificationConsentRequest;
 import com.hiit.api.web.dto.request.member.TokenRefreshRequest;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -51,27 +51,22 @@ public class MemberCommandController {
 						.certificationSubjectDetails(
 								CertificationSubjectDetails.valueOf(request.getSocialSubject().name()))
 						.build();
-		AuthToken res = null;
-		try {
-			res = facadeCreateMemberUseCase.execute(useCaseRequest);
-		} catch (Exception e) {
-			res = getUserAuthTokenMockResponse();
-			return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
-		}
+		AuthToken res = facadeCreateMemberUseCase.execute(useCaseRequest);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
 	@DeleteMapping()
 	public ApiResponse<ApiResponse.Success> delete(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		try {
-			Long memberId = Long.valueOf(userDetails.getId());
-			DeleteMemberUseCaseRequest deleteMemberUseCaseRequest =
-					DeleteMemberUseCaseRequest.builder().memberId(memberId).build();
-			deleteMemberUseCase.execute(deleteMemberUseCaseRequest);
-		} catch (Exception e) {
-			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+		Long memberId = null;
+		if (Objects.isNull(userDetails)) {
+			memberId = 1L;
+		} else {
+			memberId = Long.valueOf(userDetails.getUsername());
 		}
+		DeleteMemberUseCaseRequest deleteMemberUseCaseRequest =
+				DeleteMemberUseCaseRequest.builder().memberId(memberId).build();
+		deleteMemberUseCase.execute(deleteMemberUseCaseRequest);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 
@@ -81,49 +76,41 @@ public class MemberCommandController {
 			@RequestBody TokenRefreshRequest request) {
 		GetTokenUseCaseRequest getTokenUseCaseRequest =
 				GetTokenUseCaseRequest.builder().token(request.getToken()).build();
-		AuthToken res = null;
-		try {
-			res = getTokenUseCase.execute(getTokenUseCaseRequest);
-		} catch (Exception e) {
-			res = getUserAuthTokenMockResponse();
-			return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
-		}
+		AuthToken res = getTokenUseCase.execute(getTokenUseCaseRequest);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
-	}
-
-	private UserAuthToken getUserAuthTokenMockResponse() {
-		return UserAuthToken.builder().accessToken("accessToken").refreshToken("refreshToken").build();
 	}
 
 	@PostMapping("/notification")
 	public ApiResponse<ApiResponse.Success> notificationConsent(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@RequestBody NotificationConsentRequest request) {
-		try {
-			Long memberId = Long.valueOf(userDetails.getId());
-			ConsentNotificationUseCaseRequest consentNotificationUseCaseRequest =
-					ConsentNotificationUseCaseRequest.builder()
-							.device(request.getDevice())
-							.memberId(memberId)
-							.build();
-			consentNotificationUseCase.execute(consentNotificationUseCaseRequest);
-		} catch (Exception e) {
-			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
+		Long memberId = null;
+		if (Objects.isNull(userDetails)) {
+			memberId = 1L;
+		} else {
+			memberId = Long.valueOf(userDetails.getUsername());
 		}
+		ConsentNotificationUseCaseRequest consentNotificationUseCaseRequest =
+				ConsentNotificationUseCaseRequest.builder()
+						.device(request.getDevice())
+						.memberId(memberId)
+						.build();
+		consentNotificationUseCase.execute(consentNotificationUseCaseRequest);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_UPDATED);
 	}
 
 	@DeleteMapping("/notification")
 	public ApiResponse<ApiResponse.Success> notificationDissent(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
-		try {
-			Long memberId = Long.valueOf(userDetails.getId());
-			DissentNotificationUseCaseRequest dissentNotificationUseCaseRequest =
-					DissentNotificationUseCaseRequest.builder().memberId(memberId).build();
-			dissentNotificationUseCase.execute(dissentNotificationUseCaseRequest);
-		} catch (Exception e) {
-			return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+		Long memberId = null;
+		if (Objects.isNull(userDetails)) {
+			memberId = 1L;
+		} else {
+			memberId = Long.valueOf(userDetails.getUsername());
 		}
+		DissentNotificationUseCaseRequest dissentNotificationUseCaseRequest =
+				DissentNotificationUseCaseRequest.builder().memberId(memberId).build();
+		dissentNotificationUseCase.execute(dissentNotificationUseCaseRequest);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 }
