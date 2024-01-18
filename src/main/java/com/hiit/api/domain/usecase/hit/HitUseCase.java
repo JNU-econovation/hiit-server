@@ -1,6 +1,7 @@
 package com.hiit.api.domain.usecase.hit;
 
 import com.hiit.api.domain.dao.hit.HitDao;
+import com.hiit.api.domain.dao.with.WithDao;
 import com.hiit.api.domain.dto.request.hit.HitUseCaseRequest;
 import com.hiit.api.domain.dto.response.hit.HitInfo;
 import com.hiit.api.domain.model.hit.Hit;
@@ -15,6 +16,7 @@ import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.domain.support.entity.PeriodUtils;
 import com.hiit.api.domain.support.entity.converter.hit.HitEntityConverterImpl;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.repository.entity.business.with.WithStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +33,8 @@ public class HitUseCase implements AbstractUseCase<HitUseCaseRequest> {
 
 	private final HitDao dao;
 	private final HitEntityConverterImpl entityConverter;
+
+	private final WithDao withDao;
 
 	private final WithQuery hitReadTimeWithService;
 
@@ -61,6 +65,10 @@ public class HitUseCase implements AbstractUseCase<HitUseCaseRequest> {
 	}
 
 	private List<Hit> getSources(GetWithId withId, HitterDetail hitter, Period period) {
+		boolean exists = withDao.existsByIdAndStatus(withId.getId(), WithStatus.ACTIVE);
+		if (!exists) {
+			throw new IllegalArgumentException("with is not active");
+		}
 		return dao.findHitStatusByWithAndHitterAndPeriod(withId.getId(), hitter, period).stream()
 				.map(entityConverter::from)
 				.collect(Collectors.toList());
