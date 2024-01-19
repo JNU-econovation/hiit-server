@@ -41,7 +41,7 @@ public class MemberQueryController {
 			requestId = id;
 		}
 		GetMemberInfoUseCaseRequest request =
-				GetMemberInfoUseCaseRequest.builder().memberId(id).build();
+				GetMemberInfoUseCaseRequest.builder().memberId(requestId).build();
 		MemberInfo res = getMemberInfoUseCase.execute(request);
 		return ApiResponseGenerator.success(res, HttpStatus.OK, MessageCode.SUCCESS);
 	}
