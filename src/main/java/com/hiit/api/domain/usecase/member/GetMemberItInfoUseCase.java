@@ -1,5 +1,6 @@
 package com.hiit.api.domain.usecase.member;
 
+import com.hiit.api.domain.dao.it.in.InItDao;
 import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.dto.request.member.GetMemberItInfoUseCaseRequest;
@@ -16,6 +17,7 @@ import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.document.member.ItWithStat;
+import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
@@ -35,6 +37,7 @@ public class GetMemberItInfoUseCase implements AbstractUseCase<GetMemberItInfoUs
 	private final MemberEntityConverter entityConverter;
 
 	private final ItRelationDao itRelationDao;
+	private final InItDao inItDao;
 
 	private final ItTypeQueryManager itTypeQueryManager;
 
@@ -48,11 +51,19 @@ public class GetMemberItInfoUseCase implements AbstractUseCase<GetMemberItInfoUs
 
 		Member source = getSource(memberId);
 
+		GetInItId inItId = null;
 		List<ItRelationEntity> relations =
 				itRelationDao.findAllByItIdAndStatus(itId.getId(), ItStatus.ACTIVE);
-		Long inItId = relations.get(0).getInItId();
+		for (ItRelationEntity relation : relations) {
+			InItEntity inIt = inItDao.findById(relation.getInItId()).orElse(null);
+			assert inIt != null;
+			if (inIt.getHiitMember().getId().equals(memberId.getId())) {
+				inItId = () -> inIt.getId();
+				break;
+			}
+		}
 
-		ItWithStat docs = readDocs(source, () -> inItId);
+		ItWithStat docs = readDocs(source, inItId);
 
 		BasicIt it =
 				itTypeQueryManager.query(ItTypeDetails.of(docs.getType()), (GetItId) docs::getInItId);
