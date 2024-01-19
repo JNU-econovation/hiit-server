@@ -33,6 +33,12 @@ public class MemberQueryController {
 	@GetMapping("/{id}")
 	public ApiResponse<ApiResponse.SuccessBody<MemberInfo>> browseMember(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable("id") @DataId Long id) {
+		Long requestId = null;
+		if (id == 0) {
+			requestId = Long.valueOf(userDetails.getUsername());
+		} else {
+			requestId = id;
+		}
 		GetMemberInfoUseCaseRequest request =
 				GetMemberInfoUseCaseRequest.builder().memberId(id).build();
 		MemberInfo res = getMemberInfoUseCase.execute(request);
