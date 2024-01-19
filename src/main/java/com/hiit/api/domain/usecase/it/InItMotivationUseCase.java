@@ -15,7 +15,7 @@ import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.service.ItTimeDetailsMapper;
-import com.hiit.api.domain.service.it.ItQueryManager;
+import com.hiit.api.domain.service.it.ItTypeQueryManager;
 import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
@@ -47,7 +47,7 @@ public class InItMotivationUseCase implements AbstractUseCase<InItMotivationUseC
 	private final ItTimeDetailsMapper itTimeDetailsMapper;
 	private final InItEntityConverter inItEntityConverter;
 
-	private final ItQueryManager itQueryManager;
+	private final ItTypeQueryManager itTypeQueryManager;
 	private final WithDao withDao;
 	private final HitDao hitDao;
 
@@ -67,7 +67,8 @@ public class InItMotivationUseCase implements AbstractUseCase<InItMotivationUseC
 
 		Long inWithCount = withDao.countByInIt(inIt.getId());
 
-		BasicIt it = itQueryManager.query(ItTypeDetails.of(inIt.getItType()), (GetInItId) inIt::getId);
+		BasicIt it =
+				itTypeQueryManager.query(ItTypeDetails.of(inIt.getItType()), (GetInItId) inIt::getId);
 		Period period = makePeriod(it);
 		Long hitCount = hitDao.countHitByInItAndPeriod(inItId.getId(), period);
 

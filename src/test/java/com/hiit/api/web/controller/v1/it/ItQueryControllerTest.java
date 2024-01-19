@@ -92,6 +92,7 @@ class ItQueryControllerTest {
 				.endTime(LocalTime.of(2, 0))
 				.inMemberCount(10L)
 				.memberIn(true)
+				.inItId(1L)
 				.type(ItTypeDetails.IT_REGISTERED.getValue())
 				.build();
 	}
@@ -150,6 +151,7 @@ class ItQueryControllerTest {
 						.endTime(LocalTime.of(2, 0))
 						.inMemberCount(10L)
 						.memberIn(true)
+						.inItId(1L)
 						.type(ItTypeDetails.IT_REGISTERED.getValue())
 						.build();
 		ItInfo it2 =
@@ -161,6 +163,7 @@ class ItQueryControllerTest {
 						.inMemberCount(10L)
 						.memberIn(true)
 						.type(ItTypeDetails.IT_REGISTERED.getValue())
+						.inItId(2L)
 						.build();
 		ItInfo it3 =
 				ItInfo.builder()
@@ -171,6 +174,7 @@ class ItQueryControllerTest {
 						.inMemberCount(10L)
 						.memberIn(false)
 						.type(ItTypeDetails.IT_REGISTERED.getValue())
+						.inItId(-1L)
 						.build();
 		return new ItInfos(List.of(it1, it2, it3));
 	}

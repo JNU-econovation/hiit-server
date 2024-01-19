@@ -13,8 +13,8 @@ import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.service.ItTimeDetailsMapper;
-import com.hiit.api.domain.service.it.ItActiveMemberCountService;
-import com.hiit.api.domain.service.it.ItQueryManager;
+import com.hiit.api.domain.service.it.ActiveItMemberCountService;
+import com.hiit.api.domain.service.it.ItTypeQueryManager;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
@@ -38,8 +38,8 @@ public class GetInItUseCase implements AbstractUseCase<GetInItUseCaseRequest> {
 	private final ItTimeDetailsMapper itTimeDetailsMapper;
 	private final InItEntityConverter itEntityConverter;
 
-	private final ItQueryManager itQueryManager;
-	private final ItActiveMemberCountService itActiveMemberCountService;
+	private final ItTypeQueryManager itTypeQueryManager;
+	private final ActiveItMemberCountService activeItMemberCountService;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
@@ -56,15 +56,15 @@ public class GetInItUseCase implements AbstractUseCase<GetInItUseCaseRequest> {
 		}
 
 		ItTypeDetails type = ItTypeDetails.of(source.getItType());
-		Long activeMemberCount = itActiveMemberCountService.execute(source::getItId);
-		BasicIt it = itQueryManager.query(type, (GetInItId) source::getId);
+		Long activeMemberCount = activeItMemberCountService.execute(source::getItId);
+		BasicIt it = itTypeQueryManager.query(type, (GetInItId) source::getId);
 		String topic = it.getTopic();
 		return buildResponse(source, type.getValue(), topic, activeMemberCount);
 	}
 
 	private InIt getSource(GetInItId inItId, GetMemberId memberId) {
 		Optional<InItEntity> source =
-				dao.findActiveStatusByIdAndMember(inItId.getId(), memberId.getId());
+				dao.findActiveStatusByIdAndMemberId(inItId.getId(), memberId.getId());
 		if (source.isEmpty()) {
 			Map<String, Long> exceptionSource =
 					logSourceGenerator.generate(GetInItId.key, inItId.getId());

@@ -53,13 +53,13 @@ public class DeleteEndItUseCase implements AbstractUseCase<DeleteEndItUseCaseReq
 			throw new MemberAccessDeniedException(member.getId(), endInItId.getId());
 		}
 
-		dao.deleteByIdWithItRelation(source.getId());
+		dao.deleteById(source.getId());
 		return AbstractResponse.VOID;
 	}
 
 	private InIt getSource(GetMemberId memberId, GetInItId endInItId) {
 		Optional<InItEntity> source =
-				dao.findEndStatusByIdAndMember(endInItId.getId(), memberId.getId());
+				dao.findEndStatusByIdAndMemberId(endInItId.getId(), memberId.getId());
 		if (source.isEmpty()) {
 			Map<String, Long> exceptionSource =
 					logSourceGenerator.generate(GetMemberId.key, memberId.getId());

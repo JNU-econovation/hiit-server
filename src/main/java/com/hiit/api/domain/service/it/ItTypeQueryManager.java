@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ItQueryManager {
+public class ItTypeQueryManager {
 
-	private final Map<String, ItQuery> services;
+	private final Map<String, ItTypeQuery> services;
 
 	@Transactional(readOnly = true)
 	public BasicIt query(ItTypeDetails type, GetItId itId) {
-		ItQuery service =
+		ItTypeQuery service =
 				services.values().stream()
 						.filter(s -> s.getType().equals(type))
 						.findFirst()
@@ -29,7 +29,7 @@ public class ItQueryManager {
 
 	@Transactional(readOnly = true)
 	public BasicIt query(ItTypeDetails type, GetInItId inItId) {
-		ItQuery service =
+		ItTypeQuery service =
 				services.values().stream()
 						.filter(s -> s.getType().equals(type))
 						.findFirst()

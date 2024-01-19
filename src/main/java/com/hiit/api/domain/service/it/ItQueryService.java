@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ItsQueryService {
+public class ItQueryService {
 
 	private final RegisteredItDao registeredItDao;
 	private final RegisteredItEntityConverter registeredItEntityConverter;

@@ -16,4 +16,6 @@ public interface ItRelationJpaRepository extends JpaRepository<ItRelationEntity,
 	Optional<ItRelationEntity> findByInItIdAndStatus(Long inItId, ItStatus status);
 
 	Optional<ItRelationEntity> findByInItId(Long inItId);
+
+	Optional<ItRelationEntity> findByItIdAndStatus(Long itId, ItStatus status);
 }

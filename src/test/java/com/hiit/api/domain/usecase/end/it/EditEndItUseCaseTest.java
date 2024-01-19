@@ -73,7 +73,7 @@ class EditEndItUseCaseTest {
 		ItRelationEntity itRelation =
 				itRelationDao.findByInItIdAndStatus(inItId, ItStatus.ACTIVE).orElse(null);
 		assert itRelation != null;
-		inItDao.endByIdWithItRelation(inItId, title);
+		inItDao.endById(inItId, title);
 		itRelationDao.endById(itRelation.getId());
 		entityManager.flush();
 		entityManager.clear();

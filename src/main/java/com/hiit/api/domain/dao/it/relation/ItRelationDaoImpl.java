@@ -51,4 +51,9 @@ public class ItRelationDaoImpl extends AbstractJpaDao<ItRelationEntity, Long>
 	public Optional<ItRelationEntity> findByInItId(Long inItId) {
 		return repository.findByInItId(inItId);
 	}
+
+	@Override
+	public Optional<ItRelationEntity> findByItIdAndStatus(Long itId, ItStatus status) {
+		return repository.findByItIdAndStatus(itId, status);
+	}
 }

@@ -16,7 +16,7 @@ import com.hiit.api.domain.model.it.in.InIt;
 import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.service.ItTimeDetailsMapper;
-import com.hiit.api.domain.service.it.ItQueryManager;
+import com.hiit.api.domain.service.it.ItTypeQueryManager;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.usecase.it.InItEntityConverter;
 import com.hiit.api.repository.entity.business.it.InItEntity;
@@ -39,7 +39,7 @@ public class GetEndItsUseCase implements AbstractUseCase<GetEndItsUseCaseRequest
 	private final ItTimeDetailsMapper itTimeDetailsMapper;
 	private final InItEntityConverter entityConverter;
 
-	private final ItQueryManager itQueryManager;
+	private final ItTypeQueryManager itTypeQueryManager;
 	private final WithDao withDao;
 
 	@Override
@@ -56,7 +56,7 @@ public class GetEndItsUseCase implements AbstractUseCase<GetEndItsUseCaseRequest
 			}
 			final GetInItId inItId = source::getId;
 			ItTimeDetails timeInfo = extractTimeInfo(source);
-			BasicIt it = itQueryManager.query(IT_REGISTERED, inItId);
+			BasicIt it = itTypeQueryManager.query(IT_REGISTERED, inItId);
 			Long withCount = withDao.countEndByInIt(inItId.getId());
 			endItInfos.add(makeEndItInfo(source, timeInfo, it, withCount));
 		}
@@ -64,7 +64,7 @@ public class GetEndItsUseCase implements AbstractUseCase<GetEndItsUseCaseRequest
 	}
 
 	private List<InIt> getSources(GetMemberId memberId) {
-		List<InItEntity> entities = new ArrayList<>(dao.findAllEndStatusByMember(memberId.getId()));
+		List<InItEntity> entities = new ArrayList<>(dao.findAllEndStatusByMemberId(memberId.getId()));
 		List<InIt> sources = new ArrayList<>();
 		for (InItEntity source : entities) {
 			ItRelationEntity itRelation =

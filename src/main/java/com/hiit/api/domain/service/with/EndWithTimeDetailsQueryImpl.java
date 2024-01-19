@@ -46,7 +46,7 @@ public class EndWithTimeDetailsQueryImpl implements WithTimeDetailsQuery {
 			throw new DataNotFoundException(exceptionData);
 		}
 		Optional<InItEntity> inItEntity =
-				inItDao.findEndStatusByIdAndMember(source.get().getInIt().getId(), memberId.getId());
+				inItDao.findEndStatusByIdAndMemberId(source.get().getInIt().getId(), memberId.getId());
 		if (inItEntity.isEmpty()) {
 			Map<String, Long> exceptionSource =
 					logSourceGenerator.generate(GetInItId.key, source.get().getInIt().getId());

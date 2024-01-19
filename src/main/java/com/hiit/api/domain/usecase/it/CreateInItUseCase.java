@@ -8,8 +8,8 @@ import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.GetItId;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
-import com.hiit.api.domain.service.it.ItQueryManager;
 import com.hiit.api.domain.service.it.ItRelationCommand;
+import com.hiit.api.domain.service.it.ItTypeQueryManager;
 import com.hiit.api.domain.service.member.MemberQuery;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.usecase.it.event.CreateInItEventPublisher;
@@ -40,7 +40,7 @@ public class CreateInItUseCase implements AbstractUseCase<CreateInItUseCaseReque
 	private final ItRelationCommand itRelationCommand;
 
 	private final MemberQuery memberQuery;
-	private final ItQueryManager itQueryManager;
+	private final ItTypeQueryManager itTypeQueryManager;
 
 	private final CreateInItEventPublisher publisher;
 
@@ -59,7 +59,7 @@ public class CreateInItUseCase implements AbstractUseCase<CreateInItUseCaseReque
 			return AbstractResponse.VOID;
 		}
 
-		BasicIt it = itQueryManager.query(type, createTargetItId);
+		BasicIt it = itTypeQueryManager.query(type, createTargetItId);
 		String topic = it.getTopic();
 		LocalTime startTime = it.getStartTime();
 		LocalTime endTime = it.getEndTime();

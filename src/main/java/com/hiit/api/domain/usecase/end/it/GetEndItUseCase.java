@@ -16,7 +16,7 @@ import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.service.ItTimeDetailsMapper;
-import com.hiit.api.domain.service.it.ItQueryManager;
+import com.hiit.api.domain.service.it.ItTypeQueryManager;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.usecase.it.InItEntityConverter;
 import com.hiit.api.domain.util.JsonConverter;
@@ -41,7 +41,7 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 	private final ItTimeDetailsMapper timeDetailsMapper;
 	private final InItEntityConverter entityConverter;
 
-	private final ItQueryManager itQueryManager;
+	private final ItTypeQueryManager itTypeQueryManager;
 	private final WithDao withDao;
 
 	private final JsonConverter jsonConverter;
@@ -59,14 +59,14 @@ public class GetEndItUseCase implements AbstractUseCase<GetEndItUseCaseRequest> 
 		}
 
 		ItTimeDetails timeInfo = extractTimeInfo(source);
-		BasicIt it = itQueryManager.query(ItTypeDetails.IT_REGISTERED, endInItId);
+		BasicIt it = itTypeQueryManager.query(ItTypeDetails.IT_REGISTERED, endInItId);
 		Long withCount = withDao.countEndByInIt(source.getId());
 		return buildResponse(source, timeInfo, it, withCount);
 	}
 
 	private InIt getSource(GetMemberId memberId, GetInItId endInItId) {
 		Optional<InItEntity> source =
-				dao.findEndStatusByIdAndMember(endInItId.getId(), memberId.getId());
+				dao.findEndStatusByIdAndMemberId(endInItId.getId(), memberId.getId());
 		if (source.isEmpty()) {
 			Map<String, Long> exceptionSource =
 					logSourceGenerator.generate(GetInItId.endKey, endInItId.getId());

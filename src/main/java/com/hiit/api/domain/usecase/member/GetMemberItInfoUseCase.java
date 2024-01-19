@@ -9,7 +9,7 @@ import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.model.member.Member;
-import com.hiit.api.domain.service.it.ItQueryManager;
+import com.hiit.api.domain.service.it.ItTypeQueryManager;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
@@ -29,7 +29,7 @@ public class GetMemberItInfoUseCase implements AbstractUseCase<GetMemberItInfoUs
 	private final MemberDao dao;
 	private final MemberEntityConverter entityConverter;
 
-	private final ItQueryManager itQueryManager;
+	private final ItTypeQueryManager itTypeQueryManager;
 
 	private final JsonConverter jsonConverter;
 	private final LogSourceGenerator logSourceGenerator;
@@ -44,7 +44,7 @@ public class GetMemberItInfoUseCase implements AbstractUseCase<GetMemberItInfoUs
 		ItWithStat docs = readDocs(source, inItId);
 
 		BasicIt it =
-				itQueryManager.query(ItTypeDetails.of(docs.getType()), (GetInItId) docs::getInItId);
+				itTypeQueryManager.query(ItTypeDetails.of(docs.getType()), (GetInItId) docs::getInItId);
 		String topic = it.getTopic();
 		String itInfo = topic + "에 " + docs.getWithCount() + "번 참여했어요!";
 

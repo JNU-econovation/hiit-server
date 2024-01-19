@@ -1,15 +1,18 @@
 package com.hiit.api.domain.usecase.it;
 
+import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dto.request.it.GetItUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.ItInfo;
 import com.hiit.api.domain.model.it.BasicIt;
 import com.hiit.api.domain.model.it.GetItId;
 import com.hiit.api.domain.model.it.relation.It_Relation;
 import com.hiit.api.domain.model.member.GetMemberId;
+import com.hiit.api.domain.service.it.ActiveItMemberCountService;
 import com.hiit.api.domain.service.it.ActiveItRelationBrowseService;
-import com.hiit.api.domain.service.it.ItActiveMemberCountService;
-import com.hiit.api.domain.service.it.ItsQueryService;
+import com.hiit.api.domain.service.it.ItQueryService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 
-	private final ItsQueryService itsQueryService;
+	private final ItQueryService itQueryService;
 	private final ActiveItRelationBrowseService activeItRelationBrowseService;
 
-	private final ItActiveMemberCountService itActiveMemberCountService;
+	private final ItRelationDao itRelationDao;
+
+	private final ActiveItMemberCountService activeItMemberCountService;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -32,9 +37,9 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 		final GetMemberId memberId = request::getMemberId;
 		final GetItId registeredItId = request::getItId;
 
-		BasicIt source = itsQueryService.execute(registeredItId);
+		BasicIt source = itQueryService.execute(registeredItId);
 
-		Long activeMemberCount = itActiveMemberCountService.execute(source::getId);
+		Long activeMemberCount = activeItMemberCountService.execute(source::getId);
 		List<It_Relation> activeItRelations = activeItRelationBrowseService.execute(memberId);
 
 		for (It_Relation activeItRelation : activeItRelations) {
@@ -46,6 +51,13 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 	}
 
 	private ItInfo buildResponse(BasicIt it, Long inMemberCount, boolean memberIn) {
+		Long inItId = -1L;
+		if (memberIn) {
+			ItRelationEntity itRelation =
+					itRelationDao.findByItIdAndStatus(it.getId(), ItStatus.ACTIVE).orElse(null);
+			assert itRelation != null;
+			inItId = itRelation.getInItId();
+		}
 		return ItInfo.builder()
 				.id(it.getId())
 				.topic(it.getTopic())
@@ -54,6 +66,7 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 				.type(it.getType().getValue())
 				.inMemberCount(inMemberCount)
 				.memberIn(memberIn)
+				.inItId(inItId)
 				.build();
 	}
 }

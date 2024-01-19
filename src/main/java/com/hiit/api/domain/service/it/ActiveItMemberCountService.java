@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ItActiveMemberCountService {
+public class ActiveItMemberCountService {
 
 	private final ItRelationDao itRelationDao;
 

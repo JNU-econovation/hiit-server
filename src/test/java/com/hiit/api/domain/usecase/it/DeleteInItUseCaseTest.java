@@ -66,7 +66,7 @@ class DeleteInItUseCaseTest {
 		deleteInItUseCase.execute(request);
 
 		// then
-		Optional<InItEntity> activeInIt = inItDao.findActiveStatusByItIdAndMember(itId, memberId);
+		Optional<InItEntity> activeInIt = inItDao.findActiveStatusByItIdAndMemberId(itId, memberId);
 		assertTrue(activeInIt.isEmpty());
 	}
 }

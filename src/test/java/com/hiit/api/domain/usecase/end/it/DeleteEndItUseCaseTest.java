@@ -67,7 +67,7 @@ class DeleteEndItUseCaseTest {
 		ItRelationEntity itRelation =
 				itRelationDao.findByInItIdAndStatus(endInItId, ItStatus.ACTIVE).orElse(null);
 		assert itRelation != null;
-		inItDao.endByIdWithItRelation(endInItId, "끝!!");
+		inItDao.endById(endInItId, "끝!!");
 		itRelationDao.endById(itRelation.getId());
 
 		// when
@@ -75,7 +75,7 @@ class DeleteEndItUseCaseTest {
 
 		// then
 		int active = inItDao.findAllActiveStatusByMemberId(memberId).size();
-		int end = inItDao.findAllEndStatusByMember(memberId).size();
+		int end = inItDao.findAllEndStatusByMemberId(memberId).size();
 		assertThat(active).isZero();
 		assertThat(end).isZero();
 	}

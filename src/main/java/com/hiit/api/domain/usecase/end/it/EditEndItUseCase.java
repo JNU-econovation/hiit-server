@@ -69,7 +69,7 @@ public class EditEndItUseCase implements AbstractUseCase<EditEndItUseCaseRequest
 
 	private InItElement getSource(GetMemberId memberId, GetInItId endInItId) {
 		Optional<InItEntity> source =
-				dao.findEndStatusByIdAndMember(endInItId.getId(), memberId.getId());
+				dao.findEndStatusByIdAndMemberId(endInItId.getId(), memberId.getId());
 		if (source.isEmpty()) {
 			Map<String, Long> exceptionSource =
 					logSourceGenerator.generate(GetInItId.endKey, endInItId.getId());

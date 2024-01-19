@@ -70,7 +70,7 @@ class EditInItUseCaseTest {
 		editInItUseCase.execute(request);
 
 		// then
-		Optional<InItEntity> activeInIt = inItDao.findActiveStatusByItIdAndMember(itId, memberId);
+		Optional<InItEntity> activeInIt = inItDao.findActiveStatusByItIdAndMemberId(itId, memberId);
 		assertNotNull(activeInIt.get());
 		InItEntity inIt = activeInIt.get();
 		assertThat(inIt.getResolution()).isEqualTo(resolution);

@@ -14,4 +14,6 @@ public interface ItRelationDao extends JpaDao<ItRelationEntity, Long> {
 	Optional<ItRelationEntity> findByInItId(Long inItId);
 
 	void endById(Long id);
+
+	Optional<ItRelationEntity> findByItIdAndStatus(Long itId, ItStatus status);
 }

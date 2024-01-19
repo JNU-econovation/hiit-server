@@ -24,4 +24,5 @@ public class ItInfo implements AbstractResponse {
 	private String type;
 	private Long inMemberCount;
 	private Boolean memberIn;
+	private Long inItId;
 }

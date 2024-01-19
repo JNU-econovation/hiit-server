@@ -82,7 +82,7 @@ public class DeleteInItUseCase implements AbstractUseCase<DeleteInItUseCaseReque
 	}
 
 	private void end(InIt source) {
-		itDao.endByIdWithItRelation(source.getId(), source.getTitle());
+		itDao.endById(source.getId(), source.getTitle());
 		itRelationDao.endById(source.getItRelationId());
 	}
 }

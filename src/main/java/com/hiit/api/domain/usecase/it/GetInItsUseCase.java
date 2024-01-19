@@ -13,8 +13,8 @@ import com.hiit.api.domain.model.it.in.InItTimeDetails;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
 import com.hiit.api.domain.service.ItTimeDetailsMapper;
-import com.hiit.api.domain.service.it.ItActiveMemberCountService;
-import com.hiit.api.domain.service.it.ItQueryManager;
+import com.hiit.api.domain.service.it.ActiveItMemberCountService;
+import com.hiit.api.domain.service.it.ItTypeQueryManager;
 import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.repository.entity.business.it.InItEntity;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
@@ -36,8 +36,8 @@ public class GetInItsUseCase implements AbstractUseCase<GetInItsUseCaseRequest> 
 	private final ItTimeDetailsMapper itTimeDetailsMapper;
 	private final InItEntityConverter itEntityConverter;
 
-	private final ItQueryManager itQueryManager;
-	private final ItActiveMemberCountService itActiveMemberCountService;
+	private final ItTypeQueryManager itTypeQueryManager;
+	private final ActiveItMemberCountService activeItMemberCountService;
 
 	@Override
 	@Transactional
@@ -51,8 +51,8 @@ public class GetInItsUseCase implements AbstractUseCase<GetInItsUseCaseRequest> 
 				throw new MemberAccessDeniedException(memberId.getId(), source.getId());
 			}
 			ItTypeDetails type = ItTypeDetails.of(source.getItType());
-			Long activeMemberCount = itActiveMemberCountService.execute(source::getId);
-			BasicIt it = itQueryManager.query(type, (GetInItId) source::getId);
+			Long activeMemberCount = activeItMemberCountService.execute(source::getId);
+			BasicIt it = itTypeQueryManager.query(type, (GetInItId) source::getId);
 			String topic = it.getTopic();
 			InItInfo inItInfo = makeInItInfo(source, type.getValue(), topic, activeMemberCount);
 			inItInfos.add(inItInfo);

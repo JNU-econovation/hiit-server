@@ -17,6 +17,7 @@ public class ItDescription {
 			fieldWithPath("data.inMemberCount").type(JsonFieldType.NUMBER).description("잇 참여 인원 수"),
 			fieldWithPath("data.memberIn").type(JsonFieldType.BOOLEAN).description("잇 참여 여부"),
 			fieldWithPath("data.type").type(JsonFieldType.STRING).description("잇 참여 타입"),
+			fieldWithPath("data.inItId").type(JsonFieldType.NUMBER).description("참여 잇 아이디"),
 		};
 	}
 
@@ -31,6 +32,7 @@ public class ItDescription {
 			fieldWithPath("data.its[].inMemberCount").type(JsonFieldType.NUMBER).description("잇 참여 인원 수"),
 			fieldWithPath("data.its[].memberIn").type(JsonFieldType.BOOLEAN).description("잇 참여 여부"),
 			fieldWithPath("data.its[].type").type(JsonFieldType.STRING).description("잇 참여 타입"),
+			fieldWithPath("data.its[].inItId").type(JsonFieldType.NUMBER).description("참여 잇 아이디"),
 		};
 	}
 

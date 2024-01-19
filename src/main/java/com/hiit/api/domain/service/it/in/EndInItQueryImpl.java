@@ -37,7 +37,7 @@ public class EndInItQueryImpl implements InItQuery {
 	@Transactional(readOnly = true)
 	public InIt query(GetInItId inItId, GetMemberId memberId) {
 		Optional<InItEntity> source =
-				inItDao.findEndStatusByIdAndMember(inItId.getId(), memberId.getId());
+				inItDao.findEndStatusByIdAndMemberId(inItId.getId(), memberId.getId());
 		if (source.isEmpty()) {
 			Map<String, Long> exceptionSource = logSourceGenerator.generate(inItId.key, inItId.getId());
 			exceptionSource = logSourceGenerator.add(exceptionSource, memberId.key, memberId.getId());

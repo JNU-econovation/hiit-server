@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RegisteredItQuery implements ItQuery {
+public class RegisteredItTypeQuery implements ItTypeQuery {
 
 	private final ItRelationDao itRelationDao;
 
