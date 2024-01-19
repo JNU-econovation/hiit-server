@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.jboss.logging.MDC;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.stereotype.Component;
 
@@ -649,12 +650,15 @@ public class LoggingHandler {
 
 	public void writeLog(final Exception ex, final HttpServletRequest request) {
 		if (needsIgnoreLogging(ex, request)) {
+			MDC.clear();
 			return;
 		}
 		try {
+			MDC.clear();
 			log.error(
 					LOG_MESSAGE_FORMAT, request.getMethod(), request.getRequestURI(), ex.getMessage(), ex);
 		} catch (Exception e) {
+			MDC.clear();
 			log.error(LOG_MESSAGE_FORMAT, UNCAUGHT_LOG_MESSAGE, UNCAUGHT_LOG_MESSAGE, e.getMessage(), e);
 		}
 	}
