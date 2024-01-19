@@ -1,10 +1,12 @@
 package com.hiit.api.domain.usecase.member;
 
+import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.dto.request.member.GetMemberItInfoUseCaseRequest;
 import com.hiit.api.domain.dto.response.member.MemberItInfo;
 import com.hiit.api.domain.exception.DataNotFoundException;
 import com.hiit.api.domain.model.it.BasicIt;
+import com.hiit.api.domain.model.it.GetItId;
 import com.hiit.api.domain.model.it.in.GetInItId;
 import com.hiit.api.domain.model.it.relation.ItTypeDetails;
 import com.hiit.api.domain.model.member.GetMemberId;
@@ -14,7 +16,10 @@ import com.hiit.api.domain.usecase.AbstractUseCase;
 import com.hiit.api.domain.util.JsonConverter;
 import com.hiit.api.domain.util.LogSourceGenerator;
 import com.hiit.api.repository.document.member.ItWithStat;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.member.HiitMemberEntity;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +34,8 @@ public class GetMemberItInfoUseCase implements AbstractUseCase<GetMemberItInfoUs
 	private final MemberDao dao;
 	private final MemberEntityConverter entityConverter;
 
+	private final ItRelationDao itRelationDao;
+
 	private final ItTypeQueryManager itTypeQueryManager;
 
 	private final JsonConverter jsonConverter;
@@ -37,14 +44,18 @@ public class GetMemberItInfoUseCase implements AbstractUseCase<GetMemberItInfoUs
 	@Override
 	public MemberItInfo execute(GetMemberItInfoUseCaseRequest request) {
 		final GetMemberId memberId = request::getMemberId;
-		final GetInItId inItId = request::getItId;
+		final GetItId itId = request::getItId;
 
 		Member source = getSource(memberId);
 
-		ItWithStat docs = readDocs(source, inItId);
+		List<ItRelationEntity> relations =
+				itRelationDao.findAllByItIdAndStatus(itId.getId(), ItStatus.ACTIVE);
+		Long inItId = relations.get(0).getInItId();
+
+		ItWithStat docs = readDocs(source, () -> inItId);
 
 		BasicIt it =
-				itTypeQueryManager.query(ItTypeDetails.of(docs.getType()), (GetInItId) docs::getInItId);
+				itTypeQueryManager.query(ItTypeDetails.of(docs.getType()), (GetItId) docs::getInItId);
 		String topic = it.getTopic();
 		String itInfo = topic + "에 " + docs.getWithCount() + "번 참여했어요!";
 
