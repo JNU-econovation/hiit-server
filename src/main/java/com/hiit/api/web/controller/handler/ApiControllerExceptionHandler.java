@@ -5,6 +5,7 @@ import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL_AUTHENTICATION;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL_NOT_FOUND;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.FAIL_REQUEST;
+import static com.hiit.api.web.controller.handler.ExceptionMessage.REQUEST_INVALID;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.REQUEST_INVALID_FORMAT;
 import static com.hiit.api.web.controller.handler.ExceptionMessage.RESOURCE_NOT_FOUND;
 
@@ -132,7 +133,7 @@ public class ApiControllerExceptionHandler {
 			final Exception ex, final HttpServletRequest request) {
 		loggingHandler.writeLog(ex, request);
 		return ApiResponseGenerator.fail(
-				FAIL_AUTHENTICATION.getCode(), FAIL_AUTHENTICATION.getMessage(), HttpStatus.UNAUTHORIZED);
+				REQUEST_INVALID.getCode(), REQUEST_INVALID.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler({AuthenticationException.class})
