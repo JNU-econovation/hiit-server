@@ -31,7 +31,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 	}
 
 	private void printRequest(final String sessionNumber, final HttpRequest req, final byte[] body) {
-		log.debug(
+		log.info(
 				"[{}] URI: {}, Method: {}, Headers:{}, Body:{} ",
 				sessionNumber,
 				req.getURI(),
@@ -47,7 +47,7 @@ public class RestTemplateLoggingInterceptor implements ClientHttpRequestIntercep
 						.lines()
 						.collect(Collectors.joining("\n"));
 
-		log.debug(
+		log.info(
 				"[{}] Status: {}, Headers:{}, Body:{} ",
 				sessionNumber,
 				res.getStatusCode(),
