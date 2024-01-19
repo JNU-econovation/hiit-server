@@ -11,6 +11,7 @@ import com.hiit.api.support.ApiResponse;
 import com.hiit.api.support.ApiResponseGenerator;
 import com.hiit.api.support.MessageCode;
 import com.hiit.api.web.dto.validator.DataId;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +35,7 @@ public class MemberQueryController {
 	public ApiResponse<ApiResponse.SuccessBody<MemberInfo>> browseMember(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable("id") @DataId Long id) {
 		Long requestId = null;
-		if (id == 0) {
+		if (Objects.equals(id, 0L)) {
 			requestId = Long.valueOf(userDetails.getUsername());
 		} else {
 			requestId = id;
