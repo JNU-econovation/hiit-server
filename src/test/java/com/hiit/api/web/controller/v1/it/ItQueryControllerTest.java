@@ -208,6 +208,7 @@ class ItQueryControllerTest {
 		InItInfo inIt1 =
 				InItInfo.builder()
 						.id(1L)
+						.inItId(1L)
 						.title("참여 잇 제목")
 						.topic("참여 잇 주제")
 						.startTime(LocalTime.of(7, 0))
@@ -219,6 +220,7 @@ class ItQueryControllerTest {
 		InItInfo inIt2 =
 				InItInfo.builder()
 						.id(2L)
+						.inItId(2L)
 						.title("참여 잇 제목")
 						.topic("참여 잇 주제")
 						.startTime(LocalTime.of(7, 0))
@@ -257,6 +259,7 @@ class ItQueryControllerTest {
 	private InItInfo getInItInfoMockResponse() {
 		return InItInfo.builder()
 				.id(1L)
+				.inItId(1L)
 				.title("참여 잇 제목")
 				.topic("참여 잇 주제")
 				.startTime(LocalTime.of(7, 0))

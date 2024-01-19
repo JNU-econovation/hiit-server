@@ -80,7 +80,8 @@ public class GetInItsUseCase implements AbstractUseCase<GetInItsUseCaseRequest> 
 
 	private InItInfo makeInItInfo(InIt source, String type, String topic, Long activeMemberCount) {
 		return InItInfo.builder()
-				.id(source.getId())
+				.id(source.getItId())
+				.inItId(source.getId())
 				.title(source.getTitle())
 				.topic(topic)
 				.startTime(source.getTime().getStartTime())

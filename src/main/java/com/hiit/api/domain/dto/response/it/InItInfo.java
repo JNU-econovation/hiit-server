@@ -18,6 +18,7 @@ import lombok.ToString;
 public class InItInfo implements AbstractResponse {
 
 	private Long id;
+	private Long inItId;
 	private String title;
 	private String topic;
 	private LocalTime startTime;
