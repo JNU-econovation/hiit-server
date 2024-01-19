@@ -35,4 +35,7 @@ public interface WithCustomRepository {
 
 	List<WithEntity> findAllByInItAnsStatus(
 			InItEntity init, HiitMemberEntity member, WithStatus status);
+
+	Page<WithEntity> findAllByInItAndMemberIdAndStatus(
+			InItEntity init, Long memberId, Pageable pageable, WithStatus status);
 }

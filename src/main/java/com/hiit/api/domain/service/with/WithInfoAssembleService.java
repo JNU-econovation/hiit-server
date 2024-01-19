@@ -1,13 +1,17 @@
 package com.hiit.api.domain.service.with;
 
 import com.hiit.api.domain.dao.hit.HitDao;
+import com.hiit.api.domain.dao.it.in.InItDao;
+import com.hiit.api.domain.dao.member.MemberDao;
 import com.hiit.api.domain.dto.PageRequest;
 import com.hiit.api.domain.dto.response.with.WithInfo;
 import com.hiit.api.domain.dto.response.with.WithMemberInfo;
-import com.hiit.api.domain.model.it.in.InIt;
+import com.hiit.api.domain.model.member.Member;
 import com.hiit.api.domain.model.with.With;
 import com.hiit.api.domain.support.entity.PageElements;
 import com.hiit.api.domain.support.entity.Period;
+import com.hiit.api.domain.usecase.member.MemberEntityConverter;
+import com.hiit.api.repository.entity.business.it.InItEntity;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,21 +27,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class WithInfoAssembleService {
 
 	private final HitDao hitDao;
+	private final InItDao inItDao;
+	private final MemberDao memberDao;
+
+	private final MemberEntityConverter memberEntityConverter;
 
 	@Transactional(readOnly = true)
-	public PageImpl<WithInfo> execute(
-			PageElements<With> withs, InIt inIt, WithMemberInfo memberInfo, PageRequest pageable) {
+	public PageImpl<WithInfo> execute(PageElements<With> withs, PageRequest pageable) {
 		List<WithInfo> sources = new ArrayList<>();
 		for (With with : withs.getData()) {
-			Long hitCount = readHitCount(inIt);
-			WithInfo withInfo = makeWithInfo(with, hitCount, memberInfo);
+			Long inItId = with.getInItId();
+			Long memberId = with.getMemberId();
+			InItEntity inIt = inItDao.findById(inItId).orElseThrow();
+			Long hitCount = readHitCount(inIt.getId());
+			Member member = memberEntityConverter.from(memberDao.findById(memberId).orElseThrow());
+			WithMemberInfo withMemberInfo = makeMemberInfo(member, inIt.getResolution());
+			WithInfo withInfo = makeWithInfo(with, hitCount, withMemberInfo);
 			sources.add(withInfo);
 		}
 		return new PageImpl<>(sources, pageable, sources.size());
 	}
 
-	private Long readHitCount(InIt inIt) {
-		return hitDao.countHitByInItAndPeriod(inIt.getId(), Period.today());
+	private Long readHitCount(Long inItId) {
+		return hitDao.countHitByInItAndPeriod(inItId, Period.today());
 	}
 
 	private WithInfo makeWithInfo(With with, Long hitCount, WithMemberInfo memberInfo) {
@@ -46,6 +58,15 @@ public class WithInfoAssembleService {
 				.content(with.getContent())
 				.hit(hitCount)
 				.withMemberInfo(memberInfo)
+				.build();
+	}
+
+	private WithMemberInfo makeMemberInfo(Member member, String resolution) {
+		return WithMemberInfo.builder()
+				.memberId(member.getId())
+				.name(member.getNickName())
+				.profile(member.getProfile())
+				.resolution(resolution)
 				.build();
 	}
 }

@@ -18,7 +18,7 @@ import lombok.ToString;
 public class GetWithsUseCaseRequest implements AbstractRequest {
 
 	private Long memberId;
-	private Long inItId;
+	private Long itId;
 	private Boolean isMember;
 	private PageRequest pageable;
 	private Boolean random;

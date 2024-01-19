@@ -87,7 +87,12 @@ class WithQueryControllerTest {
 
 	private WithPage getWithPageMockResponse() {
 		WithMemberInfo withMemberInfo =
-				WithMemberInfo.builder().name("멤버 이름").profile("멤버 프로필").resolution("멤버 다짐").build();
+				WithMemberInfo.builder()
+						.name("멤버 이름")
+						.profile("멤버 프로필")
+						.resolution("멤버 다짐")
+						.memberId(1L)
+						.build();
 		WithInfo withInfo1 =
 				WithInfo.builder().id(1L).content("윗 내용").hit(10L).withMemberInfo(withMemberInfo).build();
 		WithInfo withInfo2 =

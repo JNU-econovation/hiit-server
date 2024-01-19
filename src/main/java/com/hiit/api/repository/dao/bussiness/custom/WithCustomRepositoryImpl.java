@@ -105,4 +105,24 @@ public class WithCustomRepositoryImpl extends QuerydslRepositorySupport
 				.where(with.inIt.eq(init), with.status.eq(status), memberEqual(member))
 				.fetch();
 	}
+
+	@Override
+	public Page<WithEntity> findAllByInItAndMemberIdAndStatus(
+			InItEntity init, Long memberId, Pageable pageable, WithStatus status) {
+		QWithEntity with = QWithEntity.withEntity;
+
+		List<WithEntity> withs =
+				from(with)
+						.where(with.inIt.eq(init), with.memberId.eq(memberId), with.status.eq(status))
+						.offset(pageable.getOffset())
+						.limit(pageable.getPageSize())
+						.fetch();
+
+		long total =
+				from(with)
+						.where(with.inIt.eq(init), with.memberId.eq(memberId), with.status.eq(status))
+						.fetchCount();
+
+		return new PageImpl<>(withs, pageable, total);
+	}
 }

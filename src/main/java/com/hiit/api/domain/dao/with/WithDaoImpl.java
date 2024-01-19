@@ -69,6 +69,16 @@ public class WithDaoImpl extends AbstractJpaDao<WithEntity, Long> implements Wit
 	}
 
 	@Override
+	public PageElements<WithEntity> findAllByInItAndMemberIdAndStatus(
+			Long initId, Long memberId, PageRequest pageable, WithStatus status) {
+		InItEntity inItEntity = InItEntity.builder().id(initId).build();
+		Page<WithEntity> source =
+				repository.findAllByInItAndMemberIdAndStatus(inItEntity, memberId, pageable, status);
+		List<WithEntity> data = source.getContent();
+		return new PageElements<>(pageable, source.getTotalPages(), source.getTotalElements(), data);
+	}
+
+	@Override
 	public List<WithEntity> findAllByInItAndMemberAndStatus(
 			Long initId, Long memberId, WithStatus status) {
 		InItEntity inItEntity = InItEntity.builder().id(initId).build();

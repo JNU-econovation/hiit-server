@@ -28,6 +28,9 @@ public class WithDescription {
 			fieldWithPath("data.data[].withMemberInfo.resolution")
 					.type(JsonFieldType.STRING)
 					.description("윗 멤버 다짐"),
+			fieldWithPath("data.data[].withMemberInfo.memberId")
+					.type(JsonFieldType.NUMBER)
+					.description("윗 멤버 아이디"),
 		};
 	}
 }

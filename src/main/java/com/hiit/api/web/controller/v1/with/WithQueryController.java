@@ -42,7 +42,7 @@ public class WithQueryController {
 		GetWithsUseCaseRequest request =
 				GetWithsUseCaseRequest.builder()
 						.memberId(memberId)
-						.inItId(id)
+						.itId(id)
 						.isMember(my)
 						.pageable(pageRequest)
 						.random(random)

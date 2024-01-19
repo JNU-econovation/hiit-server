@@ -3,6 +3,7 @@ package com.hiit.api.domain.dao.it.relation;
 import com.hiit.api.domain.dao.JpaDao;
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
+import java.util.List;
 import java.util.Optional;
 
 public interface ItRelationDao extends JpaDao<ItRelationEntity, Long> {
@@ -15,5 +16,5 @@ public interface ItRelationDao extends JpaDao<ItRelationEntity, Long> {
 
 	void endById(Long id);
 
-	Optional<ItRelationEntity> findByItIdAndStatus(Long itId, ItStatus status);
+	List<ItRelationEntity> findAllByItIdAndStatus(Long itId, ItStatus status);
 }

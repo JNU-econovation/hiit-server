@@ -11,8 +11,6 @@ import com.hiit.api.domain.service.it.ActiveItMemberCountService;
 import com.hiit.api.domain.service.it.ActiveItRelationBrowseService;
 import com.hiit.api.domain.service.it.ItQueryService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
-import com.hiit.api.repository.entity.business.it.ItRelationEntity;
-import com.hiit.api.repository.entity.business.it.ItStatus;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,20 +42,38 @@ public class GetItUseCase implements AbstractUseCase<GetItUseCaseRequest> {
 
 		for (It_Relation activeItRelation : activeItRelations) {
 			if (activeItRelation.isIt(registeredItId)) {
-				return buildResponse(source, activeMemberCount, true);
+				return buildResponse(source, activeMemberCount, true, activeItRelations);
 			}
 		}
 		return buildResponse(source, activeMemberCount, false);
 	}
 
-	private ItInfo buildResponse(BasicIt it, Long inMemberCount, boolean memberIn) {
+	private ItInfo buildResponse(
+			BasicIt it, Long inMemberCount, boolean memberIn, List<It_Relation> activeItRelations) {
 		Long inItId = -1L;
 		if (memberIn) {
-			ItRelationEntity itRelation =
-					itRelationDao.findByItIdAndStatus(it.getId(), ItStatus.ACTIVE).orElse(null);
-			assert itRelation != null;
-			inItId = itRelation.getInItId();
+			It_Relation relation =
+					activeItRelations.stream()
+							.filter(itRelation -> itRelation.isIt(it::getId))
+							.findFirst()
+							.orElse(null);
+			assert relation != null;
+			inItId = relation.getInItId();
 		}
+		return ItInfo.builder()
+				.id(it.getId())
+				.topic(it.getTopic())
+				.startTime(it.getStartTime())
+				.endTime(it.getEndTime())
+				.type(it.getType().getValue())
+				.inMemberCount(inMemberCount)
+				.memberIn(memberIn)
+				.inItId(inItId)
+				.build();
+	}
+
+	private ItInfo buildResponse(BasicIt it, Long inMemberCount, boolean memberIn) {
+		Long inItId = -1L;
 		return ItInfo.builder()
 				.id(it.getId())
 				.topic(it.getTopic())

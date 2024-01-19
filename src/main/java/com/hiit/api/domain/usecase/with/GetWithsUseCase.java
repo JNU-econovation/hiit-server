@@ -1,32 +1,33 @@
 package com.hiit.api.domain.usecase.with;
 
+import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dao.with.WithDao;
 import com.hiit.api.domain.dto.PageRequest;
 import com.hiit.api.domain.dto.request.with.GetWithsUseCaseRequest;
 import com.hiit.api.domain.dto.response.with.WithInfo;
-import com.hiit.api.domain.dto.response.with.WithMemberInfo;
 import com.hiit.api.domain.dto.response.with.WithPage;
-import com.hiit.api.domain.exception.MemberAccessDeniedException;
 import com.hiit.api.domain.model.ItTimeDetails;
-import com.hiit.api.domain.model.it.in.GetInItId;
-import com.hiit.api.domain.model.it.in.InIt;
-import com.hiit.api.domain.model.it.in.InItStatusDetails;
-import com.hiit.api.domain.model.it.in.InItTimeDetails;
+import com.hiit.api.domain.model.it.BasicIt;
+import com.hiit.api.domain.model.it.GetItId;
+import com.hiit.api.domain.model.it.relation.ItTypeDetails;
+import com.hiit.api.domain.model.it.relation.It_Relation;
 import com.hiit.api.domain.model.member.GetMemberId;
-import com.hiit.api.domain.model.member.Member;
 import com.hiit.api.domain.model.with.With;
 import com.hiit.api.domain.model.with.WithItTimeDetails;
-import com.hiit.api.domain.service.it.in.InItTimeDetailsQueryManager;
-import com.hiit.api.domain.service.member.MemberQuery;
+import com.hiit.api.domain.service.it.ActiveItRelationBrowseService;
+import com.hiit.api.domain.service.it.ItTypeQueryManager;
 import com.hiit.api.domain.service.with.WithInfoAssembleService;
 import com.hiit.api.domain.support.entity.PageElements;
 import com.hiit.api.domain.support.entity.Period;
 import com.hiit.api.domain.support.entity.PeriodUtils;
 import com.hiit.api.domain.support.entity.converter.with.WithEntityConverterImpl;
 import com.hiit.api.domain.usecase.AbstractUseCase;
+import com.hiit.api.repository.entity.business.it.ItRelationEntity;
+import com.hiit.api.repository.entity.business.it.ItStatus;
 import com.hiit.api.repository.entity.business.with.WithEntity;
 import com.hiit.api.repository.entity.business.with.WithStatus;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -50,31 +51,28 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 	private final WithEntityConverterImpl entityConverter;
 	private final WithInfoAssembleService withInfoAssembleService;
 
-	private final MemberQuery memberQuery;
-	private final InItTimeDetailsQueryManager inItQueryManager;
+	private final ItRelationDao itRelationDao;
+	private final ActiveItRelationBrowseService activeItRelationBrowseService;
+
+	private final ItTypeQueryManager itTypeQueryManager;
 
 	@Override
 	@Transactional(readOnly = true)
 	public WithPage execute(final GetWithsUseCaseRequest request) {
 		final GetMemberId memberId = request::getMemberId;
-		final GetInItId inItId = request::getInItId;
+		final GetItId itId = request::getItId;
 		final Boolean isMemberFilter = request.getIsMember();
 		final PageRequest pageable = request.getPageable();
 		final Boolean random = request.getRandom();
 
-		InIt inIt = inItQueryManager.query(InItStatusDetails.ACTIVE, inItId, memberId);
-		if (!inIt.isOwner(memberId)) {
-			throw new MemberAccessDeniedException(memberId.getId(), inItId.getId());
-		}
+		// todo type
+		BasicIt it = itTypeQueryManager.query(ItTypeDetails.IT_REGISTERED, itId);
 		GetWithElements getWithElements =
-				makeGetWithElements(isMemberFilter, inIt, pageable, memberId, random);
+				makeGetWithElements(isMemberFilter, it, pageable, memberId, random);
 
 		PageElements<With> sources = getSources(getWithElements);
 
-		Member member = memberQuery.query(memberId);
-		WithMemberInfo memberInfo = makeMemberInfo(member, inIt);
-		PageImpl<WithInfo> withInfos =
-				withInfoAssembleService.execute(sources, inIt, memberInfo, pageable);
+		PageImpl<WithInfo> withInfos = withInfoAssembleService.execute(sources, pageable);
 
 		return buildResponse(withInfos);
 	}
@@ -84,39 +82,73 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 		LocalDateTime now = LocalDateTime.now();
 		Period period = PeriodUtils.make(timeInfo, now);
 		if (elements.isMember()) {
-			return getSources(
-					elements.getInIt(), elements.getPageRequest(), elements::getMemberId, period);
+			return getSources(elements.getItId(), elements.getPageRequest(), elements::getMemberId);
 		}
 		if (elements.isRandom()) {
-			return getSources(elements.getInIt(), elements.getPageRequest().getPageSize());
+			return getSources(elements.getItId(), elements.getPageRequest().getPageSize());
 		}
-		return getSources(elements.getInIt(), elements.getPageRequest(), period);
+		return getSources(elements.getItId(), elements.getPageRequest(), period);
 	}
 
 	// 랜덤하게 윗을 가져온다.
-	private PageElements<With> getSources(InIt inIt, Integer size) {
-		PageElements<WithEntity> source =
-				dao.findAllByInItRandomAndStatus(inIt.getId(), size, WithStatus.ACTIVE);
-		List<With> data =
-				source.getData().stream().map(entityConverter::from).collect(Collectors.toList());
-		return new PageElements<>(source, data);
+	private PageElements<With> getSources(GetItId itId, Integer size) {
+		List<ItRelationEntity> itRelations =
+				itRelationDao.findAllByItIdAndStatus(itId.getId(), ItStatus.ACTIVE);
+		List<PageElements<WithEntity>> pages = new ArrayList<>();
+		for (ItRelationEntity itRelation : itRelations) {
+			PageElements<WithEntity> page =
+					dao.findAllByInItRandomAndStatus(itRelation.getInItId(), size, WithStatus.ACTIVE);
+			pages.add(page);
+		}
+		int totalPageSize = -1;
+		int totalPageNumber = -1;
+		int totalPageCount = -1;
+		Long totalCount = 0L;
+		List<WithEntity> totalData = new ArrayList<>();
+		for (PageElements<WithEntity> page : pages) {
+			totalCount += page.getTotalCount();
+			totalData.addAll(page.getData());
+		}
+		List<With> data = totalData.stream().map(entityConverter::from).collect(Collectors.toList());
+		return new PageElements<>(totalPageSize, totalPageNumber, totalPageCount, totalCount, data);
 	}
 
 	// 기간을 지정하여 윗을 가져온다.
-	private PageElements<With> getSources(InIt inIt, PageRequest pageable, Period period) {
-		PageElements<WithEntity> source =
-				dao.findAllByInItAndStatus(inIt.getId(), pageable, period, WithStatus.ACTIVE);
-		List<With> data =
-				source.getData().stream().map(entityConverter::from).collect(Collectors.toList());
-		return new PageElements<>(source, data);
+	private PageElements<With> getSources(GetItId itId, PageRequest pageable, Period period) {
+		List<ItRelationEntity> itRelations =
+				itRelationDao.findAllByItIdAndStatus(itId.getId(), ItStatus.ACTIVE);
+		List<PageElements<WithEntity>> pages = new ArrayList<>();
+		for (ItRelationEntity itRelation : itRelations) {
+			PageElements<WithEntity> page =
+					dao.findAllByInItAndStatus(itRelation.getInItId(), pageable, period, WithStatus.ACTIVE);
+			pages.add(page);
+		}
+		int totalPageSize = -1;
+		int totalPageNumber = -1;
+		int totalPageCount = -1;
+		Long totalCount = 0L;
+		List<WithEntity> totalData = new ArrayList<>();
+		for (PageElements<WithEntity> page : pages) {
+			totalCount += page.getTotalCount();
+			totalData.addAll(page.getData());
+		}
+		List<With> data = totalData.stream().map(entityConverter::from).collect(Collectors.toList());
+		return new PageElements<>(totalPageSize, totalPageNumber, totalPageCount, totalCount, data);
 	}
 
 	// 기간을 지정하여 특정 멤버의 윗을 가져온다.
-	private PageElements<With> getSources(
-			InIt inIt, PageRequest pageable, GetMemberId memberId, Period period) {
+	private PageElements<With> getSources(GetItId itId, PageRequest pageable, GetMemberId memberId) {
+		List<It_Relation> activeRelation =
+				activeItRelationBrowseService.execute(memberId).stream().collect(Collectors.toList());
+		It_Relation relation =
+				activeRelation.stream()
+						.filter(itRelation -> itRelation.isIt(itId))
+						.findFirst()
+						.orElse(null);
+		assert relation != null;
 		PageElements<WithEntity> source =
-				dao.findAllByInItAndMemberAndStatus(
-						inIt.getId(), pageable, memberId.getId(), period, WithStatus.ACTIVE);
+				dao.findAllByInItAndMemberIdAndStatus(
+						relation.getInItId(), memberId.getId(), pageable, WithStatus.ACTIVE);
 		List<With> data =
 				source.getData().stream().map(entityConverter::from).collect(Collectors.toList());
 		return new PageElements<>(source, data);
@@ -127,16 +159,12 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 	}
 
 	private GetWithElements makeGetWithElements(
-			Boolean isMember, InIt inIt, PageRequest pageable, GetMemberId memberId, Boolean random) {
-		InItTimeDetails source = inIt.getTime();
+			Boolean isMember, BasicIt it, PageRequest pageable, GetMemberId memberId, Boolean random) {
 		ItTimeDetails timeInfo =
-				WithItTimeDetails.builder()
-						.startTime(source.getStartTime())
-						.endTime(source.getEndTime())
-						.build();
+				WithItTimeDetails.builder().startTime(it.getStartTime()).endTime(it.getEndTime()).build();
 		if (isMember) {
 			return GetWithElements.builder()
-					.inIt(inIt)
+					.itId(it::getId)
 					.timeInfo(timeInfo)
 					.pageRequest(pageable)
 					.memberId(memberId.getId())
@@ -144,18 +172,10 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 					.build();
 		}
 		return GetWithElements.builder()
-				.inIt(inIt)
+				.itId(it::getId)
 				.pageRequest(pageable)
 				.timeInfo(timeInfo)
 				.random(random)
-				.build();
-	}
-
-	private WithMemberInfo makeMemberInfo(Member member, InIt inIt) {
-		return WithMemberInfo.builder()
-				.name(member.getNickName())
-				.profile(member.getProfile())
-				.resolution(inIt.getResolution())
 				.build();
 	}
 
@@ -168,7 +188,7 @@ public class GetWithsUseCase implements AbstractUseCase<GetWithsUseCaseRequest> 
 	private static class GetWithElements {
 
 		private Long memberId;
-		private InIt inIt;
+		private GetItId itId;
 		private PageRequest pageRequest;
 		private ItTimeDetails timeInfo;
 		private Boolean random;

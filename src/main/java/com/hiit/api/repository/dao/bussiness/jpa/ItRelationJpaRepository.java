@@ -2,6 +2,7 @@ package com.hiit.api.repository.dao.bussiness.jpa;
 
 import com.hiit.api.repository.entity.business.it.ItRelationEntity;
 import com.hiit.api.repository.entity.business.it.ItStatus;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -17,5 +18,5 @@ public interface ItRelationJpaRepository extends JpaRepository<ItRelationEntity,
 
 	Optional<ItRelationEntity> findByInItId(Long inItId);
 
-	Optional<ItRelationEntity> findByItIdAndStatus(Long itId, ItStatus status);
+	List<ItRelationEntity> findAllByItIdAndStatus(Long itId, ItStatus status);
 }

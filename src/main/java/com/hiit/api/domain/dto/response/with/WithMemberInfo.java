@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class WithMemberInfo {
 
+	private Long memberId;
 	private String profile;
 	private String name;
 	private String resolution;

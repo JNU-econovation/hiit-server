@@ -1,6 +1,5 @@
 package com.hiit.api.domain.usecase.it;
 
-import com.hiit.api.domain.dao.it.relation.ItRelationDao;
 import com.hiit.api.domain.dto.request.it.GetItsUseCaseRequest;
 import com.hiit.api.domain.dto.response.it.ItInfo;
 import com.hiit.api.domain.dto.response.it.ItInfos;
@@ -11,8 +10,6 @@ import com.hiit.api.domain.service.it.ActiveItMemberCountService;
 import com.hiit.api.domain.service.it.ActiveItRelationBrowseService;
 import com.hiit.api.domain.service.it.ItQueryService;
 import com.hiit.api.domain.usecase.AbstractUseCase;
-import com.hiit.api.repository.entity.business.it.ItRelationEntity;
-import com.hiit.api.repository.entity.business.it.ItStatus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,8 +26,6 @@ public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 	private final ItQueryService itQueryService;
 	private final ActiveItRelationBrowseService activeItRelationBrowseService;
 
-	private final ItRelationDao itRelationDao;
-
 	private final ActiveItMemberCountService activeItMemberCountService;
 
 	@Override
@@ -40,10 +35,9 @@ public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 
 		List<BasicIt> sources = itQueryService.execute();
 
+		List<It_Relation> activeRelations = activeItRelationBrowseService.execute(memberId);
 		List<Long> memberInItIds =
-				activeItRelationBrowseService.execute(memberId).stream()
-						.map(It_Relation::getItId)
-						.collect(Collectors.toList());
+				activeRelations.stream().map(It_Relation::getItId).collect(Collectors.toList());
 
 		List<ItInfo> its = new ArrayList<>();
 		for (BasicIt source : sources) {
@@ -51,10 +45,13 @@ public class GetItsUseCase implements AbstractUseCase<GetItsUseCaseRequest> {
 			boolean memberIn = memberInItIds.contains(source.getId());
 			Long inItId = -1L;
 			if (memberIn) {
-				ItRelationEntity itRelation =
-						itRelationDao.findByItIdAndStatus(source.getId(), ItStatus.ACTIVE).orElse(null);
-				assert itRelation != null;
-				inItId = itRelation.getInItId();
+				It_Relation relation =
+						activeRelations.stream()
+								.filter(itRelation -> itRelation.isIt(source::getId))
+								.findFirst()
+								.orElse(null);
+				assert relation != null;
+				inItId = relation.getInItId();
 			}
 			its.add(makeItInfo(source, activeMemberCount, memberIn, inItId));
 		}
